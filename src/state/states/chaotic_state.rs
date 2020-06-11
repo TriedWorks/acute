@@ -5,7 +5,7 @@ use winit::event::WindowEvent;
 use crate::state::traits::Stateful;
 use crate::tools::camera;
 use crate::tools::uniforms;
-use crate::render::{buffer, texture, pipeline, shader};
+use crate::graphics::{buffer, texture, pipeline, shader};
 
 pub struct ChaoticState {
     vertex_buffer: wgpu::Buffer,

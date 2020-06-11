@@ -191,9 +191,6 @@ impl CameraController {
             return;
         }
 
-
-        println!("fov_angle: {}", fov);
-
         // Don't even complain about the Variable names, I didn't
         // come up with them >:c
         let t: f32 = (fov / 2.0).tan();

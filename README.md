@@ -1,5 +1,5 @@
 <p align="center">
-  <strong>Troxel (tmp name)</strong>
+  <img src="book/src/images/Acute.png"/>
   <img src="https://travis-ci.com/TriedWorks/troxel.svg?branch=master" alt="Build status">
 </p>
 

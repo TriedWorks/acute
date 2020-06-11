@@ -1,8 +1,8 @@
 use crate::state::traits::Stateful;
 use std::any::Any;
 use winit::event::WindowEvent;
-use crate::render::pipeline;
-use crate::render;
+use crate::graphics::pipeline;
+use crate::graphics;
 use glsl_to_spirv::ShaderType;
 use winit_input_helper::WinitInputHelper;
 
@@ -15,13 +15,13 @@ impl NoneState {
         device: &wgpu::Device,
         sc_desc: &wgpu::SwapChainDescriptor,
     ) -> Self {
-        let vs_module = render::shader::create_shader_module(
+        let vs_module = graphics::shader::create_shader_module(
             include_str!("../../../assets/shaders/none.vert"),
             ShaderType::Vertex,
             &device,
         );
 
-        let fs_module = render::shader::create_shader_module(
+        let fs_module = graphics::shader::create_shader_module(
             include_str!("../../../assets/shaders/none.frag"),
             ShaderType::Fragment,
             &device,

@@ -1,5 +1,5 @@
 [package]
-name = "troxel"
+name = "acute"
 version = "0.0.1"
 authors = ["Sebastian Strobl <Sebastian@Strobl.net>"]
 edition = "2018"
@@ -18,3 +18,5 @@ glsl-to-spirv = "0.1.7"
 bytemuck = "1.2.0"
 image = "0.23.4"
 ultraviolet = "0.4.6"
+legion = "0.2.1"
+rusty_timer = "1.0.1"

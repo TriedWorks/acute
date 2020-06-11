@@ -14,17 +14,17 @@ use wgpu::{RenderPassDescriptor, ShaderModule};
 use winit_input_helper::WinitInputHelper;
 
 mod config;
-mod render;
+mod graphics;
 mod state;
 mod types;
 mod utils;
 mod tools;
+mod application;
+mod window;
 
 use state::traits::Stateful;
 
-
 use crate::state::state_handler::StateHandler;
-
 
 fn main() {
     let event_loop = EventLoop::new();
@@ -96,8 +96,8 @@ impl State {
             },
             wgpu::BackendBit::PRIMARY,
         )
-        .await
-        .unwrap();
+            .await
+            .unwrap();
 
         let (device, queue) = adapter
             .request_device(&wgpu::DeviceDescriptor {
@@ -176,18 +176,13 @@ impl State {
 
         if self.input.key_released(VirtualKeyCode::Escape) || self.input.quit() {
             *control_flow = ControlFlow::Exit;
-            return false
+            return false;
         }
         if self.input.key_pressed(VirtualKeyCode::F1) {
             self.state_handler.set_state(state_ids::NONE);
             self.state_handler.states[self.state_handler.current_state_in_vec].resize(&mut self.device, &mut self.sc_desc, &self.size);
-
         }
-        if self.input.key_pressed(VirtualKeyCode::F3) {
-            self.state_handler.set_state(state_ids::MENU);
-            self.state_handler.states[self.state_handler.current_state_in_vec].resize(&mut self.device, &mut self.sc_desc, &self.size);
-        }
-        if self.input.key_pressed(VirtualKeyCode::F4) {
+        if self.input.key_pressed(VirtualKeyCode::F2) {
             self.state_handler.set_state(state_ids::CHAOTIC);
             self.state_handler.states[self.state_handler.current_state_in_vec].resize(&mut self.device, &mut self.sc_desc, &self.size);
         }
