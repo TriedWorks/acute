@@ -50,10 +50,11 @@ impl Acute {
     pub fn run(&mut self) {
         self.timer.update_delta_time();
         self.timer.update_time_since_last_fixed_update();
-        let dt = self.timer.delta_time();
-        self.scene_handler.update(&mut self.worlds[0], &dt);
+
+        self.scene_handler.update(&mut self.worlds[0], &self.timer.delta_time());
+
         if self.timer.should_fixed_update() {
-            self.scene_handler.fixed_update(&mut self.worlds[0], &dt);
+            self.scene_handler.fixed_update(&mut self.worlds[0], &self.timer.delta_time());
         }
     }
 }

@@ -2,10 +2,21 @@ extern crate acute;
 
 use acute::acute::Acute;
 use acute::window::WinitState;
+use acute::scenes::Scene;
 
 use winit::{event::Event, event::WindowEvent, dpi::LogicalSize};
 use winit::event_loop::ControlFlow;
 use winit::window::WindowBuilder;
+use std::time::Duration;
+use legion::world::World;
+
+use legion::entity::Entity;
+use ultraviolet::{
+    Vec3,
+    Rotor3,
+};
+use acute::components::simple::Transform;
+use acute::components::geometry::Triangle2D;
 
 
 const WINDOW_SIZE: LogicalSize<u32> = LogicalSize { width: 1280, height: 720 };
@@ -13,24 +24,53 @@ const TITLE: &str = "Acute Test";
 
 fn main() {
     let (window_builder, event_loop) = WinitState::new(TITLE, WINDOW_SIZE);
+    let test_scene = TestScene::new();
 
-    let mut acute: Acute = Acute::new(window_builder, None, &event_loop);
+    let mut acute: Acute = Acute::new(window_builder, Some(Box::new(test_scene)), &event_loop);
 
     event_loop.run(move |event, _, control_flow| {
         acute.run();
         match event {
-            Event::WindowEvent { event, ..} => match event {
+            Event::WindowEvent { event, .. } => match event {
                 WindowEvent::CloseRequested => *control_flow = ControlFlow::Exit,
                 _ => {}
             },
             _ => {}
         }
     });
+}
 
+struct TestScene {}
+
+impl TestScene {
+    fn new() -> Self {
+        Self {}
+    }
+}
+
+impl Scene for TestScene {
+    fn update(&mut self, world: &mut World, delta_time: &Duration) {}
+
+    fn fixed_update(&mut self, world: &mut World, delta_time: &Duration) {}
+
+    fn on_start(&mut self, world: &mut World) {
+        world.insert(
+            (),
+            (0..20).map(|_| (
+                Transform {
+                    pos: Vec3::default(),
+                    scale: Vec3::default(),
+                    rotation: Rotor3 { s: 0.0, bv: Default::default() },
+                },
+                Triangle2D::default(),
+            )),
+        );
+    }
 }
 
 
-// OLD MAIN FILE (WILL STAY HERE UNTIL ECS WORKS)
+// OLD MAIN FILE (WILL STAY HERE UNTIL ECS AND RENDERING WORKS)
+
 
 // extern crate ultraviolet as uv;
 //

@@ -43,13 +43,13 @@ impl SceneHandler {
 
 
 pub trait Scene: Any {
-    fn update(&mut self, world: &mut World, delta_time: &Duration);
+    fn update(&mut self, world: &mut World, delta_time: &Duration) {}
 
-    fn fixed_update(&mut self, world: &mut World, delta_time: &Duration);
+    fn fixed_update(&mut self, world: &mut World, delta_time: &Duration) {}
 
-    fn on_start(&mut self);
+    fn on_start(&mut self, world: &mut World) {}
 
-    fn on_stop(&mut self);
+    fn on_stop(&mut self, world: &mut World) {}
 }
 
 pub struct NoneScene {
@@ -69,13 +69,5 @@ impl Scene for NoneScene {
 
     fn fixed_update(&mut self, world: &mut World, delta_time: &Duration) {
         println!("fixed_update");
-    }
-
-    fn on_start(&mut self) {
-
-    }
-
-    fn on_stop(&mut self) {
-
     }
 }
