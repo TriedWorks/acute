@@ -18,6 +18,20 @@ impl SceneHandler {
         }
     }
 
+    pub fn update(&mut self, world: &mut World, delta_time: &Duration) {
+        match self.scenes.last_mut() {
+            Some(scene) => scene.update(world, delta_time),
+            None => {}
+        }
+    }
+
+    pub fn fixed_update(&mut self, world: &mut World, delta_time: &Duration) {
+        match self.scenes.last_mut() {
+            Some(scene) => scene.fixed_update(world, delta_time),
+            None => {}
+        }
+    }
+
     pub fn add_scene(&mut self, scene: Box<dyn Scene>) {
         self.scenes.push(scene);
     }
@@ -50,11 +64,11 @@ impl NoneScene {
 
 impl Scene for NoneScene {
     fn update(&mut self, world: &mut World, delta_time: &Duration) {
-
+        println!("update");
     }
 
     fn fixed_update(&mut self, world: &mut World, delta_time: &Duration) {
-
+        println!("fixed_update");
     }
 
     fn on_start(&mut self) {

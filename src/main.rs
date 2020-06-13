@@ -1,18 +1,32 @@
 extern crate acute;
 
-use acute::application::Acute;
+use acute::acute::Acute;
 use acute::window::WinitState;
 
-use winit::dpi::LogicalSize;
+use winit::{event::Event, event::WindowEvent, dpi::LogicalSize};
+use winit::event_loop::ControlFlow;
+use winit::window::WindowBuilder;
 
 
 const WINDOW_SIZE: LogicalSize<u32> = LogicalSize { width: 1280, height: 720 };
+const TITLE: &str = "Acute Test";
 
 fn main() {
-    let (window_builder, event_loop) = WinitState::new("Acute Test", WINDOW_SIZE);
-    let acute: Acute = Acute::new(window_builder, &event_loop, None);
+    let (window_builder, event_loop) = WinitState::new(TITLE, WINDOW_SIZE);
 
-    event_loop.run(move |event, _, control_flow| {})
+    let mut acute: Acute = Acute::new(window_builder, None, &event_loop);
+
+    event_loop.run(move |event, _, control_flow| {
+        acute.run();
+        match event {
+            Event::WindowEvent { event, ..} => match event {
+                WindowEvent::CloseRequested => *control_flow = ControlFlow::Exit,
+                _ => {}
+            },
+            _ => {}
+        }
+    });
+
 }
 
 
