@@ -1,0 +1,67 @@
+use legion::prelude::*;
+use std::time::Duration;
+use std::any::Any;
+
+pub struct SceneHandler {
+    scenes: Vec<Box<dyn Scene>>,
+}
+
+impl SceneHandler {
+    pub fn new(init_scene: Option<Box<dyn Scene>>) -> Self {
+        let mut scenes = Vec::new();
+        match init_scene {
+            Some(scene) => scenes.push(scene),
+            None => scenes.push(Box::new(NoneScene::new())),
+        }
+        Self {
+            scenes
+        }
+    }
+
+    pub fn add_scene(&mut self, scene: Box<dyn Scene>) {
+        self.scenes.push(scene);
+    }
+
+    pub fn push_front(&mut self, scene_id: u32) {
+        // let scenes = self.scenes
+    }
+}
+
+
+pub trait Scene: Any {
+    fn update(&mut self, world: &mut World, delta_time: &Duration);
+
+    fn fixed_update(&mut self, world: &mut World, delta_time: &Duration);
+
+    fn on_start(&mut self);
+
+    fn on_stop(&mut self);
+}
+
+pub struct NoneScene {
+
+}
+
+impl NoneScene {
+    pub fn new() -> Self {
+        Self { }
+    }
+}
+
+impl Scene for NoneScene {
+    fn update(&mut self, world: &mut World, delta_time: &Duration) {
+
+    }
+
+    fn fixed_update(&mut self, world: &mut World, delta_time: &Duration) {
+
+    }
+
+    fn on_start(&mut self) {
+
+    }
+
+    fn on_stop(&mut self) {
+
+    }
+}

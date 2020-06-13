@@ -1,27 +1,50 @@
-use crate::graphics::renderer::Renderer;
 use legion::prelude::*;
-use winit::window::WindowBuilder;
-use winit::event_loop::EventLoop;
+use winit::{
+    window::WindowBuilder,
+    event_loop::{EventLoop, ControlFlow},
+    event::Event,
+};
 
-// TODO (future): create separate worlds within a universe instead of just using one resource ?
-pub struct Application {
+use crate::graphics::renderer::Renderer;
+use crate::scenes::{SceneHandler, Scene};
+
+pub struct Acute {
+    pub universe: Universe,
+    pub worlds: Vec<World>,
+    pub scene_handler: SceneHandler,
     pub renderer: Renderer,
-    pub resources: Resources,
 }
 
-impl Application {
+impl Acute {
     pub fn new(
         window_builder: WindowBuilder,
         event_loop: &EventLoop<()>,
+        init_scene: Option<Box<dyn Scene>>,
     ) -> Self {
         let window = window_builder.build(event_loop).unwrap();
         let size = window.inner_size();
-        let mut resources = Resources::default();
+        let universe = Universe::new();
+        let worlds: Vec<World> = Vec::new();
 
         let renderer = futures::executor::block_on(
-            Renderer::new(window, size, &mut resources)
+            Renderer::new(window, size)
         );
 
-        unimplemented!()
+        let scene_handler: SceneHandler = SceneHandler::new(init_scene);
+
+        Self {
+            universe,
+            worlds,
+            scene_handler,
+            renderer,
+        }
+    }
+
+    pub fn run(
+        &mut self,
+        event: &Event<()>,
+        control_flow: &mut ControlFlow,
+    ) {
+
     }
 }

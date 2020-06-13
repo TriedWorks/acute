@@ -4,7 +4,11 @@ pub struct Renderer {
     pub surface: wgpu::Surface,
     pub size: winit::dpi::PhysicalSize<u32>,
     pub adapter: wgpu::Adapter,
+    pub device: wgpu::Device,
+    pub queue: wgpu::Queue,
+    pub sc_desc: wgpu::SwapChainDescriptor,
     pub swap_chain: wgpu::SwapChain,
+    pub depth_texture: texture::Texture,
     pub window: winit::window::Window,
 }
 
@@ -12,7 +16,6 @@ impl Renderer {
     pub async fn new(
         window: winit::window::Window,
         size: winit::dpi::PhysicalSize<u32>,
-        resources: &mut legion::resource::Resources,
     ) -> Self {
         let surface = wgpu::Surface::create(&window);
         let adapter = wgpu::Adapter::request(
@@ -46,16 +49,15 @@ impl Renderer {
 
         let depth_texture = texture::Texture::new_depth(&device, &sc_desc, "depth_texture");
 
-        resources.insert(sc_desc);
-        resources.insert(queue);
-        resources.insert(device);
-        resources.insert(depth_texture);
-
         Self {
             surface,
             size,
             adapter,
+            device,
+            queue,
+            sc_desc,
             swap_chain,
+            depth_texture,
             window,
         }
     }
