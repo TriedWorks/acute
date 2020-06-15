@@ -29,12 +29,14 @@ impl Acute {
         let universe = Universe::new();
         let mut worlds: Vec<World> = Vec::new();
         worlds.push(universe.create_world());
+        let mut scene_handler: SceneHandler = SceneHandler::new(init_scene);
+        scene_handler.init_world_data(&mut worlds[0]);
 
         let renderer = futures::executor::block_on(
             Renderer::new(window, size)
         );
 
-        let scene_handler: SceneHandler = SceneHandler::new(init_scene);
+
         let mut timer: Timer = Timer::new();
         timer.set_fixed_interval(Duration::from_secs_f32(1.0 / 60.0));
 
@@ -56,5 +58,15 @@ impl Acute {
         if self.timer.should_fixed_update() {
             self.scene_handler.fixed_update(&mut self.worlds[0], &self.timer.delta_time());
         }
+
+        // self.renderer.
+    }
+
+    pub fn add_scene(&mut self, scene: Box<dyn Scene>) {
+        self.scene_handler.add_scene(scene);
+    }
+
+    pub fn new_world(&mut self) {
+        self.worlds.push(self.universe.create_world());
     }
 }

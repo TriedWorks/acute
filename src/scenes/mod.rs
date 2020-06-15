@@ -36,6 +36,13 @@ impl SceneHandler {
         self.scenes.push(scene);
     }
 
+    pub fn init_world_data(&mut self, world: &mut World) {
+        match self.scenes.last_mut() {
+            Some(scene) => scene.on_start(world),
+            None => {}
+        }
+    }
+
     pub fn push_front(&mut self, scene_id: u32) {
         // let scenes = self.scenes
     }

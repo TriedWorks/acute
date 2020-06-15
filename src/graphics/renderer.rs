@@ -1,4 +1,11 @@
 use super::texture;
+use legion::world::World;
+use crate::graphics::{shader, pipeline};
+use glsl_to_spirv::ShaderType;
+
+
+// Vertex Buffer is fixed sized right now, this is not good and should be changed!
+// Split functions up and make it dynamic
 
 pub struct Renderer {
     pub surface: wgpu::Surface,
@@ -10,6 +17,15 @@ pub struct Renderer {
     pub swap_chain: wgpu::SwapChain,
     pub depth_texture: texture::Texture,
     pub window: winit::window::Window,
+
+    //following should be moved into their own
+    vertex_buffer: wgpu::Buffer,
+    index_buffer: wgpu::Buffer,
+    num_indices: u32,
+    render_pipeline: wgpu::RenderPipeline,
+    uniforms: uniforms::Uniforms,
+    uniform_bind_group: wgpu::BindGroup,
+    uniform_buffer: wgpu::Buffer,
 }
 
 impl Renderer {
@@ -49,6 +65,47 @@ impl Renderer {
 
         let depth_texture = texture::Texture::new_depth(&device, &sc_desc, "depth_texture");
 
+        
+        // following should be moved into their own
+        let vs_module = shader::create_shader_module(
+            include_str!("../../../assets/shaders/default_vertex.glsl"),
+            ShaderType::Vertex,
+            &device,
+        );
+
+        let fs_module = shader::create_shader_module(
+            include_str!("../../../assets/shaders/default_fragment.glsl"),
+            ShaderType::Fragment,
+            &device,
+        );
+
+        let render_pipeline_layout = device.create_pipeline_layout(&wgpu::PipelineLayoutDescriptor {
+            bind_group_layouts: &[&uniform_bind_group_layout],
+        });
+
+        let render_pipeline = pipeline::create_render_pipeline(
+            &device,
+            &render_pipeline_layout,
+            wgpu::PrimitiveTopology::TriangleList,
+            &vs_module,
+            &fs_module,
+            sc_desc.format.clone(),
+            texture::DEPTH_FORMAT,
+            &[VertexC::desc()],
+            true,
+            "main",
+        );
+
+        let vertex_buffer = device.create_buffer_with_data(
+            bytemuck::cast_slice(VERTICES),
+            wgpu::BufferUsage::VERTEX,
+        );
+
+        let index_buffer = device.create_buffer_with_data(
+            bytemuck::cast_slice(INDICES),
+            wgpu::BufferUsage::INDEX,
+        );
+
         Self {
             surface,
             size,
@@ -59,6 +116,17 @@ impl Renderer {
             swap_chain,
             depth_texture,
             window,
+            vertex_buffer,
+            index_buffer,
+            num_indices: 0,
+            render_pipeline,
+            uniforms: (),
+            uniform_bind_group: (),
+            uniform_buffer: ()
         }
+    }
+
+    pub fn render(&mut self, world: &World) {
+
     }
 }
