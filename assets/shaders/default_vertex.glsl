@@ -12,5 +12,6 @@ layout (set = 0, binding = 0) uniform Uniforms {
 
 void main() {
     v_color = a_color;
-    gl_Position = u_view_proj * vec4(a_position, 1.0);
+//    gl_Position = u_view_proj * vec4(a_position, 1.0);
+    gl_Position = vec4(a_position, 1.0);
 }

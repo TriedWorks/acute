@@ -90,15 +90,20 @@ impl TestState {
         );
 
         // VERTEX BUFFER INIT (with max size of 27 vertices)
-        let vertex_buffer_desc = BufferDescriptor {
-            label: Some("vertex_buffer"),
-            size: (std::mem::size_of::<VertexC>() * 3 * 27) as wgpu::BufferAddress,
-            usage: wgpu::BufferUsage::VERTEX | wgpu::BufferUsage::COPY_DST,
-        };
-
-        let vertex_buffer = device.create_buffer(&vertex_buffer_desc);
+        // let vertex_buffer_desc = BufferDescriptor {
+        //     label: Some("vertex_buffer"),
+        //     size: (std::mem::size_of::<VertexC>() * 3 * 27) as wgpu::BufferAddress,
+        //     usage: wgpu::BufferUsage::VERTEX | wgpu::BufferUsage::COPY_DST,
+        // };
+        //
+        // let vertex_buffer = device.create_buffer(&vertex_buffer_desc);
 
         let test_data: Vec<VertexC> = VERTICES.into();
+
+        let vertex_buffer = device.create_buffer_with_data(
+            bytemuck::cast_slice(VERTICES),
+            wgpu::BufferUsage::VERTEX | wgpu::BufferUsage::COPY_DST
+        );
 
         // no index buffer for testing right now
         let index_buffer = device.create_buffer_with_data(
@@ -157,10 +162,10 @@ impl Stateful for TestState {
         render_pass.set_bind_group(0, &self.uniform_bind_group, &[]);
 
         render_pass.set_vertex_buffer(0, &self.vertex_buffer, 0, 0);
-        // render_pass.set_index_buffer(&self.index_buffer, 0, 0);
+        render_pass.set_index_buffer(&self.index_buffer, 0, 0);
 
-        render_pass.draw(0..VERTICES.len() as u32, 0..1);
-        // render_pass.draw_indexed(0..self.num_indices, 0, 0..1);
+        // render_pass.draw(0..VERTICES.len() as u32, 0..1);
+        render_pass.draw_indexed(0..self.num_indices, 0, 0..1);
     }
 
     fn update(&mut self, device: &wgpu::Device, queue: &wgpu::Queue) {
@@ -187,46 +192,46 @@ impl Stateful for TestState {
 
         // VERTEX BUFFER UPDATE TESTING
 
-        self.i += 1;
-        if self.i % 200 == 0 {
-            println!("update buffer!");
-
-            // edit test_data
-
-            let mut new_data = self.test_data.clone();
-
-            for vertex in &mut new_data {
-                vertex.position[0] += 3.0
-            }
-
-            // setting the value higher than 27 results in some triangles not being drawn?
-            if new_data.len() > 27 {
-                println!("removed first triangle");
-                new_data.remove(0);
-                new_data.remove(1);
-                new_data.remove(2);
-            } else {
-                new_data.push(VertexC { position: [-1.0, -1.0, 0.0], color: [0.5, 0.7, 0.5, 1.0] });
-                new_data.push(VertexC { position: [1.0, -1.0, 1.0], color: [0.5, 0.7, 0.5, 1.0] });
-                new_data.push(VertexC { position: [0.0, 1.0, 0.0], color: [0.5, 0.7, 0.5, 1.0] });
-            }
-
-
-            let staging_vertex_buffer = device.create_buffer_with_data(
-                bytemuck::cast_slice(&new_data),
-                wgpu::BufferUsage::WRITE_ALL | wgpu::BufferUsage::COPY_SRC,
-            );
-
-            encoder.copy_buffer_to_buffer(
-                &staging_vertex_buffer,
-                0,
-                &self.vertex_buffer,
-                0,
-                (std::mem::size_of::<VertexC>() * new_data.len()) as wgpu::BufferAddress,
-            );
-
-            self.test_data = new_data;
-        }
+        // self.i += 1;
+        // if self.i % 200 == 0 {
+        //     println!("update buffer!");
+        //
+        //     // edit test_data
+        //
+        //     let mut new_data = self.test_data.clone();
+        //
+        //     for vertex in &mut new_data {
+        //         vertex.position[0] += 3.0
+        //     }
+        //
+        //     // setting the value higher than 27 results in some triangles not being drawn?
+        //     if new_data.len() > 27 {
+        //         println!("removed first triangle");
+        //         new_data.remove(0);
+        //         new_data.remove(1);
+        //         new_data.remove(2);
+        //     } else {
+        //         new_data.push(VertexC { position: [-1.0, -1.0, 0.0], color: [0.5, 0.7, 0.5, 1.0] });
+        //         new_data.push(VertexC { position: [1.0, -1.0, 1.0], color: [0.5, 0.7, 0.5, 1.0] });
+        //         new_data.push(VertexC { position: [0.0, 1.0, 0.0], color: [0.5, 0.7, 0.5, 1.0] });
+        //     }
+        //
+        //
+        //     let staging_vertex_buffer = device.create_buffer_with_data(
+        //         bytemuck::cast_slice(&new_data),
+        //         wgpu::BufferUsage::WRITE_ALL | wgpu::BufferUsage::COPY_SRC,
+        //     );
+        //
+        //     encoder.copy_buffer_to_buffer(
+        //         &staging_vertex_buffer,
+        //         0,
+        //         &self.vertex_buffer,
+        //         0,
+        //         (std::mem::size_of::<VertexC>() * new_data.len()) as wgpu::BufferAddress,
+        //     );
+        //
+        //     self.test_data = new_data;
+        // }
 
         queue.submit(&[encoder.finish()]);
     }
@@ -275,11 +280,6 @@ const VERTICES: &[VertexC] = &[
     VertexC { position: [-10.0, -5.0, 10.0], color: [0.0, 1.0, 0.0, 1.0] }, // 6  G
     VertexC { position: [10.0, -5.0, -10.0], color: [0.0, 0.0, 1.0, 1.0] }, // 7 B
     VertexC { position: [10.0, -5.0, 10.0], color: [0.5, 0.5, 0.5, 1.0] }, // 8
-
-    VertexC { position: [-10.0, -5.0, -10.0], color: [1.0, 0.0, 0.0, 1.0] }, // 9 R
-    VertexC { position: [-10.0, -5.0, 10.0], color: [0.0, 1.0, 0.0, 1.0] }, // 10  G
-    VertexC { position: [10.0, -5.0, -10.0], color: [0.0, 0.0, 1.0, 1.0] }, // 11 B
-    VertexC { position: [10.0, -5.0, 10.0], color: [0.5, 0.5, 0.5, 1.0] }, // 12
 ];
 
 const INDICES: &[u16] = &[

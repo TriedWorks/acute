@@ -2,7 +2,7 @@ use legion::prelude::*;
 use winit::{
     window::WindowBuilder,
     event_loop::{EventLoop, ControlFlow},
-    event::Event,
+    event::{Event, WindowEvent, KeyboardInput, ElementState, VirtualKeyCode},
 };
 
 use rusty_timer::Timer;
@@ -49,17 +49,43 @@ impl Acute {
         }
     }
 
-    pub fn run(&mut self) {
+    pub fn run(&mut self, event: &Event<()>, control_flow: &mut ControlFlow) {
         self.timer.update_delta_time();
         self.timer.update_time_since_last_fixed_update();
-
         self.scene_handler.update(&mut self.worlds[0], &self.timer.delta_time());
 
         if self.timer.should_fixed_update() {
             self.scene_handler.fixed_update(&mut self.worlds[0], &self.timer.delta_time());
+            self.renderer.update_render_data(&self.worlds[0])
         }
 
-        // self.renderer.
+        match event {
+            Event::WindowEvent { ref event, ..} => match event {
+                WindowEvent::CloseRequested => *control_flow = ControlFlow::Exit,
+                WindowEvent::KeyboardInput { input, .. } => match input {
+                    KeyboardInput {
+                        state: ElementState::Pressed,
+                        virtual_keycode: Some(VirtualKeyCode::Escape),
+                        ..
+                    } => *control_flow = ControlFlow::Exit,
+                    _ => { }
+                }
+                WindowEvent::Resized (physical_size) => {
+                    self.renderer.resize(*physical_size);
+                }
+                WindowEvent::ScaleFactorChanged { new_inner_size, ..} => {
+                    self.renderer.resize(**new_inner_size);
+                }
+                _ => {}
+            },
+            Event::RedrawRequested(_) => {
+                self.renderer.render();
+            },
+            Event::MainEventsCleared => {
+                self.renderer.window.request_redraw();
+            }
+            _ => {}
+        }
     }
 
     pub fn add_scene(&mut self, scene: Box<dyn Scene>) {
