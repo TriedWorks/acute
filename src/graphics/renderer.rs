@@ -1,11 +1,22 @@
-use super::texture;
-use crate::graphics::{shader, pipeline};
 use glsl_to_spirv::ShaderType;
-use wgpu::BufferDescriptor;
-use crate::graphics::types::{Vertex, Renderable};
-use crate::components::simple::Transform;
 use legion::prelude::*;
-use crate::components::geometry::Triangle2D;
+
+use crate::{
+    tools::{
+        camera::{Camera, CameraController},
+        uniforms,
+    },
+    components::{
+        geometry::Triangle2D,
+        simple::Transform,
+    },
+    graphics::{
+        texture,
+        shader, pipeline,
+        types::{Vertex, Renderable},
+    },
+};
+use crate::graphics::buffer;
 
 
 const VERTEX_BUFFER_INIT_SIZE: usize = std::mem::size_of::<Vertex>() * 3 * 128;
@@ -30,9 +41,10 @@ pub struct Renderer {
     index_buffer: wgpu::Buffer,
     num_indices: u32,
     render_pipeline: wgpu::RenderPipeline,
-    // uniforms: uniforms::Uniforms,
-    // uniform_bind_group: wgpu::BindGroup,
-    // uniform_buffer: wgpu::Buffer,
+
+    uniforms: uniforms::Uniforms,
+    uniform_bind_group: wgpu::BindGroup,
+    uniform_buffer: wgpu::Buffer,
 }
 
 impl Renderer {
@@ -72,7 +84,24 @@ impl Renderer {
 
         let depth_texture = texture::Texture::new_depth(&device, &sc_desc, "depth_texture");
 
-        
+        let mut uniforms = uniforms::Uniforms::new();
+
+        let uniform_buffer = device.create_buffer_with_data(
+            bytemuck::cast_slice(&[uniforms]),
+            wgpu::BufferUsage::UNIFORM | wgpu::BufferUsage::COPY_DST,
+        );
+
+        let (uniform_bind_group, uniform_bind_group_layout) = buffer::create_uniform_bind_group(
+            &device,
+            wgpu::ShaderStage::VERTEX,
+            0,
+            "uniform_bind_group_layout",
+            0,
+            "uniform_bind_group",
+            &uniform_buffer,
+            std::mem::size_of_val(&uniforms),
+        );
+
         // following should be moved into their own
         let vs_module = shader::create_shader_module(
             include_str!("../../assets/shaders/default_vertex.glsl"),
@@ -87,7 +116,7 @@ impl Renderer {
         );
 
         let render_pipeline_layout = device.create_pipeline_layout(&wgpu::PipelineLayoutDescriptor {
-            bind_group_layouts: &[],
+            bind_group_layouts: &[&uniform_bind_group_layout],
         });
 
         let render_pipeline = pipeline::create_render_pipeline(
@@ -134,14 +163,18 @@ impl Renderer {
             index_buffer,
             num_indices: 0,
             render_pipeline,
-            // uniforms: (),
-            // uniform_bind_group: (),
-            // uniform_buffer: ()
+            uniforms,
+            uniform_bind_group,
+            uniform_buffer,
         }
     }
 
     // Physics change within a fixed interval but render is as often as possible
-    pub fn update_render_data(&mut self, world: &World) {
+    pub fn update_render_data(&mut self, world: &World, camera: &Camera) {
+        let mut encoder = self.device.create_command_encoder(&wgpu::CommandEncoderDescriptor {
+            label: Some("Update Encoder"),
+        });
+
         let query = <(Read<Transform>, Read<Triangle2D>)>::query();
 
         let mut new_vertex_data: Vec<Vertex> = Vec::new();
@@ -149,19 +182,26 @@ impl Renderer {
             new_vertex_data.extend(Triangle2D::vertices_of(&triangle, &transform, None));
         }
 
-        println!("{:?}", new_vertex_data);
+        self.uniforms.update_view_proj(camera.to_matrix());
+
+        let uniforms_staging_buffer = self.device.create_buffer_with_data(
+            bytemuck::cast_slice(&[self.uniforms]),
+            wgpu::BufferUsage::COPY_SRC,
+        );
+
+        encoder.copy_buffer_to_buffer(
+            &uniforms_staging_buffer,
+            0,
+            &self.uniform_buffer,
+            0,
+            std::mem::size_of::<uniforms::Uniforms>() as wgpu::BufferAddress,
+        );
 
         if new_vertex_data.len() == 0 {
             // vertex buffer crashes for whatever reason when staging an empty vec
             // so the update is skipped if this is the case
             return
         }
-
-
-
-        let mut encoder = self.device.create_command_encoder(&wgpu::CommandEncoderDescriptor {
-            label: Some("Update Encoder"),
-        });
 
         let staging_vertex_buffer = self.device.create_buffer_with_data(
             bytemuck::cast_slice(&new_vertex_data),
@@ -219,7 +259,7 @@ impl Renderer {
 
             render_pass.set_pipeline(&self.render_pipeline);
             render_pass.set_vertex_buffer(0, &self.vertex_buffer, 0,0 );
-            println!("{:?}", self.vertex_data.len());
+            render_pass.set_bind_group(0, &self.uniform_bind_group, &[]);
             render_pass.draw(0..self.vertex_data.len() as u32, 0..1);
         }
 
