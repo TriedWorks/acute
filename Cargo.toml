@@ -1,20 +1,30 @@
 [package]
-name = "troxel"
+name = "acute"
 version = "0.0.1"
 authors = ["Sebastian Strobl <Sebastian@Strobl.net>"]
 edition = "2018"
 
+# this is not a real "bin" it's just for testing purposes!
 [[bin]]
 name="main"
 path="src/main.rs"
+
+[lib]
+name="acute"
+path="src/lib.rs"
 
 [dependencies]
 winit = "0.22.2"
 winit_input_helper = "0.7.0"
 wgpu = {version = "0.5.0", features = ["vulkan"]}
 futures = "0.3.5"
-serde = { version = "1.0.110", features = ["derive"] }
-glsl-to-spirv = "0.1.7"
+serde = { version = "1.0.111", features = ["derive"] }
 bytemuck = "1.2.0"
-image = "0.23.4"
+image = "0.23.5"
 ultraviolet = "0.4.6"
+legion = "0.2.1"
+rusty_timer = "1.0.1"
+log = "0.4"
+fern = "0.5"
+# as this package is deprecated, an alternative must be found!
+glsl-to-spirv = "0.1.7"

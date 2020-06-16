@@ -1,11 +1,14 @@
 use winit_input_helper::WinitInputHelper;
 use winit::event::VirtualKeyCode as vkc;
 
-use uv::projection::rh_ydown::perspective_vk;
-use uv::mat::Mat4;
-use uv::vec::Vec3;
-use uv::rotor::Rotor3;
-use uv::Isometry3;
+use ultraviolet::{
+    Vec2,
+    Vec3,
+    Mat4,
+    Rotor3,
+    Isometry3,
+    projection::rh_ydown::perspective_vk
+};
 use crate::utils;
 use crate::utils::{rotor_from_angles, rad};
 use std::f32::consts::PI;
@@ -190,9 +193,6 @@ impl CameraController {
             };
             return;
         }
-
-
-        println!("fov_angle: {}", fov);
 
         // Don't even complain about the Variable names, I didn't
         // come up with them >:c
