@@ -2,9 +2,10 @@ use bytemuck::{Zeroable, Pod};
 use ultraviolet::{
     Vec3, Vec4,
 };
+use crate::components::simple::{Transform, Color};
 
 pub trait Renderable {
-    fn to_vertices(&self) -> Vec<Vertex>;
+    fn vertices_of(triangle: &Self, transform: &Transform, color: Option<Color>) -> Vec<Vertex>;
 
     fn to_indexed(&self) {}
 }

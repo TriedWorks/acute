@@ -3,11 +3,14 @@ use ultraviolet::{
 };
 
 use crate::graphics::types::{Renderable, Vertex};
+use crate::components::simple::{Transform, Color};
+
 /// m is the transform point,
 /// A, B, C are vectors from the transform point and represent Vertices!
 ///     C
 ///     m
 ///   A   B
+#[derive(Debug, Copy, Clone)]
 pub struct Triangle2D {
     a: Vec3,
     b: Vec3,
@@ -15,9 +18,26 @@ pub struct Triangle2D {
 }
 
 impl Renderable for Triangle2D {
-    fn to_vertices(&self) -> Vec<Vertex> {
-        let mut vertices: Vec<Vertex> = Vec::new();
-        // vertices.push(Vertex {})
+    fn vertices_of(triangle: &Self, transform: &Transform, color: Option<Color>) -> Vec<Vertex> {
+        let color = match color { Some(color) => color, None => Color { data: [1.0, 0.0, 1.0, 1.0] }};
+        let position: Vec3 = transform.pos;
+        let a = position + triangle.a;
+        let b = position + triangle.b;
+        let c = position + triangle.c;
+        let vertices = vec![
+            Vertex {
+                position: a.into(),
+                color: color.data,
+            },
+            Vertex {
+                position: b.into(),
+                color: color.data
+            },
+            Vertex {
+                position: c.into(),
+                color: color.data,
+            }
+        ];
         vertices
     }
 }

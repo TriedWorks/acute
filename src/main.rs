@@ -50,9 +50,9 @@ impl Scene for TestScene {
         println!("init_world");
         world.insert(
             (),
-            (0..20).map(|_| (
+            (0..1).map(|_| (
                 Transform {
-                    pos: Vec3::default(),
+                    pos: Vec3::new(0.0, 0.0, 0.0),
                     scale: Vec3::default(),
                     rotation: Rotor3 { s: 0.0, bv: Default::default() },
                 },

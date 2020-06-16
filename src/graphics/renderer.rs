@@ -1,9 +1,11 @@
 use super::texture;
-use legion::world::World;
 use crate::graphics::{shader, pipeline};
 use glsl_to_spirv::ShaderType;
 use wgpu::BufferDescriptor;
-use crate::graphics::types::Vertex;
+use crate::graphics::types::{Vertex, Renderable};
+use crate::components::simple::Transform;
+use legion::prelude::*;
+use crate::components::geometry::Triangle2D;
 
 
 const VERTEX_BUFFER_INIT_SIZE: usize = std::mem::size_of::<Vertex>() * 3 * 128;
@@ -140,16 +142,30 @@ impl Renderer {
 
     // Physics change within a fixed interval but render is as often as possible
     pub fn update_render_data(&mut self, world: &World) {
+        let query = <(Read<Transform>, Read<Triangle2D>)>::query();
 
-        self.vertex_data = VERTICES.into();
+        let mut new_vertex_data: Vec<Vertex> = Vec::new();
+        for (transform, triangle) in query.iter_immutable(&world) {
+            new_vertex_data.extend(Triangle2D::vertices_of(&triangle, &transform, None));
+        }
+
+        println!("{:?}", new_vertex_data);
+
+        if new_vertex_data.len() == 0 {
+            // vertex buffer crashes for whatever reason when staging an empty vec
+            // so the update is skipped if this is the case
+            return
+        }
+
+
 
         let mut encoder = self.device.create_command_encoder(&wgpu::CommandEncoderDescriptor {
             label: Some("Update Encoder"),
         });
 
         let staging_vertex_buffer = self.device.create_buffer_with_data(
-            bytemuck::cast_slice(&self.vertex_data),
-            wgpu::BufferUsage::WRITE_ALL | wgpu::BufferUsage::COPY_SRC,
+            bytemuck::cast_slice(&new_vertex_data),
+            wgpu::BufferUsage::COPY_SRC,
         );
 
         encoder.copy_buffer_to_buffer(
@@ -157,9 +173,10 @@ impl Renderer {
             0,
             &self.vertex_buffer,
             0,
-            (std::mem::size_of::<Vertex>() * self.vertex_data.len()) as wgpu::BufferAddress,
+            (std::mem::size_of::<Vertex>() * new_vertex_data.len()) as wgpu::BufferAddress,
         );
 
+        self.vertex_data = new_vertex_data;
         self.queue.submit(&[encoder.finish()]);
     }
 
@@ -202,6 +219,7 @@ impl Renderer {
 
             render_pass.set_pipeline(&self.render_pipeline);
             render_pass.set_vertex_buffer(0, &self.vertex_buffer, 0,0 );
+            println!("{:?}", self.vertex_data.len());
             render_pass.draw(0..self.vertex_data.len() as u32, 0..1);
         }
 
@@ -216,9 +234,3 @@ impl Renderer {
         self.depth_texture = texture::Texture::new_depth(&self.device, &self.sc_desc, "depth_texture");
     }
 }
-
-const VERTICES: &[Vertex] = &[
-    Vertex { position: [-10.0, -5.0, -10.0], color: [1.0, 0.0, 0.0, 1.0] }, // 9 R
-    Vertex { position: [-10.0, -5.0, 10.0], color: [0.0, 1.0, 0.0, 1.0] }, // 10  G
-    Vertex { position: [10.0, -5.0, -10.0], color: [0.0, 0.0, 1.0, 1.0] },
-];
