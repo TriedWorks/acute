@@ -12,14 +12,14 @@ use crate::components::simple::{Transform, Color};
 ///   A   B
 #[derive(Debug, Copy, Clone)]
 pub struct Triangle2D {
-    a: Vec3,
-    b: Vec3,
-    c: Vec3,
+    pub a: Vec3,
+    pub b: Vec3,
+    pub c: Vec3,
 }
 
 impl Renderable for Triangle2D {
-    fn vertices_of(triangle: &Self, transform: &Transform, color: Option<Color>) -> Vec<Vertex> {
-        let color = match color { Some(color) => color, None => Color { data: [1.0, 0.0, 1.0, 1.0] }};
+    fn vertices_of(triangle: &Self, transform: &Transform, color: Option<&Color>) -> Vec<Vertex> {
+        let color = match color { Some(color) => color.clone(), None => Color { data: [1.0, 0.0, 1.0, 1.0] }};
         let position: Vec3 = transform.pos;
         let a = position + triangle.a;
         let b = position + triangle.b;

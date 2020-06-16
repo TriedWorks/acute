@@ -5,7 +5,7 @@ use ultraviolet::{
 use crate::components::simple::{Transform, Color};
 
 pub trait Renderable {
-    fn vertices_of(triangle: &Self, transform: &Transform, color: Option<Color>) -> Vec<Vertex>;
+    fn vertices_of(triangle: &Self, transform: &Transform, color: Option<&Color>) -> Vec<Vertex>;
 
     fn to_indexed(&self) {}
 }

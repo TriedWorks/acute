@@ -55,7 +55,7 @@ impl Acute {
         timer.set_fixed_interval(Duration::from_secs_f32(1.0 / 60.0));
 
         ///// WILL BE REMOVED SOON /////
-        let camera = Camera::new(&renderer.sc_desc);
+        let mut camera = Camera::new(&renderer.sc_desc);
         let camera_controller = CameraController::default();
 
         let input_helper = WinitInputHelper::new();

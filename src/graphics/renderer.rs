@@ -17,6 +17,7 @@ use crate::{
     },
 };
 use crate::graphics::buffer;
+use crate::components::simple::Color;
 
 
 const VERTEX_BUFFER_INIT_SIZE: usize = std::mem::size_of::<Vertex>() * 3 * 128;
@@ -175,11 +176,11 @@ impl Renderer {
             label: Some("Update Encoder"),
         });
 
-        let query = <(Read<Transform>, Read<Triangle2D>)>::query();
+        let query = <(Read<Transform>, Read<Triangle2D>, Read<Color>)>::query();
 
         let mut new_vertex_data: Vec<Vertex> = Vec::new();
-        for (transform, triangle) in query.iter_immutable(&world) {
-            new_vertex_data.extend(Triangle2D::vertices_of(&triangle, &transform, None));
+        for (transform, triangle, color) in query.iter_immutable(&world) {
+            new_vertex_data.extend(Triangle2D::vertices_of(&triangle, &transform, Some(&color)));
         }
 
         self.uniforms.update_view_proj(camera.to_matrix());
