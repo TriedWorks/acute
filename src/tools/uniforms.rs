@@ -1,4 +1,3 @@
-use crate::tools::camera::Camera;
 use ultraviolet::Mat4;
 
 #[repr(C)]
@@ -9,7 +8,7 @@ pub struct Uniforms {
 
 impl Uniforms {
     pub fn new() -> Self {
-        let mut matrix: Mat4 = Mat4::identity();
+        let matrix: Mat4 = Mat4::identity();
         Self {
             view_proj: matrix,
         }

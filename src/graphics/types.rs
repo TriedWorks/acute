@@ -1,23 +1,25 @@
+#![allow(dead_code, unused_imports)]
+
 use bytemuck::{Zeroable, Pod};
 use ultraviolet::{
-    Vec3, Vec4,
+    Vec3,
 };
 use crate::components::simple::{Transform, Color};
 
 pub trait Renderable {
-    fn vertices_of(triangle: &Self, transform: &Transform, color: Option<&Color>) -> Vec<Vertex>;
+    fn vertices_of(&self, transform: &Transform, color: Option<&Color>) -> Vec<VertexC>;
 
     fn to_indexed(&self) {}
 }
 
 #[repr(C)]
 #[derive(Copy, Clone, Debug)]
-pub struct Vertex {
+pub struct VertexC {
     pub position: [f32; 3],
     pub color: [f32; 4],
 }
 
-impl Vertex {
+impl VertexC {
     pub fn desc<'a>() -> wgpu::VertexBufferDescriptor<'a> {
         wgpu::VertexBufferDescriptor {
             stride: std::mem::size_of::<Self>() as wgpu::BufferAddress,
@@ -38,5 +40,5 @@ impl Vertex {
     }
 }
 
-unsafe impl Zeroable for Vertex { }
-unsafe impl Pod for Vertex {}
+unsafe impl Zeroable for VertexC { }
+unsafe impl Pod for VertexC {}

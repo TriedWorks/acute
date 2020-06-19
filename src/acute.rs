@@ -13,8 +13,6 @@ use crate::{
     tools::camera::{CameraController, Camera},
 };
 use winit_input_helper::WinitInputHelper;
-use winit::event::VirtualKeyCode::Key1;
-
 
 pub struct Acute {
     universe: Universe,

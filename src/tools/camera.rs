@@ -2,7 +2,6 @@ use winit_input_helper::WinitInputHelper;
 use winit::event::VirtualKeyCode as vkc;
 
 use ultraviolet::{
-    Vec2,
     Vec3,
     Mat4,
     Rotor3,
@@ -10,14 +9,13 @@ use ultraviolet::{
     projection::rh_ydown::perspective_vk
 };
 use crate::utils;
-use crate::utils::{rotor_from_angles, rad};
-use std::f32::consts::PI;
+use crate::utils::{rotor_from_angles};
 
 pub struct Camera {
-    perspective: Mat4,
-    transformation: Isometry3,
-    aspect: f32,
-    fov: f32,
+    pub perspective: Mat4,
+    pub transformation: Isometry3,
+    pub aspect: f32,
+    pub fov: f32,
 }
 
 impl Camera {
@@ -25,7 +23,7 @@ impl Camera {
         let vertical_fov: f32 = utils::rad(60.0);
         let aspect = sc_desc.width as f32 / sc_desc.height as f32 ;
         let z_near: f32 = 0.1;
-        let z_far: f32 = 100.0;
+        let z_far: f32 = 1024.0;
 
         let perspective: Mat4 = perspective_vk(vertical_fov, aspect, z_near, z_far);
         let mut transformation: Isometry3 = Isometry3::identity();
@@ -185,13 +183,7 @@ impl CameraController {
 
         // You want some flippy dippy or some zoomers?
         if fov >= 180.0 || fov <  0.0 {
-            // how about no
-            if fov >= 180.0 {
-                fov -= fov_angle
-            } else {
-                fov += fov_angle
-            };
-            return;
+            fov -= fov_angle;
         }
 
         // Don't even complain about the Variable names, I didn't

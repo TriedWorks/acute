@@ -4,19 +4,16 @@ use acute::acute::Acute;
 use acute::window::WinitState;
 use acute::scenes::Scene;
 
-use winit::{event::Event, event::WindowEvent, dpi::LogicalSize};
-use winit::event_loop::ControlFlow;
-use winit::window::WindowBuilder;
+use winit::{dpi::LogicalSize};
 use std::time::Duration;
-use legion::world::World;
+use legion::prelude::*;
 
-use legion::entity::Entity;
 use ultraviolet::{
     Vec3,
     Rotor3,
 };
 use acute::components::simple::{Transform, Color};
-use acute::components::geometry::Triangle2D;
+use acute::components::geometry::{Mesh, Triangle, Vertex};
 
 
 const WINDOW_SIZE: LogicalSize<u32> = LogicalSize { width: 1280, height: 720 };
@@ -33,6 +30,29 @@ fn main() {
     });
 }
 
+fn create_test_mesh() -> Mesh {
+    let triangle00: Triangle = Triangle::new(&[
+        Vertex {position: [-10.0, -10.0, 0.0]},
+        Vertex {position: [10.0, -10.0, 0.0]},
+        Vertex {position: [0.0, 10.0, 0.0]},
+    ]);
+
+    let triangle01: Triangle = Triangle::new(&[
+        Vertex {position: [0.0, 10.0, 0.0]},
+        Vertex {position: [10.0, -10.0, 0.0]},
+        Vertex {position: [10.0, 10.0, -10.0]},
+    ]);
+
+    let triangle1: Triangle = Triangle::new(&[
+        Vertex {position: [10.0, 10.0, 0.0]},
+        Vertex {position: [30.0, 10.0, 0.0]},
+        Vertex {position: [20.0, 30.0, 0.0]},
+    ]);
+
+    let triangles = vec![triangle00, triangle01, triangle1];
+    Triangle::new_mesh(&triangles)
+}
+
 struct TestScene {}
 
 impl TestScene {
@@ -42,29 +62,36 @@ impl TestScene {
 }
 
 impl Scene for TestScene {
-    fn update(&mut self, world: &mut World, delta_time: &Duration) {}
+    fn update(&mut self, world: &mut World, delta_time: &Duration) {
 
-    fn fixed_update(&mut self, world: &mut World, delta_time: &Duration) {}
+    }
+
+    fn fixed_update(&mut self, world: &mut World, delta_time: &Duration) {
+        let transform_query = <Write<Transform>>::query();
+
+        for mut transform in transform_query.iter(world) {
+            transform.position[0] += 1.0 * delta_time.as_secs_f32();
+            transform.rotation += Rotor3::from_rotation_xy(2.0 * delta_time.as_secs_f32());
+            transform.rotation.normalize();
+        }
+        let mesh_query = <(Write<Mesh>, Read<Transform>)>::query();
+
+        for (mut mesh, transform) in mesh_query.iter(world) {
+            mesh.update_rotation(transform.rotation);
+        }
+    }
 
     fn on_start(&mut self, world: &mut World) {
-        println!("init_world");
-        for i in 0..5 {
-            world.insert(
-                (),
-                (0..1).map(|_| (
-                    Transform {
-                        pos: Vec3::new((2 * i) as f32, 0.0, i as f32),
-                        scale: Vec3::default(),
-                        rotation: Rotor3 { s: 0.0, bv: Default::default() },
-                    },
-                    Triangle2D {
-                        a: Vec3::new((-i * 2) as f32, (-i * 2) as f32, i as f32),
-                        b: Vec3::new((i * 2) as f32, (-i * 2) as f32, i as f32),
-                        c: Vec3::new(0.0, (i * 2) as f32, 0.0),
-                    },
-                    Color { data: [1.0 / i as f32, 1.0 / (2 * i) as f32, 1.0 / ( 2 * i) as f32, 1.0]}
-                )),
-            );
-        }
+        world.insert(
+            (),
+            (0..1).map(|_| (
+                Transform {
+                    position: Vec3::new(0.0, 0.0, 0.0),
+                    rotation: Rotor3 { s: 0.0, bv: Default::default() },
+                },
+                create_test_mesh(),
+                Color { data: [0.1, 0.4, 0.3, 1.0]}
+            )),
+        );
     }
 }

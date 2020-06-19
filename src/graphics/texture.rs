@@ -1,3 +1,5 @@
+#![allow(dead_code, unused_imports)]
+
 pub const DEPTH_FORMAT: wgpu::TextureFormat = wgpu::TextureFormat::Depth32Float;
 
 pub struct Texture {

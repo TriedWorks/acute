@@ -1,61 +1,68 @@
+#![allow(dead_code, unused_imports)]
+
 use ultraviolet::{
-    Vec3
+    Vec3,
+    Rotor3,
 };
 
-use crate::graphics::types::{Renderable, Vertex};
+use crate::graphics::types::{Renderable, VertexC};
 use crate::components::simple::{Transform, Color};
 
-/// m is the transform point,
-/// A, B, C are vectors from the transform point and represent Vertices!
-///     C
-///     m
-///   A   B
 #[derive(Debug, Copy, Clone)]
-pub struct Triangle2D {
-    pub a: Vec3,
-    pub b: Vec3,
-    pub c: Vec3,
+pub struct Vertex {
+    pub position: [f32; 3],
 }
 
-impl Renderable for Triangle2D {
-    fn vertices_of(triangle: &Self, transform: &Transform, color: Option<&Color>) -> Vec<Vertex> {
-        let color = match color { Some(color) => color.clone(), None => Color { data: [1.0, 0.0, 1.0, 1.0] }};
-        let position: Vec3 = transform.pos;
-        let a = position + triangle.a;
-        let b = position + triangle.b;
-        let c = position + triangle.c;
-        let vertices = vec![
-            Vertex {
-                position: a.into(),
-                color: color.data,
-            },
-            Vertex {
-                position: b.into(),
-                color: color.data
-            },
-            Vertex {
-                position: c.into(),
-                color: color.data,
-            }
-        ];
-        vertices
-    }
+#[derive(Debug, Clone)]
+pub struct Mesh {
+    pub vertices: Vec<Vertex>
 }
 
-impl Default for Triangle2D {
-    fn default() -> Self {
-        Self {
-            a: Vec3::new(-1.0, -1.0, 0.0),
-            b: Vec3::new(1.0, -1.0, 0.0),
-            c: Vec3::new(0.0, 1.0, 0.0),
+impl Mesh {
+    pub fn update_rotation(&mut self, rotor: Rotor3) {
+        for i in 0..self.vertices.len() {
+            let mut vertex_vector: Vec3 = self.vertices[i].position.into();
+            rotor.rotate_vec(&mut vertex_vector);
+            self.vertices[i] = Vertex {position: [vertex_vector.x, vertex_vector.y, vertex_vector.z] };
         }
     }
 }
 
-pub struct Pyramid {
+impl Renderable for Mesh {
+    fn vertices_of(&self, transform: &Transform, color: Option<&Color>) -> Vec<VertexC> {
+        let mut colored_vertices: Vec<VertexC> = Vec::new();
+        let color = match color {
+            Some(color) => { color.clone() },
+            None => Color { data: [0.0, 0.0, 0.0, 1.0] }
+        };
 
+        for vertex in &self.vertices {
+            let new_pos = [vertex.position[0] + transform.position.x, vertex.position[1] + transform.position.y, vertex.position[2] + transform.position.z];
+            let colored_vertex: VertexC = VertexC { position: new_pos, color: color.data };
+            colored_vertices.push(colored_vertex)
+        }
+
+        colored_vertices
+    }
 }
 
-pub struct Rectangle2D {
+pub type Triangle = Mesh;
 
+impl Triangle {
+    pub fn new(vertices: &[Vertex; 3]) -> Triangle {
+        let vertices: Vec<Vertex> = vertices.to_vec();
+        Triangle {
+            vertices,
+        }
+    }
+
+    pub fn new_mesh(triangles: &Vec<Triangle>) -> Mesh {
+        let mut vertices: Vec<Vertex> = Vec::new();
+        for triangle in triangles {
+            vertices.extend(&triangle.vertices);
+        }
+        Mesh {
+            vertices,
+        }
+    }
 }

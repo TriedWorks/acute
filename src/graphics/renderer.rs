@@ -3,24 +3,24 @@ use legion::prelude::*;
 
 use crate::{
     tools::{
-        camera::{Camera, CameraController},
+        camera::{Camera},
         uniforms,
     },
     components::{
-        geometry::Triangle2D,
+        geometry::{Mesh, Vertex},
         simple::Transform,
     },
     graphics::{
         texture,
         shader, pipeline,
-        types::{Vertex, Renderable},
+        types::{VertexC, Renderable},
     },
 };
 use crate::graphics::buffer;
 use crate::components::simple::Color;
 
 
-const VERTEX_BUFFER_INIT_SIZE: usize = std::mem::size_of::<Vertex>() * 3 * 128;
+const VERTEX_BUFFER_INIT_SIZE: usize = std::mem::size_of::<Vertex>() * 3 * 256;
 
 // Vertex Buffer is fixed sized right now, this is not good and should be changed!
 // Split functions up and make it dynamic
@@ -38,7 +38,7 @@ pub struct Renderer {
 
     //following should be moved into their own
     vertex_buffer: wgpu::Buffer,
-    vertex_data: Vec<Vertex>,
+    vertex_data: Vec<VertexC>,
     index_buffer: wgpu::Buffer,
     num_indices: u32,
     render_pipeline: wgpu::RenderPipeline,
@@ -128,7 +128,7 @@ impl Renderer {
             &fs_module,
             sc_desc.format.clone(),
             texture::DEPTH_FORMAT,
-            &[Vertex::desc()],
+            &[VertexC::desc()],
             true,
             "main",
         );
@@ -176,11 +176,12 @@ impl Renderer {
             label: Some("Update Encoder"),
         });
 
-        let query = <(Read<Transform>, Read<Triangle2D>, Read<Color>)>::query();
+        let query = <(Read<Transform>, Read<Mesh>, Read<Color>)>::query();
 
-        let mut new_vertex_data: Vec<Vertex> = Vec::new();
-        for (transform, triangle, color) in query.iter_immutable(&world) {
-            new_vertex_data.extend(Triangle2D::vertices_of(&triangle, &transform, Some(&color)));
+        let mut new_vertex_data: Vec<VertexC> = Vec::new();
+
+        for (transform, mesh, color) in query.iter_immutable(&world) {
+            new_vertex_data.extend(Mesh::vertices_of(&mesh, &transform, Some(&color)));
         }
 
         self.uniforms.update_view_proj(camera.to_matrix());
@@ -214,7 +215,7 @@ impl Renderer {
             0,
             &self.vertex_buffer,
             0,
-            (std::mem::size_of::<Vertex>() * new_vertex_data.len()) as wgpu::BufferAddress,
+            (std::mem::size_of::<VertexC>() * new_vertex_data.len()) as wgpu::BufferAddress,
         );
 
         self.vertex_data = new_vertex_data;
