@@ -22,7 +22,7 @@ serde = { version = "1.0.111", features = ["derive"] }
 bytemuck = "1.2.0"
 image = "0.23.5"
 ultraviolet = "0.4.6"
-legion = "0.2.1"
+legion = "0.2.4"
 rusty_timer = "1.0.1"
 log = "0.4"
 fern = "0.5"

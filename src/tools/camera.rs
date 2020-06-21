@@ -27,7 +27,8 @@ impl Camera {
 
         let perspective: Mat4 = perspective_vk(vertical_fov, aspect, z_near, z_far);
         let mut transformation: Isometry3 = Isometry3::identity();
-        transformation.translation.z -= 2.0;
+        transformation.translation.z -= 3.0;
+        transformation.translation.y += 2.0;
 
         Self {
             perspective,
@@ -39,6 +40,10 @@ impl Camera {
 
     pub fn update_transformation(&mut self, transformation: Isometry3) {
         self.transformation = transformation;
+    }
+
+    pub fn update_translation(&mut self, translation: &Vec3) {
+        self.transformation.translation = translation.clone()
     }
 
     fn transformation_matrix(&self) -> Mat4 {

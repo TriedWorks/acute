@@ -4,7 +4,7 @@ use bytemuck::{Zeroable, Pod};
 use ultraviolet::{
     Vec3,
 };
-use crate::components::simple::{Transform, Color};
+use crate::components::default::{Transform, Color};
 
 pub trait Renderable {
     fn vertices_of(&self, transform: &Transform, color: Option<&Color>) -> Vec<VertexC>;

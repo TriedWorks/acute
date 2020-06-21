@@ -8,7 +8,7 @@ use crate::{
     },
     components::{
         geometry::{Mesh, Vertex},
-        simple::Transform,
+        default::Transform,
     },
     graphics::{
         texture,
@@ -17,10 +17,10 @@ use crate::{
     },
 };
 use crate::graphics::buffer;
-use crate::components::simple::Color;
+use crate::components::default::Color;
 
 
-const VERTEX_BUFFER_INIT_SIZE: usize = std::mem::size_of::<Vertex>() * 3 * 256;
+const VERTEX_BUFFER_INIT_SIZE: usize = std::mem::size_of::<Vertex>() * 3 * 20000;
 
 // Vertex Buffer is fixed sized right now, this is not good and should be changed!
 // Split functions up and make it dynamic
@@ -180,7 +180,7 @@ impl Renderer {
 
         let mut new_vertex_data: Vec<VertexC> = Vec::new();
 
-        for (transform, mesh, color) in query.iter_immutable(&world) {
+        for (transform, mesh, color) in query.iter(world) {
             new_vertex_data.extend(Mesh::vertices_of(&mesh, &transform, Some(&color)));
         }
 
