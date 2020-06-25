@@ -61,6 +61,8 @@ impl Renderable for Mesh {
 pub type Triangle = Mesh;
 pub type Quad = Mesh;
 pub type Cuboid = Mesh;
+pub type Tetrahedron = Mesh;
+pub type Pyramid = Mesh;
 
 impl Triangle {
     pub fn new_triangle(vertices: &[Vertex; 3]) -> Triangle {
@@ -133,6 +135,51 @@ impl Cuboid {
             Vertex {position: [-0.5, 0.5, 0.5]},
             Vertex {position: [0.5, 0.5, 0.5]},
             Vertex {position: [0.5, 0.5, -0.5]},
+        ])
+    }
+}
+
+impl Tetrahedron {
+    pub fn new_tetrahedron(vertices: &[Vertex; 4]) -> [Triangle; 4]{
+        let triangle_0 = Mesh::new_triangle(&[vertices[1], vertices[0], vertices[2]]);
+        let triangle_1 = Mesh::new_triangle(&[vertices[3], vertices[0], vertices[1]]);
+        let triangle_2 = Mesh::new_triangle(&[vertices[3], vertices[1], vertices[2]]);
+        let triangle_3 = Mesh::new_triangle(&[vertices[3], vertices[2], vertices[0]]);
+
+        [triangle_0, triangle_1, triangle_2, triangle_3]
+    }
+
+    pub fn default_tetrahedron() -> [Triangle; 4] {
+        Tetrahedron::new_tetrahedron(&[
+            Vertex {position: [-0.5, -0.5, -0.5]},
+            Vertex {position: [0.0, 0.5, -0.5]},
+            Vertex {position: [0.5, -0.5, -0.5]},
+            Vertex {position: [0.0, 0.0, 0.5]},
+        ])
+    }
+}
+
+
+impl Pyramid {
+    pub fn new_pyramid(vertices: &[Vertex; 5]) -> [Triangle; 6] {
+        let triangle_0 = Mesh::new_triangle(&[vertices[0], vertices[1], vertices[3]]);
+        let triangle_1 = Mesh::new_triangle(&[vertices[1], vertices[2], vertices[3]]);
+
+        let triangle_2 = Mesh::new_triangle(&[vertices[4], vertices[0], vertices[1]]);
+        let triangle_3 = Mesh::new_triangle(&[vertices[4], vertices[1], vertices[2]]);
+        let triangle_4 = Mesh::new_triangle(&[vertices[4], vertices[2], vertices[3]]);
+        let triangle_5 = Mesh::new_triangle(&[vertices[4], vertices[3], vertices[0]]);
+
+        [triangle_0, triangle_1, triangle_2, triangle_3, triangle_4, triangle_5]
+    }
+
+    pub fn default_pyramid() -> [Triangle; 6] {
+        Pyramid::new_pyramid(&[
+            Vertex {position: [-0.5, -0.5, -0.5]},
+            Vertex {position: [-0.5, -0.5, 0.5]},
+            Vertex {position: [0.5, -0.5, 0.5]},
+            Vertex {position: [0.5, -0.5, -0.5]},
+            Vertex {position: [0.0, 0.5, 0.0]},
         ])
     }
 }

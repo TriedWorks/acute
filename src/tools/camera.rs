@@ -10,6 +10,7 @@ use ultraviolet::{
 };
 use crate::utils;
 use crate::utils::{rotor_from_angles};
+use rusty_timer::Timer;
 
 pub struct Camera {
     pub perspective: Mat4,
@@ -98,12 +99,12 @@ impl CameraController {
         }
     }
 
-    pub fn update(&mut self, camera: &mut Camera) {
-        self.update_rotation(camera);
+    pub fn update(&mut self, camera: &mut Camera, timer: &Timer) {
+        self.update_rotation(camera, timer);
 
-        let forward: Vec3 = Vec3::new(0.0, 0.0, 1.0);
-        let left: Vec3 = Vec3::new(1.0, 0.0, 0.0);
-        let up: Vec3 = Vec3::new(0.0, -1.0, 0.0);
+        let forward: Vec3 = Vec3::new(0.0, 0.0, 1.0) * timer.delta_time().as_secs_f32();
+        let left: Vec3 = Vec3::new(1.0, 0.0, 0.0) * timer.delta_time().as_secs_f32();
+        let up: Vec3 = Vec3::new(0.0, -1.0, 0.0) * timer.delta_time().as_secs_f32();
 
         match self.is_con {
             true => {
@@ -149,13 +150,17 @@ impl CameraController {
         }
         match self.is_q {
             true => {
-                camera.transformation.append_rotation(rotor_from_angles(0.0, 0.0, -1.0));
+                let mut rotation_rl = rotor_from_angles(0.0, 0.0, -self.speed / 20.0) * timer.delta_time().as_secs_f32();
+                rotation_rl.normalize();
+                camera.transformation.append_rotation(rotation_rl);
             }
             false => {},
         }
         match self.is_e {
             true => {
-                camera.transformation.append_rotation(rotor_from_angles(0.0, 0.0, 1.0));
+                let mut rotation_lr = rotor_from_angles(0.0, 0.0, self.speed / 20.0) * timer.delta_time().as_secs_f32();
+                rotation_lr.normalize();
+                camera.transformation.append_rotation(rotation_lr);
             }
             false => {},
         }
@@ -164,7 +169,7 @@ impl CameraController {
     }
 
     /// >:[
-    fn update_rotation(&mut self, camera: &mut Camera) {
+    fn update_rotation(&mut self, camera: &mut Camera, timer: &Timer) {
         if self.mouse_coords.0 == self.old_mouse_coords.0 && self.mouse_coords.1 == self.old_mouse_coords.1 {
             return;
         }
@@ -174,7 +179,9 @@ impl CameraController {
 
         self.old_mouse_coords = self.mouse_coords;
 
-        let offset_rotor: Rotor3 = utils::rotor_from_angles(dy, dx, 0.0);
+        let dt = timer.delta_time().as_secs_f32() * self.speed * 400.0;
+
+        let offset_rotor: Rotor3 = utils::rotor_from_angles(dy * dt, dx * dt, 0.0);
 
         camera.transformation.append_rotation(offset_rotor);
     }
@@ -205,7 +212,7 @@ impl CameraController {
 impl Default for CameraController {
     fn default() -> Self {
         Self {
-            speed: 0.05,
+            speed: 10.0,
             is_w: false,
             is_s: false,
             is_a: false,

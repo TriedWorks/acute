@@ -10,8 +10,8 @@ use acute::{
     components::{
         geometry::{Mesh, Cuboid, Quad, Triangle, Vertex},
         default::{
-            Transform, Color, Static, Group
-        }
+            Transform, Color, Static, Group,
+        },
     },
 };
 use ultraviolet::{
@@ -29,6 +29,8 @@ fn main() {
     let (window_builder, event_loop) = WinitState::new(TITLE, WINDOW_SIZE);
     let test_scene = TestScene::new();
 
+    println!("{:?}", std::mem::size_of::<Vec3>());
+    println!("{:?}", std::mem::size_of::<u32>());
     let mut acute: Acute = Acute::new(window_builder, Some(Box::new(test_scene)), &event_loop);
 
     event_loop.run(move |event, _, mut control_flow| {
@@ -49,9 +51,7 @@ impl TestScene {
 }
 
 impl Scene for TestScene {
-    fn update(&mut self, world: &mut World, delta_time: &Duration) {
-
-    }
+    fn update(&mut self, world: &mut World, delta_time: &Duration) {}
 
     fn fixed_update(&mut self, world: &mut World, delta_time: &Duration) {
         let move_query = <Write<Transform>>::query().filter(tag::<UpDown>());
@@ -62,14 +62,14 @@ impl Scene for TestScene {
 
         let rotate_xy_query = <Write<Transform>>::query().filter(tag_value(&Group("rotate_xy")));
         for (mut transform) in rotate_xy_query.iter_mut(world) {
-            transform.rotation += Rotor3::from_rotation_xy(12.0*delta_time.as_secs_f32());
+            transform.rotation += Rotor3::from_rotation_xy(12.0 * delta_time.as_secs_f32());
             transform.rotation.normalize();
         }
 
         let rotate_xz_query = <Write<Transform>>::query().filter(tag_value(&Group("rotate_xyxz")));
         for (mut transform) in rotate_xz_query.iter_mut(world) {
-            transform.rotation += Rotor3::from_rotation_xz(12.0*delta_time.as_secs_f32());
-            transform.rotation += Rotor3::from_rotation_xy(12.0*delta_time.as_secs_f32());
+            transform.rotation += Rotor3::from_rotation_xz(12.0 * delta_time.as_secs_f32());
+            transform.rotation += Rotor3::from_rotation_xy(12.0 * delta_time.as_secs_f32());
             transform.rotation.normalize();
         }
 
@@ -93,7 +93,7 @@ impl Scene for TestScene {
                             rotation: Rotor3::identity(),
                         },
                         Mesh::new_mesh(&Mesh::default_horizontal_quad().to_vec()),
-                        Color { data: [0.3, 0.5, 0.7, 1.0]}
+                        Color { data: [0.3, 0.5, 0.7, 1.0] }
                     )))[0];
 
                 world.add_tag(entity, Static).unwrap();
@@ -127,10 +127,31 @@ impl Scene for TestScene {
                         rotation: Rotor3::identity(),
                     },
                     Mesh::new_mesh(&Mesh::default_quad().to_vec()),
-                    Color { data: [0.5, 0.4, 0.3, 1.0]}
+                    Color { data: [0.5, 0.4, 0.3, 1.0] }
                 )))[0];
 
             world.add_tag(entity, Group("rotate_xy")).unwrap();
+        }
+
+        {
+            for i in 2..7 {
+                for j in 2..7 {
+                    if j % 2 == 0 { continue; }
+                    let entity = world.insert(
+                        (),
+                        std::iter::once((
+                            Transform {
+                                position: Vec3::new(-i as f32, -j as f32, -4.0),
+                                rotation: Rotor3::identity(),
+                            },
+                            Mesh::new_mesh(&Mesh::default_tetrahedron().to_vec()),
+                            Color { data: [0.9, 1.0, 0.1, 1.0] }
+                        )))[0];
+
+                    world.add_tag(entity, Group("rotate_xy")).unwrap();
+                    world.add_tag(entity, UpDown).unwrap();
+                }
+            }
         }
 
         // rotate the vertices of each entity in the beginning for not identity cases

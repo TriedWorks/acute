@@ -73,7 +73,7 @@ impl Acute {
 
     pub fn run(&mut self, event: &Event<()>, control_flow: &mut ControlFlow) {
         self.input_helper.update(event);
-        self.camera_controller.update(&mut self.camera);
+        self.camera_controller.update(&mut self.camera, &self.timer);
         self.camera_controller.input(&self.input_helper);
 
         self.timer.update_delta_time();

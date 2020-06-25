@@ -4,6 +4,11 @@ use ultraviolet::{
 };
 use legion::prelude::*;
 
+// #[derive(Debug, Copy, Clone)]
+// pub struct Camera {
+//     pub
+// }
+
 #[derive(Debug, Copy, Clone)]
 pub struct Transform {
     pub position: Vec3,
@@ -20,3 +25,9 @@ pub struct Group<'a>(pub &'a str);
 
 #[derive(Clone, Copy, Debug, PartialEq)]
 pub struct Static;
+
+pub struct Light {
+    pub position: Vec3,
+    offset: u32,
+    color: Vec3,
+}
