@@ -7,7 +7,7 @@ use crate::{
         uniforms,
     },
     components::{
-        geometry::{Mesh, Vertex},
+        geometry::{Mesh},
         default::Transform,
     },
     graphics::{
@@ -18,6 +18,7 @@ use crate::{
 };
 use crate::graphics::buffer;
 use crate::components::default::Color;
+use crate::components::{mesh, Vertex};
 
 
 const VERTEX_BUFFER_INIT_SIZE: usize = std::mem::size_of::<Vertex>() * 3 * 20000;
@@ -128,7 +129,7 @@ impl Renderer {
             &fs_module,
             sc_desc.format.clone(),
             texture::DEPTH_FORMAT,
-            &[VertexC::desc()],
+            &[mesh::MeshVertex::desc()],
             true,
             "main",
         );

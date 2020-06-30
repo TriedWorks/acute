@@ -1,3 +1,47 @@
+use crate::graphics::{shader, texture};
+use glsl_to_spirv::ShaderType;
+
+pub struct PipelineHandler {
+    pub pipelines: Vec<wgpu::RenderPipeline>,
+}
+
+impl PipelineHandler {
+    pub fn new() -> Self {
+        let vs_module = shader::create_shader_module(
+            include_str!("../../assets/shaders/default_vertex.glsl"),
+            ShaderType::Vertex,
+            &device,
+        );
+
+        let fs_module = shader::create_shader_module(
+            include_str!("../../assets/shaders/default_fragment.glsl"),
+            ShaderType::Fragment,
+            &device,
+        );
+        let render_pipeline_layout = device.create_pipeline_layout(&wgpu::PipelineLayoutDescriptor {
+            bind_group_layouts: &[&uniform_bind_group_layout],
+        });
+
+        let render_pipeline = create_render_pipeline(
+            &device,
+            &render_pipeline_layout,
+            wgpu::PrimitiveTopology::TriangleList,
+            &vs_module,
+            &fs_module,
+            sc_desc.format.clone(),
+            texture::DEPTH_FORMAT,
+            &[mesh::MeshVertex::desc()],
+            true,
+            "main",
+        );
+
+        Self {
+            pipelines: Vec::new(),
+        }
+    }
+}
+
+
 pub fn create_render_pipeline(
     device: &wgpu::Device,
     layout: &wgpu::PipelineLayout,
