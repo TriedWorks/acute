@@ -1,3 +1,14 @@
+pub enum BufferBundle {
+    Indexed(IndexedVertexBuffer),
+    Plain(wgpu::Buffer)
+}
+
+pub struct IndexedVertexBuffer {
+    vertex_buffer: wgpu::Buffer,
+    index_buffer: wgpu::Buffer,
+    index_len: wgpu::Buffer,
+}
+
 pub fn create_uniform_bind_group_layout(
     device: &wgpu::Device,
     visibility: wgpu::ShaderStage,

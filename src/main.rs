@@ -18,6 +18,7 @@ use ultraviolet::{
     Vec3,
     Rotor3,
 };
+use acute::components::default::ID;
 
 const WINDOW_SIZE: LogicalSize<u32> = LogicalSize { width: 1280, height: 720 };
 const TITLE: &str = "Acute Test";
@@ -28,9 +29,6 @@ struct UpDown;
 fn main() {
     let (window_builder, event_loop) = WinitState::new(TITLE, WINDOW_SIZE);
     let test_scene = TestScene::new();
-
-    println!("{:?}", std::mem::size_of::<Vec3>());
-    println!("{:?}", std::mem::size_of::<u32>());
     let mut acute: Acute = Acute::new(window_builder, Some(Box::new(test_scene)), &event_loop);
 
     event_loop.run(move |event, _, mut control_flow| {
@@ -83,6 +81,7 @@ impl Scene for TestScene {
     fn on_start(&mut self, world: &mut World) {
         // create ground, and mark as static
         // TODO: add scaling so one can be used
+        let mut counter = 0;
         for i in -10..10 {
             for j in -10..20 {
                 let entity = world.insert(
@@ -93,9 +92,11 @@ impl Scene for TestScene {
                             rotation: Rotor3::identity(),
                         },
                         Mesh::new_mesh(&Mesh::default_horizontal_quad().to_vec()),
-                        Color { data: [0.3, 0.5, 0.7, 1.0] }
+                        Color { data: [0.3, 0.5, 0.7, 1.0] },
+                        ID(counter)
                     )))[0];
-
+                println!("init_counter: ground {}", counter);
+                counter += 1;
                 world.add_tag(entity, Static).unwrap();
             }
         }
@@ -110,9 +111,11 @@ impl Scene for TestScene {
                         rotation: Rotor3::identity(),
                     },
                     Mesh::new_mesh(&Mesh::default_cuboid().to_vec()),
-                    Color { data: [0.2, 0.8, 0.3, 1.0] }
+                    Color { data: [0.2, 0.8, 0.3, 1.0] },
+                    ID(counter)
                 )))[0];
-
+            println!("init_counter: cube {}", counter);
+            counter += 1;
             world.add_tag(entity, UpDown).unwrap();
             world.add_tag(entity, Group("rotate_xyxz")).unwrap();
         }
@@ -127,8 +130,11 @@ impl Scene for TestScene {
                         rotation: Rotor3::identity(),
                     },
                     Mesh::new_mesh(&Mesh::default_quad().to_vec()),
-                    Color { data: [0.5, 0.4, 0.3, 1.0] }
+                    Color { data: [0.5, 0.4, 0.3, 1.0] },
+                    ID(counter),
                 )))[0];
+            println!("init_counter: quad {}", counter);
+            counter += 1;
 
             world.add_tag(entity, Group("rotate_xy")).unwrap();
         }
@@ -145,9 +151,11 @@ impl Scene for TestScene {
                                 rotation: Rotor3::identity(),
                             },
                             Mesh::new_mesh(&Mesh::default_tetrahedron().to_vec()),
-                            Color { data: [0.9, 1.0, 0.1, 1.0] }
+                            Color { data: [0.9, 1.0, 0.1, 1.0] },
+                            ID(counter),
                         )))[0];
-
+                    println!("init_counter: tetra {}", counter);
+                    counter += 1;
                     world.add_tag(entity, Group("rotate_xy")).unwrap();
                     world.add_tag(entity, UpDown).unwrap();
                 }
