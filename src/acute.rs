@@ -82,7 +82,6 @@ impl Acute {
         self.scene_handler.update(&mut self.worlds[0], &self.timer.delta_time());
 
         if self.timer.should_fixed_update() {
-            println!("fixed_update");
             self.scene_handler.fixed_update(&mut self.worlds[0], &self.timer.delta_time());
             self.renderer.update_render_data(&self.worlds[0], &self.camera);
         }
@@ -98,22 +97,17 @@ impl Acute {
                     _ => {}
                 }
                 WindowEvent::Resized(physical_size) => {
-                    println!("resize");
                     self.renderer.resize(*physical_size);
                 }
                 WindowEvent::ScaleFactorChanged { new_inner_size, .. } => {
-                    println!("scale");
                     self.renderer.resize(**new_inner_size);
                 }
                 _ => {}
             },
             Event::RedrawRequested(_) => {
-                println!("start render");
                 self.renderer.render(&self.worlds[0]);
-                println!("finish render");
             }
             Event::MainEventsCleared => {
-                println!("main events cleared");
                 self.renderer.window.request_redraw();
             }
             _ => {}

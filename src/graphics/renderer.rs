@@ -145,25 +145,12 @@ impl Renderer {
             label: Some("Update Encoder"),
         });
 
-        let query = <(Read<ID>, Read<Transform>, Read<Mesh>, Read<Color>)>::query();
-
-        for (id, transform, mesh, color) in query.iter(world) {
-            if self.resources.vertex_buffers.contains_key(&id.0) {
-                self.resources.update_vertex_buffer(
-                    &self.device,
-                    &mut encoder,
-                    &Mesh::vertices_of(&mesh, &transform, Some(&color)),
-                    id.0,
-                );
-            } else {
-                self.resources.new_vertex_buffer(
-                    &self.device,
-                    &Mesh::vertices_of(&mesh, &transform, Some(&color)),
-                    id.0,
-                );
-            }
+        let query = <(Read<Transform>, Read<Mesh>, Read<Color>)>::query();
+        let mut all_vertices: Vec<VertexC> = Vec::new();
+        for (transform, mesh, color) in query.iter(world) {
+            all_vertices.extend(Mesh::vertices_of(&mesh, &transform, Some(&color)))
         }
-
+        self.resources.update_vertex_data(&self.device, &mut encoder, all_vertices);
         self.uniforms.update_view_proj(camera.to_matrix());
 
         self.resources.update_uniform_buffer(
@@ -177,7 +164,6 @@ impl Renderer {
     }
 
     pub fn render(&mut self, world: &World) {
-        println!("START RENDER");
         let frame = self
             .swap_chain
             .get_next_texture()
@@ -214,16 +200,12 @@ impl Renderer {
                 })
             });
 
-            let query = <(Read<ID>, Read<Mesh>)>::query();
-
             render_pass.set_pipeline(&self.resources.pipeline_handler.pipelines.get("testing").unwrap());
             render_pass.set_bind_group(0, &self.resources.uniform_bind_groups[0], &[]);
-
-            for (id, mesh) in query.iter(world) {
-                if self.resources.vertex_buffers.contains_key(&id.0) {
-                    render_pass.set_vertex_buffer(0, &self.resources.vertex_buffers.get(&id.0).unwrap(), 0,0 );
-                    render_pass.draw(0..mesh.vertices.len() as u32, 0..1);
-                }
+            
+            for buffer in &self.resources.vertex_buffers {
+                render_pass.set_vertex_buffer(0, &buffer.buffer, 0,0 );
+                render_pass.draw(0..buffer.vertex_amount, 0..1);
             }
 
         }
