@@ -17,11 +17,10 @@ use crate::{
     },
 };
 use crate::graphics::buffer;
-use crate::components::default::Color;
-use crate::components::{mesh, Vertex};
+use crate::components::default::{Color, ID};
+use crate::graphics::resources::RenderResources;
+use crate::tools::uniforms::Uniforms;
 
-
-const VERTEX_BUFFER_INIT_SIZE: usize = std::mem::size_of::<Vertex>() * 3 * 20000;
 
 // Vertex Buffer is fixed sized right now, this is not good and should be changed!
 // Split functions up and make it dynamic
@@ -34,19 +33,9 @@ pub struct Renderer {
     pub queue: wgpu::Queue,
     pub sc_desc: wgpu::SwapChainDescriptor,
     pub swap_chain: wgpu::SwapChain,
-    pub depth_texture: texture::Texture,
     pub window: winit::window::Window,
-
-    //following should be moved into their own
-    vertex_buffer: wgpu::Buffer,
-    vertex_data: Vec<VertexC>,
-    index_buffer: wgpu::Buffer,
-    num_indices: u32,
-    render_pipeline: wgpu::RenderPipeline,
-
-    uniforms: uniforms::Uniforms,
-    uniform_bind_group: wgpu::BindGroup,
-    uniform_buffer: wgpu::Buffer,
+    pub uniforms: Uniforms,
+    pub resources: RenderResources,
 }
 
 impl Renderer {
@@ -84,14 +73,11 @@ impl Renderer {
 
         let swap_chain = device.create_swap_chain(&surface, &sc_desc);
 
-        let depth_texture = texture::Texture::new_depth(&device, &sc_desc, "depth_texture");
+        let mut resources = RenderResources::new(&device, &sc_desc);
 
         let mut uniforms = uniforms::Uniforms::new();
 
-        let uniform_buffer = device.create_buffer_with_data(
-            bytemuck::cast_slice(&[uniforms]),
-            wgpu::BufferUsage::UNIFORM | wgpu::BufferUsage::COPY_DST,
-        );
+        resources.new_uniform_buffer(&device, &[uniforms], 0);
 
         let (uniform_bind_group, uniform_bind_group_layout) = buffer::create_uniform_bind_group(
             &device,
@@ -100,25 +86,28 @@ impl Renderer {
             "uniform_bind_group_layout",
             0,
             "uniform_bind_group",
-            &uniform_buffer,
+            &resources.uniform_buffers.get(&0).unwrap(),
             std::mem::size_of_val(&uniforms),
         );
 
+        resources.uniform_bind_groups.push(uniform_bind_group);
+        resources.uniform_bind_group_layouts.push(uniform_bind_group_layout);
+
         // following should be moved into their own
         let vs_module = shader::create_shader_module(
-            include_str!("../../assets/shaders/default_vertex.glsl"),
+            include_str!("../../assets/shaders/default.vs"),
             ShaderType::Vertex,
             &device,
         );
 
         let fs_module = shader::create_shader_module(
-            include_str!("../../assets/shaders/default_fragment.glsl"),
+            include_str!("../../assets/shaders/default.fs"),
             ShaderType::Fragment,
             &device,
         );
 
         let render_pipeline_layout = device.create_pipeline_layout(&wgpu::PipelineLayoutDescriptor {
-            bind_group_layouts: &[&uniform_bind_group_layout],
+            bind_group_layouts: &[&resources.uniform_bind_group_layouts[0]],
         });
 
         let render_pipeline = pipeline::create_render_pipeline(
@@ -134,21 +123,7 @@ impl Renderer {
             "main",
         );
 
-        let vertex_buffer_desc = wgpu::BufferDescriptor {
-            label: Some("vertex_buffer"),
-            size: VERTEX_BUFFER_INIT_SIZE  as wgpu::BufferAddress,
-            usage: wgpu::BufferUsage::VERTEX | wgpu::BufferUsage::COPY_DST
-        };
-
-        let vertex_buffer = device.create_buffer(&vertex_buffer_desc);
-
-        let index_buffer_desc = wgpu::BufferDescriptor {
-            label: Some("index_buffer"),
-            size: 10,
-            usage: wgpu::BufferUsage::INDEX | wgpu::BufferUsage::COPY_DST
-        };
-
-        let index_buffer = device.create_buffer(&index_buffer_desc);
+        resources.pipeline_handler.insert_pipeline("testing", render_pipeline);
 
         Self {
             surface,
@@ -158,16 +133,9 @@ impl Renderer {
             queue,
             sc_desc,
             swap_chain,
-            depth_texture,
             window,
-            vertex_buffer,
-            vertex_data: Vec::new(),
-            index_buffer,
-            num_indices: 0,
-            render_pipeline,
             uniforms,
-            uniform_bind_group,
-            uniform_buffer,
+            resources,
         }
     }
 
@@ -178,52 +146,24 @@ impl Renderer {
         });
 
         let query = <(Read<Transform>, Read<Mesh>, Read<Color>)>::query();
-
-        let mut new_vertex_data: Vec<VertexC> = Vec::new();
-
+        let mut all_vertices: Vec<VertexC> = Vec::new();
         for (transform, mesh, color) in query.iter(world) {
-            new_vertex_data.extend(Mesh::vertices_of(&mesh, &transform, Some(&color)));
+            all_vertices.extend(Mesh::vertices_of(&mesh, &transform, Some(&color)))
         }
-
+        self.resources.update_vertex_data(&self.device, &mut encoder, all_vertices);
         self.uniforms.update_view_proj(camera.to_matrix());
 
-        let uniforms_staging_buffer = self.device.create_buffer_with_data(
-            bytemuck::cast_slice(&[self.uniforms]),
-            wgpu::BufferUsage::COPY_SRC,
+        self.resources.update_uniform_buffer(
+            &self.device,
+            &mut encoder,
+            &[self.uniforms],
+            0,
         );
 
-        encoder.copy_buffer_to_buffer(
-            &uniforms_staging_buffer,
-            0,
-            &self.uniform_buffer,
-            0,
-            std::mem::size_of::<uniforms::Uniforms>() as wgpu::BufferAddress,
-        );
-
-        if new_vertex_data.len() == 0 {
-            // vertex buffer crashes for whatever reason when staging an empty vec
-            // so the update is skipped if this is the case
-            return
-        }
-
-        let staging_vertex_buffer = self.device.create_buffer_with_data(
-            bytemuck::cast_slice(&new_vertex_data),
-            wgpu::BufferUsage::COPY_SRC,
-        );
-
-        encoder.copy_buffer_to_buffer(
-            &staging_vertex_buffer,
-            0,
-            &self.vertex_buffer,
-            0,
-            (std::mem::size_of::<VertexC>() * new_vertex_data.len()) as wgpu::BufferAddress,
-        );
-
-        self.vertex_data = new_vertex_data;
         self.queue.submit(&[encoder.finish()]);
     }
 
-    pub fn render(&mut self) {
+    pub fn render(&mut self, world: &World) {
         let frame = self
             .swap_chain
             .get_next_texture()
@@ -250,7 +190,7 @@ impl Renderer {
                     }
                 }],
                 depth_stencil_attachment: Some(wgpu::RenderPassDepthStencilAttachmentDescriptor {
-                    attachment: &self.depth_texture.view,
+                    attachment: &self.resources.textures.get("depth_texture").unwrap().view,
                     depth_load_op: wgpu::LoadOp::Clear,
                     depth_store_op: wgpu::StoreOp::Store,
                     clear_depth: 1.0,
@@ -260,12 +200,15 @@ impl Renderer {
                 })
             });
 
-            render_pass.set_pipeline(&self.render_pipeline);
-            render_pass.set_vertex_buffer(0, &self.vertex_buffer, 0,0 );
-            render_pass.set_bind_group(0, &self.uniform_bind_group, &[]);
-            render_pass.draw(0..self.vertex_data.len() as u32, 0..1);
-        }
+            render_pass.set_pipeline(&self.resources.pipeline_handler.pipelines.get("testing").unwrap());
+            render_pass.set_bind_group(0, &self.resources.uniform_bind_groups[0], &[]);
 
+            for buffer in &self.resources.vertex_buffers {
+                render_pass.set_vertex_buffer(0, &buffer.buffer, 0,0 );
+                render_pass.draw(0..buffer.vertex_amount, 0..1);
+            }
+
+        }
         self.queue.submit(&[encoder.finish()]);
     }
 
@@ -274,6 +217,6 @@ impl Renderer {
         self.sc_desc.width = new_size.width;
         self.sc_desc.height = new_size.height;
         self.swap_chain = self.device.create_swap_chain(&self.surface, &self.sc_desc);
-        self.depth_texture = texture::Texture::new_depth(&self.device, &self.sc_desc, "depth_texture");
+        self.resources.textures.insert("depth_texture".to_owned(),  texture::Texture::new_depth(&self.device, &self.sc_desc, "depth_texture"));
     }
 }

@@ -1,3 +1,17 @@
+pub struct VertexBuffer {
+    pub buffer: wgpu::Buffer,
+    pub max_size: usize,
+    pub current_size: usize,
+    pub available_size: usize,
+    pub vertex_amount: u32,
+}
+
+pub struct IndexedVertexBuffer {
+    vertex_buffer: wgpu::Buffer,
+    index_buffer: wgpu::Buffer,
+    index_len: wgpu::Buffer,
+}
+
 pub fn create_uniform_bind_group_layout(
     device: &wgpu::Device,
     visibility: wgpu::ShaderStage,

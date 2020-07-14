@@ -1,25 +1,32 @@
 use crate::graphics::{shader, texture};
 use glsl_to_spirv::ShaderType;
+use std::collections::HashMap;
+use wgpu::ShaderModule;
+use crate::graphics::types::VertexC;
 
 pub struct PipelineHandler {
-    pub pipelines: Vec<wgpu::RenderPipeline>,
+    pub pipelines: HashMap<String, wgpu::RenderPipeline>,
+    pub shaders: HashMap<String, ShaderModule>,
 }
 
 impl PipelineHandler {
-    pub fn new() -> Self {
+    pub fn new(device: &wgpu::Device, sc_desc: &wgpu::SwapChainDescriptor) -> Self {
+        let mut pipelines = HashMap::new();
+        let mut shaders = HashMap::new();
+
         let vs_module = shader::create_shader_module(
-            include_str!("../../assets/shaders/default_vertex.glsl"),
+            include_str!("../../assets/shaders/none.vs"),
             ShaderType::Vertex,
             &device,
         );
 
         let fs_module = shader::create_shader_module(
-            include_str!("../../assets/shaders/default_fragment.glsl"),
+            include_str!("../../assets/shaders/none.fs"),
             ShaderType::Fragment,
             &device,
         );
         let render_pipeline_layout = device.create_pipeline_layout(&wgpu::PipelineLayoutDescriptor {
-            bind_group_layouts: &[&uniform_bind_group_layout],
+            bind_group_layouts: &[],
         });
 
         let render_pipeline = create_render_pipeline(
@@ -30,14 +37,22 @@ impl PipelineHandler {
             &fs_module,
             sc_desc.format.clone(),
             texture::DEPTH_FORMAT,
-            &[mesh::MeshVertex::desc()],
+            &[VertexC::desc()],
             true,
             "main",
         );
+        pipelines.insert("none".to_string(), render_pipeline);
+        shaders.insert("none_vs".to_string(), vs_module);
+        shaders.insert("none_fs".to_string(), fs_module);
 
         Self {
-            pipelines: Vec::new(),
+            pipelines,
+            shaders,
         }
+    }
+
+    pub fn insert_pipeline(&mut self, label: &str, pipeline: wgpu::RenderPipeline) {
+        self.pipelines.insert(label.to_string(), pipeline);
     }
 }
 

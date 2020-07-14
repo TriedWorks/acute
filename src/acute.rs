@@ -37,6 +37,7 @@ impl Acute {
         init_scene: Option<Box<dyn Scene>>,
         event_loop: &EventLoop<()>,
     ) -> Self {
+        println!("init acute");
         let window = window_builder.build(&event_loop).unwrap();
         let size = window.inner_size();
         let universe = Universe::new();
@@ -58,7 +59,7 @@ impl Acute {
 
         let input_helper = WinitInputHelper::new();
         ///// WILL BE REMOVED SOON /////
-
+        println!("inited acute");
         Self {
             universe,
             worlds,
@@ -82,7 +83,7 @@ impl Acute {
 
         if self.timer.should_fixed_update() {
             self.scene_handler.fixed_update(&mut self.worlds[0], &self.timer.delta_time());
-            self.renderer.update_render_data(&self.worlds[0], &self.camera)
+            self.renderer.update_render_data(&self.worlds[0], &self.camera);
         }
         match event {
             Event::WindowEvent { ref event, .. } => match event {
@@ -104,7 +105,7 @@ impl Acute {
                 _ => {}
             },
             Event::RedrawRequested(_) => {
-                self.renderer.render();
+                self.renderer.render(&self.worlds[0]);
             }
             Event::MainEventsCleared => {
                 self.renderer.window.request_redraw();

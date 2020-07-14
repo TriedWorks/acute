@@ -10,6 +10,9 @@ use legion::prelude::*;
 // }
 
 #[derive(Debug, Copy, Clone)]
+pub struct ID(pub i32);
+
+#[derive(Debug, Copy, Clone)]
 pub struct Transform {
     pub position: Vec3,
     pub rotation: Rotor3,
