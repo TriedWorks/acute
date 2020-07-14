@@ -36,6 +36,8 @@ impl RenderResources {
         }
     }
 
+    pub fn update_vertex_data2(&mut self, device: &wgpu::Device, encoder: &mut wgpu::CommandEncoder, vertex_data: Vec<VertexC>) {}
+
     pub fn update_vertex_data(&mut self, device: &wgpu::Device, encoder: &mut wgpu::CommandEncoder, vertex_data: Vec<VertexC>) {
         let data_size = std::mem::size_of::<VertexC>() * vertex_data.len();
         let mut data_sliced = Vec::new();
