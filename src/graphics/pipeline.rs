@@ -41,7 +41,6 @@ impl PipelineHandler {
             true,
             "main",
         );
-
         pipelines.insert("none".to_string(), render_pipeline);
         shaders.insert("none_vs".to_string(), vs_module);
         shaders.insert("none_fs".to_string(), fs_module);

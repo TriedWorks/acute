@@ -1,5 +1,3 @@
-#![allow(dead_code, unused_imports)]
-
 use bytemuck::{Zeroable, Pod};
 use ultraviolet::{
     Vec3,
@@ -11,6 +9,9 @@ pub trait Renderable {
 
     fn to_indexed(&self) {}
 }
+
+
+
 
 #[repr(C)]
 #[derive(Copy, Clone, Debug)]

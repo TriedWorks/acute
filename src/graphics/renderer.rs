@@ -7,7 +7,7 @@ use crate::{
         uniforms,
     },
     components::{
-        geometry::{Mesh, Vertex},
+        geometry::{Mesh},
         default::Transform,
     },
     graphics::{
@@ -118,7 +118,7 @@ impl Renderer {
             &fs_module,
             sc_desc.format.clone(),
             texture::DEPTH_FORMAT,
-            &[VertexC::desc()],
+            &[mesh::MeshVertex::desc()],
             true,
             "main",
         );
