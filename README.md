@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="book/src/images/Acute.png"/>
+  <img src="book/src/images/Acute.png" width="60%" height="40%"/>
 </p>
 
 <p align="center">
