@@ -3,7 +3,7 @@
 </p>
 
 <p align="center">
-  <img src="https://travis-ci.com/TriedWorks/troxel.svg?branch=master" alt="Build status">
+  <img src="https://travis-ci.com/TriedWorks/acute.svg?branch=master" alt="Build status">
   <img src="https://img.shields.io/badge/License-Apache%202.0-blue.svg" alt="License">
 </p>
 
