@@ -118,7 +118,7 @@ impl Renderer {
             &fs_module,
             sc_desc.format.clone(),
             texture::DEPTH_FORMAT,
-            &[mesh::MeshVertex::desc()],
+            &[VertexC::desc()],
             true,
             "main",
         );
