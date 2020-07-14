@@ -202,7 +202,7 @@ impl Renderer {
 
             render_pass.set_pipeline(&self.resources.pipeline_handler.pipelines.get("testing").unwrap());
             render_pass.set_bind_group(0, &self.resources.uniform_bind_groups[0], &[]);
-            
+
             for buffer in &self.resources.vertex_buffers {
                 render_pass.set_vertex_buffer(0, &buffer.buffer, 0,0 );
                 render_pass.draw(0..buffer.vertex_amount, 0..1);
