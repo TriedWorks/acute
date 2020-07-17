@@ -16,6 +16,7 @@ pub struct ID(pub i32);
 pub struct Transform {
     pub position: Vec3,
     pub rotation: Rotor3,
+    pub scale: Vec3,
 }
 
 #[derive(Debug, Copy, Clone)]

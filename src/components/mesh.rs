@@ -1,9 +1,6 @@
-use ultraviolet::{
-    Vec4,
-    Vec3,
-    Vec2,
-};
+use ultraviolet::{Vec4, Vec3, Vec2, Rotor3};
 use crate::components::material::Material;
+use crate::components::default::Transform;
 
 /// Mesh struct contains the data and the topology settings
 /// e.g. point, line or triangle for a mesh.
@@ -23,7 +20,7 @@ pub struct Mesh {
 #[derive(Debug, Clone)]
 pub struct MeshData {
     /// All vertices of the mesh
-    pub data: Vec<Vec3>,
+    pub vertices: Vec<Vec3>,
     /// indices of the data vec, used to mark lines / triangles
     pub indices: Vec<u32>,
     // [("material_name", indices_group)]
@@ -35,16 +32,28 @@ pub struct MeshData {
 }
 
 impl Mesh {
+    pub fn rotate(&mut self, transform: &Transform) {
+        self.data.vertices.iter_mut().for_each(|vertex| {
+            transform.rotation.rotate_vec(vertex)
+        });
+    }
+
+    pub fn scale(&mut self, transform: &Transform) {
+        self.data.vertices.iter().map(|mut vertex| {
+            *vertex * transform.scale
+        });
+    }
+
     /// Creates a new triangle
     /// creates a default triangle if no data is supplied
     pub fn new_triangle(data: Option<&[Vec3; 3]>) -> Mesh {
-        let data = match data {
+        let vertices = match data {
             Some(data) => data.to_vec(),
             None => DEFAULT_TRIANGLE.to_vec(),
         };
         Mesh {
             data: MeshData {
-                data,
+                vertices,
                 indices: vec![0, 1, 2],
                 material_groups: vec![],
                 normals: vec![],
@@ -54,13 +63,13 @@ impl Mesh {
     }
 
     pub fn new_quad(data: Option<&[Vec3; 4]>) -> Mesh {
-        let data = match data {
+        let vertices = match data {
             Some(data) => data.to_vec(),
             None => DEFAULT_QUAD.to_vec(),
         };
         Mesh {
             data: MeshData {
-                data,
+                vertices,
                 indices: vec![0, 1, 3, 2, 3, 4],
                 material_groups: vec![],
                 normals: vec![],
@@ -71,14 +80,14 @@ impl Mesh {
 
     /// creates a new tetrahedron with no material
     pub fn new_tetrahedron(data: Option<&[Vec3; 5]>) -> Mesh {
-        let data = match data {
+        let vertices = match data {
             Some(data) => data.to_vec(),
             None => DEFAULT_TETRAHEDRON.to_vec(),
         };
 
         Mesh {
             data: MeshData {
-                data,
+                vertices,
                 indices: vec![
                     4, 0, 1,
                     4, 1, 2,
@@ -95,14 +104,14 @@ impl Mesh {
     /// creates a new cube with no material
     /// via scaling the cube can be used to represent any rectangular cuboid
     pub fn new_cube(data: Option<&[Vec3; 8]>) -> Mesh {
-        let data = match data {
+        let vertices = match data {
             Some(data) => data.to_vec(),
             None => DEFAULT_HEXAHEDRON.to_vec(),
         };
 
         Mesh {
             data: MeshData {
-                data,
+                vertices,
                 indices: vec![
                     0, 1, 3,    // top
                     1, 2, 3,

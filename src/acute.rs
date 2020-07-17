@@ -59,7 +59,6 @@ impl Acute {
 
         let input_helper = WinitInputHelper::new();
         ///// WILL BE REMOVED SOON /////
-        println!("inited acute");
         Self {
             universe,
             worlds,

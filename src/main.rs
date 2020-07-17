@@ -90,6 +90,7 @@ impl Scene for TestScene {
                         Transform {
                             position: Vec3::new((i as f32), 0.0, (j as f32)),
                             rotation: Rotor3::identity(),
+                            scale: Vec3::new(1.0, 1.0, 1.0),
                         },
                         Mesh::new_mesh(&Mesh::default_horizontal_quad().to_vec()),
                         Color { data: [0.3, 0.5, 0.7, 1.0] },
@@ -109,6 +110,7 @@ impl Scene for TestScene {
                     Transform {
                         position: Vec3::new(0.0, -2.0, 0.0),
                         rotation: Rotor3::identity(),
+                        scale: Vec3::new(1.0, 1.0, 1.0),
                     },
                     Mesh::new_mesh(&Mesh::default_cuboid().to_vec()),
                     Color { data: [0.2, 0.8, 0.3, 1.0] },
@@ -128,6 +130,7 @@ impl Scene for TestScene {
                     Transform {
                         position: Vec3::new(1.0, -1.5, -4.0),
                         rotation: Rotor3::identity(),
+                        scale: Vec3::new(1.0, 1.0, 1.0),
                     },
                     Mesh::new_mesh(&Mesh::default_quad().to_vec()),
                     Color { data: [0.5, 0.4, 0.3, 1.0] },
@@ -149,6 +152,7 @@ impl Scene for TestScene {
                             Transform {
                                 position: Vec3::new(-i as f32, -j as f32, -4.0),
                                 rotation: Rotor3::identity(),
+                                scale: Vec3::new(1.0, 1.0, 1.0),
                             },
                             Mesh::new_mesh(&Mesh::default_tetrahedron().to_vec()),
                             Color { data: [0.9, 1.0, 0.1, 1.0] },
