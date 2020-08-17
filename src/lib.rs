@@ -1,11 +1,6 @@
-pub mod graphics;
-pub mod scenes;
-pub mod window;
-pub mod acute;
-pub mod components;
+pub mod prelude;
 
-// temporary, camera will receive it's own component soon!
-pub mod tools;
-
-// maybe "utils" can be handled better?
-mod utils;
+pub use acute_app;
+pub use acute_core;
+pub use acute_ecs;
+pub use acute_input;
