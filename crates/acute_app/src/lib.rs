@@ -2,6 +2,7 @@ mod app;
 mod builder;
 
 pub use app::App;
+pub use builder::AppBuilder;
 
 pub trait State {
     // Called after engine init

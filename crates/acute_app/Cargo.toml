@@ -13,4 +13,6 @@ acute_core = { version = "0.1.0", path = "../acute_core" }
 acute_ecs = { version = "0.1.0", path = "../acute_ecs" }
 acute_scenes = { version = "0.1.0", path = "../acute_scenes" }
 acute_window = { version = "0.1.0", path = "../acute_window" }
+acute_render_backend = { version = "0.1.0", path = "../acute_render_backend" }
+
 futures = "0.3.5"

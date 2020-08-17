@@ -21,6 +21,7 @@ version = "0.1.1"
 dependencies = [
  "acute_core",
  "acute_ecs",
+ "acute_render_backend",
  "acute_scenes",
  "acute_window",
  "futures",
@@ -57,6 +58,8 @@ version = "0.1.0"
 name = "acute_render_backend"
 version = "0.1.0"
 dependencies = [
+ "acute_ecs",
+ "acute_window",
  "wgpu",
 ]
 

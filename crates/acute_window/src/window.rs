@@ -35,4 +35,9 @@ impl WinitWindow {
 
         (window, event_loop)
     }
+
+    pub fn new_headless() -> EventLoop<()> {
+        let event_loop = EventLoop::new();
+        event_loop
+    }
 }

@@ -5,3 +5,5 @@ pub use acute_core::*;
 pub use acute_ecs::prelude::*;
 
 pub use acute_window::*;
+
+pub use super::DefaultAddons;
