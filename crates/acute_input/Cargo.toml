@@ -3,7 +3,8 @@ name = "acute_input"
 version = "0.1.0"
 authors = ["Sebastian <Sebastian@Strobl.net>"]
 edition = "2018"
-license = "Apache 2.0"
+description = "input sub-crate of acute"
+license = "Apache-2.0"
 repository = "https://github.com/tryworks/acute"
 keywords = ["acute"]
 
