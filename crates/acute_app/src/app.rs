@@ -4,6 +4,7 @@ use acute_window::winit::event::Event as WindowEvent;
 use acute_window::winit::event_loop::{ControlFlow};
 use acute_ecs::systems::resource::Resource;
 use super::builder::AppBuilder;
+use crate::State;
 
 pub struct App {
     pub universe: Universe,
@@ -22,7 +23,7 @@ impl App {
         AppBuilder::default()
     }
 
-    pub fn run(&mut self, _event: WindowEvent<()>, _control_flow: &mut ControlFlow) {
+    pub fn run<T: State>(&mut self, state: &mut T, _event: WindowEvent<()>, _control_flow: &mut ControlFlow) {
         self.schedule.execute(&mut self.scene.world, &mut self.resources);
         self.scene.update(&mut self.resources);
         self.render_schedule.execute(&mut self.scene.world, &mut self.resources);

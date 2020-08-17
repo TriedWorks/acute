@@ -1,7 +1,11 @@
 use acute::prelude::*;
 
 struct AppState {}
-
+impl AppState {
+    pub fn new() -> Self {
+        Self {}
+    }
+}
 impl State for AppState {}
 
 fn main() {
@@ -14,8 +18,9 @@ fn main() {
         .add_system(print_time())
         .build();
 
+    let mut app_sate = AppState::new();
     event_loop.run(move |event, event_loop, mut control_flow| {
-        app.run(event, &mut control_flow);
+        app.run( &mut app_sate, event, &mut control_flow);
     })
 }
 
@@ -34,7 +39,7 @@ fn print_time() -> Box<dyn Schedulable> {
 fn update_timer() -> Box<dyn Schedulable> {
     SystemBuilder::new("UpdateTimer")
         .write_resource::<Timer>()
-        .build(move |_, _, timer, _ | {
+        .build(|_, _, timer, _ | {
             timer.update_delta_time();
             timer.update_fixed_time();
         })
