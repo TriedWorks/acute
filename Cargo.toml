@@ -24,7 +24,7 @@ name = "acute"
 path = "src/lib.rs"
 
 [dependencies]
-acute_core = { version = "0.1.0", path = "crates/acute_core" }
+acute_core = { version = "0.1.1", path = "crates/acute_core" }
 acute_app = { version = "0.1.1", path = "crates/acute_app" }
 acute_ecs = { version = "0.1.0", path = "crates/acute_ecs" }
 acute_render = { version = "0.1.0", path = "crates/acute_render" }

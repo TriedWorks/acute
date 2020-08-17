@@ -13,7 +13,6 @@ pub struct App {
     pub schedule: Schedule,
     pub render_schedule: Schedule,
     pub scene: Scene,
-    pub renderer: Option<Renderer>
 }
 
 impl App {
@@ -54,7 +53,6 @@ impl Default for App {
             schedule: Schedule::builder().build(),
             render_schedule: Schedule::builder().build(),
             scene,
-            renderer: None
         }
     }
 }
