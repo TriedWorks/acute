@@ -3,6 +3,7 @@ name = "acute"
 version = "0.0.1"
 authors = ["Sebastian Strobl <Sebastian@Strobl.net>"]
 edition = "2018"
+description = "Modular Data Driven Physics and Render Engine for the rust programming language."
 license = "Apache 2.0"
 repository = "https://github.com/tryworks/acute"
 keywords = ["acute"]
