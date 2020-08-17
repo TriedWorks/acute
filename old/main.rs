@@ -1,5 +1,6 @@
 extern crate acute;
 
+use acute::components::default::ID;
 use acute::{
     acute::Acute,
     components::{
@@ -26,7 +27,6 @@ struct UpDown;
 fn main() {
     let (window_builder, event_loop) = WinitState::new(TITLE, WINDOW_SIZE);
     let test_scene = TestScene::new();
-
     let mut acute: Acute = Acute::new(window_builder, Some(Box::new(test_scene)), &event_loop);
 
     event_loop.run(move |event, _, mut control_flow| {
@@ -37,7 +37,6 @@ fn main() {
 struct TestScene {
     time_since_start: Instant,
 }
-
 impl TestScene {
     fn new() -> Self {
         Self {
@@ -79,6 +78,7 @@ impl Scene for TestScene {
     fn on_start(&mut self, world: &mut World) {
         // create ground, and mark as static
         // TODO: add scaling so one can be used
+        let mut counter = 0;
         for i in -10..10 {
             for j in -10..20 {
                 let entity = world.insert(
@@ -92,9 +92,11 @@ impl Scene for TestScene {
                         Color {
                             data: [0.3, 0.5, 0.7, 1.0],
                         },
+                        ID(counter),
                     )),
                 )[0];
-
+                println!("init_counter: ground {}", counter);
+                counter += 1;
                 world.add_tag(entity, Static).unwrap();
             }
         }
@@ -112,9 +114,11 @@ impl Scene for TestScene {
                     Color {
                         data: [0.2, 0.8, 0.3, 1.0],
                     },
+                    ID(counter),
                 )),
             )[0];
-
+            println!("init_counter: cube {}", counter);
+            counter += 1;
             world.add_tag(entity, UpDown).unwrap();
             world.add_tag(entity, Group("rotate_xyxz")).unwrap();
         }
@@ -132,10 +136,41 @@ impl Scene for TestScene {
                     Color {
                         data: [0.5, 0.4, 0.3, 1.0],
                     },
+                    ID(counter),
                 )),
             )[0];
+            println!("init_counter: quad {}", counter);
+            counter += 1;
 
             world.add_tag(entity, Group("rotate_xy")).unwrap();
+        }
+
+        {
+            for i in 2..7 {
+                for j in 2..7 {
+                    if j % 2 == 0 {
+                        continue;
+                    }
+                    let entity = world.insert(
+                        (),
+                        std::iter::once((
+                            Transform {
+                                position: Vec3::new(-i as f32, -j as f32, -4.0),
+                                rotation: Rotor3::identity(),
+                            },
+                            Mesh::new_mesh(&Mesh::default_tetrahedron().to_vec()),
+                            Color {
+                                data: [0.9, 1.0, 0.1, 1.0],
+                            },
+                            ID(counter),
+                        )),
+                    )[0];
+                    println!("init_counter: tetra {}", counter);
+                    counter += 1;
+                    world.add_tag(entity, Group("rotate_xy")).unwrap();
+                    world.add_tag(entity, UpDown).unwrap();
+                }
+            }
         }
 
         // rotate the vertices of each entity in the beginning for not identity cases
