@@ -5,7 +5,6 @@ use acute_window::event_loop::{ControlFlow};
 use acute_ecs::systems::resource::Resource;
 use super::builder::AppBuilder;
 use crate::State;
-use acute_render_backend::Renderer;
 use acute_input::Input;
 use acute_window::event::WindowEvent;
 

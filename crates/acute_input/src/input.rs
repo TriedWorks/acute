@@ -1,6 +1,6 @@
 use crate::keyboard::Keyboard;
 use crate::mouse::{Mouse};
-use acute_window::event::{Event, WindowEvent, ElementState, MouseButton, MouseScrollDelta};
+use acute_window::event::{Event, WindowEvent, ElementState, MouseScrollDelta};
 
 pub struct Input {
     pub keyboard: Keyboard,

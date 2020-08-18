@@ -12,4 +12,4 @@ keywords = ["acute"]
 
 [dependencies]
 winit = "0.22.2"
-acute_ecs = { version = "*", path = "../acute_ecs" }
+acute_ecs = { version = "0.1", path = "../acute_ecs" }

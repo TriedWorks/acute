@@ -1,6 +1,5 @@
 use std::collections::HashSet;
 use acute_window::event::MouseButton;
-use std::ops::Add;
 
 pub struct Mouse {
     pub position: (f32, f32),

@@ -11,7 +11,7 @@ fn main() {
         .add_system(test_input())
         .build();
 
-    event_loop.run(move |event, event_loop, mut control_flow| {
+    event_loop.run(move |event, _event_loop, mut control_flow| {
         app.run(&event, &mut control_flow);
     })
 }
