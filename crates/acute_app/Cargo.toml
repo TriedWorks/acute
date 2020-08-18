@@ -14,5 +14,6 @@ acute_ecs = { version = "*", path = "../acute_ecs" }
 acute_scenes = { version = "*", path = "../acute_scenes" }
 acute_window = { version = "*", path = "../acute_window" }
 acute_render_backend = { version = "*", path = "../acute_render_backend" }
+acute_input = { version = "*", path = "../acute_input" }
 
 futures = "0.3.5"

@@ -1,11 +1,13 @@
 use acute_ecs::prelude::*;
 use acute_scenes::Scene;
-use acute_window::winit::event::Event as WindowEvent;
-use acute_window::winit::event_loop::{ControlFlow};
+use acute_window::event::{Event as WinitEvent, VirtualKeyCode};
+use acute_window::event_loop::{ControlFlow};
 use acute_ecs::systems::resource::Resource;
 use super::builder::AppBuilder;
 use crate::State;
 use acute_render_backend::Renderer;
+use acute_input::Input;
+use acute_window::event::WindowEvent;
 
 pub struct App {
     pub universe: Universe,
@@ -24,18 +26,33 @@ impl App {
         AppBuilder::default()
     }
 
-    pub fn run(&mut self, _event: WindowEvent<()>, _control_flow: &mut ControlFlow) {
+    pub fn run(&mut self, event: &WinitEvent<()>, control_flow: &mut ControlFlow) {
+        if let Some(mut input) = self.resources.get_mut::<Input>() {
+            input.update(event);
+            if input.keyboard.pressed(VirtualKeyCode::LAlt) && input.keyboard.pressed(VirtualKeyCode::F4) {
+                *control_flow = ControlFlow::Exit;
+            }
+        }
+        match event {
+            WinitEvent::WindowEvent {event, ..}  => {
+                match event {
+                    WindowEvent::CloseRequested => {
+                        *control_flow = ControlFlow::Exit;
+                    }
+                    _ => {}
+                }
+            }
+            _ => {}
+        }
         self.schedule.execute(&mut self.scene.world, &mut self.resources);
         self.scene.update(&mut self.resources);
         self.render_schedule.execute(&mut self.scene.world, &mut self.resources);
     }
 
-    pub fn run_with_state<T: State>(&mut self, state: &mut T, _event: WindowEvent<()>, _control_flow: &mut ControlFlow) {
+    pub fn run_with_state<T: State>(&mut self, state: &mut T, event: &WinitEvent<()>, control_flow: &mut ControlFlow) {
         state.update( self);
         state.update_fixed(self);
-        self.schedule.execute(&mut self.scene.world, &mut self.resources);
-        self.scene.update(&mut self.resources);
-        self.render_schedule.execute(&mut self.scene.world, &mut self.resources);
+        self.run(event, control_flow);
     }
 
     pub fn add_resource<T: Resource>(&mut self, resource: T) {

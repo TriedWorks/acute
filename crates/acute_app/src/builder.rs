@@ -3,7 +3,7 @@ use super::app::App;
 use acute_ecs::systems::resource::Resource;
 use acute_core::Timer;
 use acute_ecs::systems::schedule::Builder;
-use acute_window::winit::window::Window;
+use acute_window::window::Window;
 use acute_render_backend::Renderer;
 
 pub struct AppBuilder {

@@ -1,5 +1,5 @@
 use acute_ecs::prelude::*;
-use acute_window::winit::window::Window;
+use acute_window::window::Window;
 use std::ops::Deref;
 
 pub struct Renderer {
