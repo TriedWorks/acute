@@ -1,5 +1,5 @@
-pub mod prelude;
 mod defaults;
+pub mod prelude;
 
 pub use acute_app as app;
 pub use acute_assets as assets;

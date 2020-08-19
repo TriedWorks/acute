@@ -1,7 +1,7 @@
 //
+use acute_core::{update_timer, Timer};
 use acute_input::Input;
 use acute_window::winit::window::Window;
-use acute_core::{update_timer, Timer};
 
 pub trait DefaultAddons {
     fn with_defaults(self, window: Window) -> Self;

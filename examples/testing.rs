@@ -22,24 +22,24 @@ fn test_render() -> Box<dyn Schedulable> {
         .build(move |_, _, renderer, _| {
             let renderer: &mut Renderer = renderer;
             let frame = renderer.sc.get_current_frame().expect("Failed").output;
-            let mut encoder = renderer.device.create_command_encoder(&wgpu::CommandEncoderDescriptor {
-                label: Some("TestRenderEncoder"),
-            });
+            let mut encoder =
+                renderer
+                    .device
+                    .create_command_encoder(&wgpu::CommandEncoderDescriptor {
+                        label: Some("TestRenderEncoder"),
+                    });
             {
                 let mut render_pass = encoder.begin_render_pass(&wgpu::RenderPassDescriptor {
-                    color_attachments: &[
-                        wgpu::RenderPassColorAttachmentDescriptor {
-                            attachment: &frame.view,
-                            resolve_target: None,
-                            ops: wgpu::Operations {
-                                load: wgpu::LoadOp::Clear(wgpu::Color::GREEN),
-                                store: true,
-                            }
-                        }
-                    ],
+                    color_attachments: &[wgpu::RenderPassColorAttachmentDescriptor {
+                        attachment: &frame.view,
+                        resolve_target: None,
+                        ops: wgpu::Operations {
+                            load: wgpu::LoadOp::Clear(wgpu::Color::GREEN),
+                            store: true,
+                        },
+                    }],
                     depth_stencil_attachment: None,
                 });
-
             }
 
             renderer.queue.submit(Some(encoder.finish()));
@@ -55,7 +55,10 @@ fn test_input() -> Box<dyn Schedulable> {
                 println!("Pressed Space")
             }
             if input.mouse.just_pressed(MouseButton::Left) {
-                println!("click at {} | {}!", input.mouse.position.0, input.mouse.position.1)
+                println!(
+                    "click at {} | {}!",
+                    input.mouse.position.0, input.mouse.position.1
+                )
             }
         })
 }
@@ -69,4 +72,3 @@ fn test_timer() -> Box<dyn Schedulable> {
         .read_resource::<Timer>()
         .build(move |_, _, timer, _| println!("{:?}", timer.delta_time()))
 }
-
