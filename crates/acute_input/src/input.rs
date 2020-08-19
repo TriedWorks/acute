@@ -1,6 +1,6 @@
 use crate::keyboard::Keyboard;
-use crate::mouse::{Mouse};
-use acute_window::event::{Event, WindowEvent, ElementState, MouseScrollDelta};
+use crate::mouse::Mouse;
+use acute_window::winit::event::{ElementState, Event, MouseScrollDelta, WindowEvent};
 
 pub struct Input {
     pub keyboard: Keyboard,
@@ -18,13 +18,9 @@ impl Input {
                     WindowEvent::KeyboardInput { input, .. } => {
                         if let Some(key) = input.virtual_keycode {
                             match input.state {
-                                ElementState::Pressed => {
-                                    self.keyboard.press(key)
-                                }
+                                ElementState::Pressed => self.keyboard.press(key),
 
-                                ElementState::Released => {
-                                    self.keyboard.release(key)
-                                }
+                                ElementState::Released => self.keyboard.release(key),
                             }
                         }
                     }
@@ -45,9 +41,8 @@ impl Input {
                     }
 
                     WindowEvent::CursorMoved { position, .. } => {
-                        self.mouse.update_position(
-                            (position.x as f32, position.x as f32)
-                        );
+                        self.mouse
+                            .update_position((position.x as f32, position.x as f32));
                     }
 
                     _ => {}

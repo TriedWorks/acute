@@ -1,7 +1,6 @@
 use winit::dpi::LogicalSize;
-use winit::window::{Fullscreen, Window, WindowBuilder};
 use winit::event_loop::EventLoop;
-
+use winit::window::{Fullscreen, Window, WindowBuilder};
 
 pub struct WindowDescriptor {
     title: String,
@@ -14,9 +13,12 @@ impl Default for WindowDescriptor {
     fn default() -> Self {
         Self {
             title: "Acute".to_string(),
-            size: LogicalSize { width: 1280, height: 720 },
+            size: LogicalSize {
+                width: 1280,
+                height: 720,
+            },
             fullscreen: None,
-            resizable: false
+            resizable: false,
         }
     }
 }
@@ -31,7 +33,8 @@ impl WinitWindow {
             .with_inner_size(window_desc.size)
             .with_fullscreen(window_desc.fullscreen)
             .with_resizable(window_desc.resizable)
-            .build(&event_loop).unwrap();
+            .build(&event_loop)
+            .unwrap();
 
         (window, event_loop)
     }

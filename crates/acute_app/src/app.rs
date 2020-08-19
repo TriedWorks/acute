@@ -1,12 +1,14 @@
-use acute_ecs::prelude::*;
-use acute_scenes::Scene;
-use acute_window::event::{Event as WinitEvent, VirtualKeyCode};
-use acute_window::event_loop::{ControlFlow};
-use acute_ecs::systems::resource::Resource;
-use super::builder::AppBuilder;
-use crate::State;
+use acute_ecs::legion::prelude::*;
+use acute_ecs::legion::systems::{resource::Resource, schedule::Builder};
 use acute_input::Input;
-use acute_window::event::WindowEvent;
+use acute_scenes::Scene;
+use acute_window::winit::{
+    event::{Event as WinitEvent, VirtualKeyCode, WindowEvent},
+    event_loop::ControlFlow,
+};
+
+use crate::builder::AppBuilder;
+use crate::State;
 
 pub struct App {
     pub universe: Universe,
@@ -20,7 +22,7 @@ impl App {
     pub fn new() -> Self {
         Self::default()
     }
-    
+
     pub fn builder() -> AppBuilder {
         AppBuilder::default()
     }
@@ -28,28 +30,36 @@ impl App {
     pub fn run(&mut self, event: &WinitEvent<()>, control_flow: &mut ControlFlow) {
         if let Some(mut input) = self.resources.get_mut::<Input>() {
             input.update(event);
-            if input.keyboard.pressed(VirtualKeyCode::LAlt) && input.keyboard.pressed(VirtualKeyCode::F4) {
+            if input.keyboard.pressed(VirtualKeyCode::LAlt)
+                && input.keyboard.pressed(VirtualKeyCode::F4)
+            {
                 *control_flow = ControlFlow::Exit;
             }
         }
         match event {
-            WinitEvent::WindowEvent {event, ..}  => {
-                match event {
-                    WindowEvent::CloseRequested => {
-                        *control_flow = ControlFlow::Exit;
-                    }
-                    _ => {}
+            WinitEvent::WindowEvent { event, .. } => match event {
+                WindowEvent::CloseRequested => {
+                    *control_flow = ControlFlow::Exit;
                 }
-            }
+                _ => {}
+            },
             _ => {}
         }
-        self.schedule.execute(&mut self.scene.world, &mut self.resources);
+
+        self.schedule
+            .execute(&mut self.scene.world, &mut self.resources);
         self.scene.update(&mut self.resources);
-        self.render_schedule.execute(&mut self.scene.world, &mut self.resources);
+        self.render_schedule
+            .execute(&mut self.scene.world, &mut self.resources);
     }
 
-    pub fn run_with_state<T: State>(&mut self, state: &mut T, event: &WinitEvent<()>, control_flow: &mut ControlFlow) {
-        state.update( self);
+    pub fn run_with_state<T: State>(
+        &mut self,
+        state: &mut T,
+        event: &WinitEvent<()>,
+        control_flow: &mut ControlFlow,
+    ) {
+        state.update(self);
         state.update_fixed(self);
         self.run(event, control_flow);
     }

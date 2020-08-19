@@ -1,9 +1,8 @@
-use acute_ecs::prelude::*;
-use super::app::App;
-use acute_ecs::systems::resource::Resource;
-use acute_ecs::systems::schedule::Builder;
-use acute_window::window::Window;
+use crate::app::App;
+use acute_ecs::legion::prelude::*;
+use acute_ecs::legion::systems::{resource::Resource, schedule::Builder};
 use acute_render_backend::Renderer;
+use acute_window::winit::window::Window;
 
 pub struct AppBuilder {
     pub app: App,
@@ -15,10 +14,8 @@ pub struct AppBuilder {
 impl AppBuilder {
     pub fn build(mut self) -> App {
         let renderer = match self.window {
-            Some(window) => {
-                Some(futures::executor::block_on(Renderer::new(&mut self.app.resources, window)))
-            }
-            None => None
+            Some(window) => Some(futures::executor::block_on(Renderer::new(window))),
+            None => None,
         };
         if let Some(renderer) = renderer {
             self.app.resources.insert(renderer);
@@ -29,7 +26,7 @@ impl AppBuilder {
 
         self.app
     }
-    
+
     pub fn with_window(mut self, window: Window) -> Self {
         self.window = Some(window);
         self
@@ -46,12 +43,10 @@ impl AppBuilder {
     }
 
     pub fn add_render_system(mut self, render_system: Box<dyn Schedulable>) -> Self {
-        self.render_system_builder = self.render_system_builder.add_system(render_system);
+        self.system_builder = self.system_builder.add_system(render_system);
         self
     }
 }
-
-
 
 impl Default for AppBuilder {
     fn default() -> Self {
@@ -59,7 +54,7 @@ impl Default for AppBuilder {
             app: Default::default(),
             system_builder: Default::default(),
             render_system_builder: Default::default(),
-            window: None
+            window: None,
         }
     }
 }

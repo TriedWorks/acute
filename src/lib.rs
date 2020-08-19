@@ -1,27 +1,17 @@
 pub mod prelude;
+mod defaults;
 
-pub use acute_app;
-pub use acute_core;
-use acute_core::{update_timer, Timer};
-pub use acute_ecs;
-pub use acute_input;
-use acute_input::Input;
-use acute_window::window::Window;
+pub use acute_app as app;
+pub use acute_assets as assets;
+pub use acute_core as core;
+pub use acute_ecs as ecs;
+pub use acute_input as input;
+pub use acute_render as render;
+// Don't expose backend, nor wgpu after finishing acute_render
+pub use acute_render_backend as render_backend;
+pub use acute_render_backend::wgpu;
 
-pub trait DefaultAddons {
-    fn with_defaults(self, window: Window) -> Self;
-    fn with_defaults_headless(self) -> Self;
-}
+pub use acute_scenes as scenes;
+pub use acute_window as window;
 
-impl DefaultAddons for acute_app::AppBuilder {
-    fn with_defaults(self, window: Window) -> Self {
-        self.add_resource(Timer::new())
-            .add_resource(Input::new())
-            .with_window(window)
-            .add_system(update_timer())
-    }
-
-    fn with_defaults_headless(self) -> Self {
-        self.add_resource(Timer::new()).add_system(update_timer())
-    }
-}
+pub use defaults::DefaultAddons;

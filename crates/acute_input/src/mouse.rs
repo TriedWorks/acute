@@ -1,5 +1,5 @@
+use acute_window::winit::event::MouseButton;
 use std::collections::HashSet;
-use acute_window::event::MouseButton;
 
 pub struct Mouse {
     pub position: (f32, f32),
@@ -9,7 +9,6 @@ pub struct Mouse {
     pub just_pressed: HashSet<MouseButton>,
     pub pressed: HashSet<MouseButton>,
     pub just_released: HashSet<MouseButton>,
-
 }
 
 impl Mouse {
@@ -24,7 +23,6 @@ impl Mouse {
     pub fn just_released(&self, button: MouseButton) -> bool {
         self.just_released.contains(&button)
     }
-
 
     pub fn reset_scroll(&mut self) {
         self.scroll = (0.0, 0.0);

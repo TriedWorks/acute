@@ -1,62 +1,68 @@
-use acute_ecs::prelude::*;
-use acute_window::window::Window;
+use acute_ecs::legion::prelude::*;
+use acute_window::winit::window::Window;
 
 pub struct Renderer {
+    pub instance: wgpu::Instance,
     pub adapter: wgpu::Adapter,
     pub device: wgpu::Device,
     pub queue: wgpu::Queue,
-    pub surface: wgpu::Surface,
-    pub swap_chain: wgpu::SwapChain,
+    pub sc: wgpu::SwapChain,
+    pub sc_desc: wgpu::SwapChainDescriptor,
     pub window: Window,
+    pub surface: wgpu::Surface,
 }
 
 impl Renderer {
-    pub async fn new(
-        resources: &mut Resources,
-        window: Window,
-    ) -> Self {
+    pub async fn new(window: Window) -> Self {
+        let instance = wgpu::Instance::new(wgpu::BackendBit::PRIMARY);
 
-        let size = window.inner_size();
-        let surface = wgpu::Surface::create(&window);
+        let (size, surface) = unsafe {
+            let size = window.inner_size();
+            let surface = instance.create_surface(&window);
+            (size, surface)
+        };
 
-        let adapter = wgpu::Adapter::request(
-            &wgpu::RequestAdapterOptions {
+        let adapter = instance
+            .request_adapter(&wgpu::RequestAdapterOptions {
                 power_preference: wgpu::PowerPreference::Default,
                 compatible_surface: Some(&surface),
-            },
-            wgpu::BackendBit::PRIMARY,
-        )
+            })
             .await
             .unwrap();
 
         let (device, queue) = adapter
-            .request_device(&wgpu::DeviceDescriptor {
-                extensions: wgpu::Extensions {
-                    anisotropic_filtering: false,
+            .request_device(
+                &wgpu::DeviceDescriptor {
+                    features: adapter.features(),
+                    // use default limits, might change later, if it causes issues.
+                    limits: wgpu::Limits::default(),
+                    shader_validation: true,
                 },
-                limits: wgpu::Limits::default(),
-            })
-            .await;
+                None,
+            )
+            .await
+            .unwrap();
 
         let sc_desc = wgpu::SwapChainDescriptor {
             usage: wgpu::TextureUsage::OUTPUT_ATTACHMENT,
             format: wgpu::TextureFormat::Bgra8UnormSrgb,
             width: size.width,
             height: size.height,
-            present_mode: wgpu::PresentMode::Fifo,
+            // set this to Fifo to enable "vsync"
+            present_mode: wgpu::PresentMode::Mailbox,
         };
 
-        let swap_chain = device.create_swap_chain(&surface, &sc_desc);
-
-        resources.insert(sc_desc);
+        let sc = device.create_swap_chain(&surface, &sc_desc);
 
         Self {
+            instance,
             adapter,
             device,
             queue,
+            sc,
+            sc_desc,
+            window,
             surface,
-            swap_chain,
-            window
         }
     }
 }

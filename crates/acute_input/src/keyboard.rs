@@ -1,5 +1,5 @@
+use acute_window::winit::event::VirtualKeyCode;
 use std::collections::HashSet;
-use acute_window::event::VirtualKeyCode;
 
 pub struct Keyboard {
     pub just_pressed: HashSet<VirtualKeyCode>,

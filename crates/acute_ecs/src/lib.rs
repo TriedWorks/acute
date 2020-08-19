@@ -1,2 +1,1 @@
-pub use legion::{*, self};
-
+pub use legion;
