@@ -16,7 +16,7 @@
 
 -----
 
-##### Goals
+### Goals:
 
 - **Speed**: *fast* and *parallel* Architecture
 - **Feature Complete**: Offers many built in algorithms, simulations and components (not yet)
