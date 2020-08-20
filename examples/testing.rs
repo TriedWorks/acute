@@ -7,7 +7,7 @@ fn main() {
         .with_defaults(window)
         // .with_defaults_headless()
         .add_system(test_input())
-        .add_system(test_timer())
+        // .add_system(test_timer())
         .add_render_system(test_render())
         .build();
 
@@ -19,8 +19,7 @@ fn main() {
 fn test_render() -> Box<dyn Schedulable> {
     SystemBuilder::new("TestRenderSystem")
         .write_resource::<Renderer>()
-        .build(move |_, _, renderer, _| {
-            let renderer: &mut Renderer = renderer;
+        .build(move |_, world, renderer, _| {
             let frame = renderer.sc.get_current_frame().expect("Failed").output;
             let mut encoder =
                 renderer

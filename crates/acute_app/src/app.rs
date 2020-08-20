@@ -9,6 +9,8 @@ use acute_window::winit::{
 
 use crate::builder::AppBuilder;
 use crate::State;
+use acute_window::winit::window::Window;
+use acute_render_backend::Renderer;
 
 pub struct App {
     pub universe: Universe,
@@ -43,14 +45,21 @@ impl App {
                 }
                 _ => {}
             },
+            WinitEvent::RedrawRequested(_) => {
+                self.render_schedule
+                    .execute(&mut self.scene.world, &mut self.resources);
+            },
+            WinitEvent::MainEventsCleared => {
+                if let Some(renderer) = self.resources.get::<Renderer>() {
+                    renderer.window.request_redraw();
+                }
+            },
             _ => {}
         }
 
         self.schedule
             .execute(&mut self.scene.world, &mut self.resources);
         self.scene.update(&mut self.resources);
-        self.render_schedule
-            .execute(&mut self.scene.world, &mut self.resources);
     }
 
     pub fn run_with_state<T: State>(

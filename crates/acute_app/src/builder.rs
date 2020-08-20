@@ -43,7 +43,7 @@ impl AppBuilder {
     }
 
     pub fn add_render_system(mut self, render_system: Box<dyn Schedulable>) -> Self {
-        self.system_builder = self.system_builder.add_system(render_system);
+        self.render_system_builder = self.render_system_builder.add_system(render_system);
         self
     }
 }
