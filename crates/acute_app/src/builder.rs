@@ -1,8 +1,8 @@
 use crate::app::App;
-use acute_ecs::legion::prelude::*;
-use acute_ecs::legion::systems::{resource::Resource, schedule::Builder};
+use acute_ecs::legion::*;
 use acute_render_backend::Renderer;
 use acute_window::winit::window::Window;
+use acute_ecs::legion::systems::{Builder, Resource, ParallelRunnable};
 
 pub struct AppBuilder {
     pub app: App,
@@ -37,13 +37,13 @@ impl AppBuilder {
         self
     }
 
-    pub fn add_system(mut self, system: Box<dyn Schedulable>) -> Self {
-        self.system_builder = self.system_builder.add_system(system);
+    pub fn add_system<T: ParallelRunnable + 'static>(mut self, system: T) -> Self {
+        self.system_builder.add_system(system);
         self
     }
 
-    pub fn add_render_system(mut self, render_system: Box<dyn Schedulable>) -> Self {
-        self.render_system_builder = self.render_system_builder.add_system(render_system);
+    pub fn add_render_system<T: ParallelRunnable + 'static>(mut self, system: T) -> Self {
+        self.render_system_builder.add_system(system);
         self
     }
 }

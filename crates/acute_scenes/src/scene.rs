@@ -1,5 +1,5 @@
-use acute_ecs::legion::prelude::*;
-use acute_ecs::legion::systems::schedule::Builder;
+use acute_ecs::legion::*;
+use acute_ecs::legion::systems::Builder;
 
 pub struct Scene {
     pub world: World,
@@ -7,8 +7,8 @@ pub struct Scene {
 }
 
 impl Scene {
-    pub fn new(universe: &Universe, schedule_builder: Option<Builder>) -> Self {
-        let world = universe.create_world();
+    pub fn new(schedule_builder: Option<Builder>) -> Self {
+        let world = World::default();
 
         let schedule = schedule_builder.unwrap_or(Schedule::builder()).build();
 

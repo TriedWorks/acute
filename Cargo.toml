@@ -15,15 +15,16 @@ name = "acute"
 path = "src/lib.rs"
 
 [dependencies]
-acute_core = { version = "*", path = "crates/acute_core" }
-acute_app = { version = "*", path = "crates/acute_app" }
-acute_ecs = { version = "*", path = "crates/acute_ecs" }
-acute_render = { version = "*", path = "crates/acute_render" }
-acute_render_backend = { version = "*", path = "crates/acute_render_backend" }
-acute_input = { version = "*", path = "crates/acute_input" }
-acute_scenes = { version = "*", path = "crates/acute_scenes" }
-acute_window = { version = "*", path = "crates/acute_window" }
-acute_assets = { version = "*", path = "crates/acute_assets" }
+acute_core = { version = "0.1", path = "crates/acute_core" }
+acute_app = { version = "0.1", path = "crates/acute_app" }
+acute_ecs = { version = "0.1", path = "crates/acute_ecs" }
+acute_render = { version = "0.1", path = "crates/acute_render" }
+acute_render_backend = { version = "0.1", path = "crates/acute_render_backend" }
+acute_input = { version = "0.1", path = "crates/acute_input" }
+acute_scenes = { version = "0.1", path = "crates/acute_scenes" }
+acute_window = { version = "0.1", path = "crates/acute_window" }
+acute_assets = { version = "0.1", path = "crates/acute_assets" }
+legion = "0.3.0" # required until issue/178 is fixed
 
 [[example]]
 name = "testing"

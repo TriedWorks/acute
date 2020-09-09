@@ -1,5 +1,5 @@
-use acute_ecs::legion::prelude::*;
 use acute_window::winit::window::Window;
+use wgpu::ShaderModule;
 
 pub struct Renderer {
     pub instance: wgpu::Instance,
@@ -10,6 +10,7 @@ pub struct Renderer {
     pub sc_desc: wgpu::SwapChainDescriptor,
     pub window: Window,
     pub surface: wgpu::Surface,
+    // pub pipeline: wgpu::RenderPipeline,
 }
 
 impl Renderer {
@@ -49,10 +50,12 @@ impl Renderer {
             width: size.width,
             height: size.height,
             // set this to Fifo to enable "vsync"
-            present_mode: wgpu::PresentMode::Mailbox,
+            present_mode: wgpu::PresentMode::Fifo,
         };
 
         let sc = device.create_swap_chain(&surface, &sc_desc);
+
+        // let test_pipeline = create_test_pipeline(&device);
 
         Self {
             instance,
@@ -63,6 +66,70 @@ impl Renderer {
             sc_desc,
             window,
             surface,
+            // pipeline: test_pipeline
         }
     }
 }
+
+fn create_test_pipeline(device: &wgpu::Device) -> wgpu::RenderPipeline {
+    use inline_spirv::include_spirv;
+    unimplemented!()
+    // let spv_1: &'static [u32] = inline_spirv!(r#"
+    //     #version 450
+    //
+    //     const vec2 positions[3] = vec2[3](
+    //         vec2(0.0, 0.5),
+    //         vec2(-0.5, -0.5),
+    //         vec2(0.5, -0.5)
+    //     );
+    //
+    //     void main() {
+    //         gl_Position = vec4(positions[gl_VertexIndex], 0.0, 1.0);
+    //     }
+    //
+    //     "#, vert);
+    //
+    // let spv_2: &'static [u32] = inline_spirv!(r#"
+    //     #version 450
+    //
+    //     layout(location=0) out vec4 f_color;
+    //
+    //     void main() {
+    //         f_color = vec4(0.6, 0.2, 0.9, 1.0);
+    //     }
+    //
+    //     "#, frag);
+    //
+    // let vs_module = device.create_shader_module(wgpu::ShaderModule());
+    // let fs_module = device.create_shader_module(wgpu::include_spirv!("../../../assets/shaders/none.fs.spv"));
+    //
+    // let layout = device.create_pipeline_layout(&wgpu::PipelineLayoutDescriptor {
+    //     label: None,
+    //     bind_group_layouts: &[],
+    //     push_constant_ranges: &[]
+    // });
+    //
+    // device.create_render_pipeline(&wgpu::RenderPipelineDescriptor {
+    //     label: None,
+    //     layout: Some(&layout),
+    //     vertex_stage: wgpu::ProgrammableStageDescriptor {
+    //         module: &vs_module,
+    //         entry_point: "",
+    //     },
+    //     fragment_stage: Some(wgpu::ProgrammableStageDescriptor {
+    //         module: &fs_module,
+    //         entry_point: "",
+    //     }),
+    //     rasterization_state: None,
+    //     primitive_topology: wgpu::PrimitiveTopology::TriangleList,
+    //     color_states: &[],
+    //     depth_stencil_state: None,
+    //     vertex_state: wgpu::VertexStateDescriptor {
+    //         index_format: Default::default(),
+    //         vertex_buffers: &[]
+    //     },
+    //     sample_count: 1,
+    //     sample_mask: !0,
+    //     alpha_to_coverage_enabled: false
+}
+

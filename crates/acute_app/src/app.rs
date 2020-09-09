@@ -1,5 +1,6 @@
-use acute_ecs::legion::prelude::*;
-use acute_ecs::legion::systems::{resource::Resource, schedule::Builder};
+use acute_ecs::legion::*;
+use acute_ecs::legion::systems::Resource;
+
 use acute_input::Input;
 use acute_scenes::Scene;
 use acute_window::winit::{
@@ -12,8 +13,8 @@ use crate::State;
 use acute_window::winit::window::Window;
 use acute_render_backend::Renderer;
 
+
 pub struct App {
-    pub universe: Universe,
     pub resources: Resources,
     pub schedule: Schedule,
     pub render_schedule: Schedule,
@@ -80,10 +81,8 @@ impl App {
 
 impl Default for App {
     fn default() -> Self {
-        let universe = Universe::new();
-        let scene = Scene::new(&universe, None);
+        let scene = Scene::new( None);
         Self {
-            universe,
             resources: Default::default(),
             schedule: Schedule::builder().build(),
             render_schedule: Schedule::builder().build(),

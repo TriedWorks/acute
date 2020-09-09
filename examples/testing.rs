@@ -1,4 +1,5 @@
 use acute::prelude::*;
+use legion::system;
 
 fn main() {
     let (window, event_loop) = WinitWindow::new(WindowDescriptor::default());
@@ -6,9 +7,9 @@ fn main() {
     let mut app = App::builder()
         .with_defaults(window)
         // .with_defaults_headless()
-        .add_system(test_input())
+        .add_system(test_input_system())
         // .add_system(test_timer())
-        .add_render_system(test_render())
+        .add_render_system(test_render_system())
         .build();
 
     event_loop.run(move |event, _event_loop, mut control_flow| {
@@ -16,58 +17,51 @@ fn main() {
     })
 }
 
-fn test_render() -> Box<dyn Schedulable> {
-    SystemBuilder::new("TestRenderSystem")
-        .write_resource::<Renderer>()
-        .build(move |_, world, renderer, _| {
-            let frame = renderer.sc.get_current_frame().expect("Failed").output;
-            let mut encoder =
-                renderer
-                    .device
-                    .create_command_encoder(&wgpu::CommandEncoderDescriptor {
-                        label: Some("TestRenderEncoder"),
-                    });
-            {
-                let mut render_pass = encoder.begin_render_pass(&wgpu::RenderPassDescriptor {
-                    color_attachments: &[wgpu::RenderPassColorAttachmentDescriptor {
-                        attachment: &frame.view,
-                        resolve_target: None,
-                        ops: wgpu::Operations {
-                            load: wgpu::LoadOp::Clear(wgpu::Color::GREEN),
-                            store: true,
-                        },
-                    }],
-                    depth_stencil_attachment: None,
-                });
-            }
+#[system]
+fn test_render(#[resource] renderer: &mut Renderer) {
+    let frame = renderer.sc.get_current_frame().expect("Failed").output;
+    let mut encoder =
+        renderer
+            .device
+            .create_command_encoder(&wgpu::CommandEncoderDescriptor {
+                label: Some("TestRenderEncoder"),
+            });
+    {
+        let render_pass = encoder.begin_render_pass(&wgpu::RenderPassDescriptor {
+            color_attachments: &[wgpu::RenderPassColorAttachmentDescriptor {
+                attachment: &frame.view,
+                resolve_target: None,
+                ops: wgpu::Operations {
+                    load: wgpu::LoadOp::Clear(wgpu::Color::GREEN),
+                    store: true,
+                },
+            }],
+            depth_stencil_attachment: None,
+        });
+    }
 
-            renderer.queue.submit(Some(encoder.finish()));
-        })
+    renderer.queue.submit(Some(encoder.finish()));
 }
 
-fn test_input() -> Box<dyn Schedulable> {
-    SystemBuilder::new("TestPrintSystem")
-        .read_resource::<Input>()
-        .build(|_, _, input, _| {
-            let input: &Input = input;
-            if input.keyboard.just_pressed(VirtualKeyCode::Space) {
-                println!("Pressed Space")
-            }
-            if input.mouse.just_pressed(MouseButton::Left) {
-                println!(
-                    "click at {} | {}!",
-                    input.mouse.position.0, input.mouse.position.1
-                )
-            }
-        })
+#[system]
+fn test_input(#[resource] input: &Input) {
+    if input.keyboard.just_pressed(VirtualKeyCode::Space) {
+        println!("Pressed Space")
+    }
+    if input.mouse.just_pressed(MouseButton::Left) {
+        println!(
+            "click at {} | {}!",
+            input.mouse.position.0, input.mouse.position.1
+        )
+    }
 }
 
-fn test_print() -> Box<dyn Schedulable> {
-    SystemBuilder::new("TestPrintSystem").build(|_, _, _, _| println!("Test"))
+#[system]
+fn test_print() {
+    println!("Test");
 }
 
-fn test_timer() -> Box<dyn Schedulable> {
-    SystemBuilder::new("PrintTimeSystem")
-        .read_resource::<Timer>()
-        .build(move |_, _, timer, _| println!("{:?}", timer.delta_time()))
+#[system]
+fn test_timer(#[resource] timer: &Timer) {
+    println!("{:?}", timer.delta_time());
 }
