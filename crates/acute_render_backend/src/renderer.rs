@@ -1,5 +1,5 @@
+use acute_window::winit::dpi::PhysicalSize;
 use acute_window::winit::window::Window;
-use wgpu::ShaderModule;
 
 pub struct Renderer {
     pub instance: wgpu::Instance,
@@ -10,7 +10,7 @@ pub struct Renderer {
     pub sc_desc: wgpu::SwapChainDescriptor,
     pub window: Window,
     pub surface: wgpu::Surface,
-    // pub pipeline: wgpu::RenderPipeline,
+    pub pipeline: wgpu::RenderPipeline,
 }
 
 impl Renderer {
@@ -29,7 +29,7 @@ impl Renderer {
                 compatible_surface: Some(&surface),
             })
             .await
-            .unwrap();
+            .expect("failed to find an appropriate device");
 
         let (device, queue) = adapter
             .request_device(
@@ -42,7 +42,7 @@ impl Renderer {
                 None,
             )
             .await
-            .unwrap();
+            .expect("failed to create device");
 
         let sc_desc = wgpu::SwapChainDescriptor {
             usage: wgpu::TextureUsage::OUTPUT_ATTACHMENT,
@@ -50,12 +50,12 @@ impl Renderer {
             width: size.width,
             height: size.height,
             // set this to Fifo to enable "vsync"
-            present_mode: wgpu::PresentMode::Fifo,
+            present_mode: wgpu::PresentMode::Mailbox,
         };
 
         let sc = device.create_swap_chain(&surface, &sc_desc);
 
-        // let test_pipeline = create_test_pipeline(&device);
+        let test_pipeline = create_test_pipeline(&device, &sc_desc);
 
         Self {
             instance,
@@ -66,69 +66,69 @@ impl Renderer {
             sc_desc,
             window,
             surface,
-            // pipeline: test_pipeline
+            pipeline: test_pipeline,
         }
+    }
+
+    pub fn resize(&mut self, size: &PhysicalSize<u32>) {
+        self.sc_desc.width = size.width;
+        self.sc_desc.height = size.height;
+        self.sc = self.device.create_swap_chain(&self.surface, &self.sc_desc);
     }
 }
 
-fn create_test_pipeline(device: &wgpu::Device) -> wgpu::RenderPipeline {
-    use inline_spirv::include_spirv;
-    unimplemented!()
-    // let spv_1: &'static [u32] = inline_spirv!(r#"
-    //     #version 450
-    //
-    //     const vec2 positions[3] = vec2[3](
-    //         vec2(0.0, 0.5),
-    //         vec2(-0.5, -0.5),
-    //         vec2(0.5, -0.5)
-    //     );
-    //
-    //     void main() {
-    //         gl_Position = vec4(positions[gl_VertexIndex], 0.0, 1.0);
-    //     }
-    //
-    //     "#, vert);
-    //
-    // let spv_2: &'static [u32] = inline_spirv!(r#"
-    //     #version 450
-    //
-    //     layout(location=0) out vec4 f_color;
-    //
-    //     void main() {
-    //         f_color = vec4(0.6, 0.2, 0.9, 1.0);
-    //     }
-    //
-    //     "#, frag);
-    //
-    // let vs_module = device.create_shader_module(wgpu::ShaderModule());
-    // let fs_module = device.create_shader_module(wgpu::include_spirv!("../../../assets/shaders/none.fs.spv"));
-    //
-    // let layout = device.create_pipeline_layout(&wgpu::PipelineLayoutDescriptor {
-    //     label: None,
-    //     bind_group_layouts: &[],
-    //     push_constant_ranges: &[]
-    // });
-    //
-    // device.create_render_pipeline(&wgpu::RenderPipelineDescriptor {
-    //     label: None,
-    //     layout: Some(&layout),
-    //     vertex_stage: wgpu::ProgrammableStageDescriptor {
-    //         module: &vs_module,
-    //         entry_point: "",
-    //     },
-    //     fragment_stage: Some(wgpu::ProgrammableStageDescriptor {
-    //         module: &fs_module,
-    //         entry_point: "",
-    //     }),
-    //     rasterization_state: None,
-    //     primitive_topology: wgpu::PrimitiveTopology::TriangleList,
-    //     color_states: &[],
-    //     depth_stencil_state: None,
-    //     vertex_state: wgpu::VertexStateDescriptor {
-    //         index_format: Default::default(),
-    //         vertex_buffers: &[]
-    //     },
-    //     sample_count: 1,
-    //     sample_mask: !0,
-    //     alpha_to_coverage_enabled: false
+fn create_test_pipeline(
+    device: &wgpu::Device,
+    sc_desc: &wgpu::SwapChainDescriptor,
+) -> wgpu::RenderPipeline {
+    let vs_module = device.create_shader_module(wgpu::include_spirv!(
+        "../../../assets/shaders/compiled/none.vert.spv"
+    ));
+    let fs_module = device.create_shader_module(wgpu::include_spirv!(
+        "../../../assets/shaders/compiled/none.frag.spv"
+    ));
+
+    let layout = device.create_pipeline_layout(&wgpu::PipelineLayoutDescriptor {
+        label: None,
+        bind_group_layouts: &[],
+        push_constant_ranges: &[],
+    });
+
+    let render_pipeline = device.create_render_pipeline(&wgpu::RenderPipelineDescriptor {
+        label: Some("test pipeline"),
+        layout: Some(&layout),
+        vertex_stage: wgpu::ProgrammableStageDescriptor {
+            module: &vs_module,
+            entry_point: "main",
+        },
+        fragment_stage: Some(wgpu::ProgrammableStageDescriptor {
+            module: &fs_module,
+            entry_point: "main",
+        }),
+        rasterization_state: Some(wgpu::RasterizationStateDescriptor {
+            front_face: wgpu::FrontFace::Ccw,
+            cull_mode: wgpu::CullMode::Back,
+            clamp_depth: false,
+            depth_bias: 0,
+            depth_bias_slope_scale: 0.0,
+            depth_bias_clamp: 0.0,
+        }),
+        primitive_topology: wgpu::PrimitiveTopology::TriangleList,
+        color_states: &[wgpu::ColorStateDescriptor {
+            format: sc_desc.format,
+            color_blend: wgpu::BlendDescriptor::REPLACE,
+            alpha_blend: wgpu::BlendDescriptor::REPLACE,
+            write_mask: wgpu::ColorWrite::ALL,
+        }],
+        depth_stencil_state: None,
+        vertex_state: wgpu::VertexStateDescriptor {
+            index_format: wgpu::IndexFormat::Uint32,
+            vertex_buffers: &[],
+        },
+        sample_count: 1,
+        sample_mask: !0,
+        alpha_to_coverage_enabled: false,
+    });
+
+    render_pipeline
 }

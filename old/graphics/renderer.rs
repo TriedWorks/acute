@@ -86,13 +86,13 @@ impl Renderer {
 
         // following should be moved into their own
         let vs_module = shader::create_shader_module(
-            include_str!("../../assets/shaders/default.vs"),
+            include_str!("../../assets/shaders/default.vert"),
             ShaderType::Vertex,
             &device,
         );
 
         let fs_module = shader::create_shader_module(
-            include_str!("../../assets/shaders/default.fs"),
+            include_str!("../../assets/shaders/default.frag"),
             ShaderType::Fragment,
             &device,
         );

@@ -1,6 +1,5 @@
 use crate::app::App;
 use acute_ecs::legion::systems::{Builder, ParallelRunnable, Resource};
-use acute_ecs::legion::*;
 use acute_render_backend::Renderer;
 use acute_window::winit::window::Window;
 

@@ -11,7 +11,6 @@ use acute_window::winit::{
 use crate::builder::AppBuilder;
 use crate::State;
 use acute_render_backend::Renderer;
-use acute_window::winit::window::Window;
 
 pub struct App {
     pub resources: Resources,
@@ -42,6 +41,11 @@ impl App {
             WinitEvent::WindowEvent { event, .. } => match event {
                 WindowEvent::CloseRequested => {
                     *control_flow = ControlFlow::Exit;
+                }
+                WindowEvent::Resized(size) => {
+                    if let Some(mut renderer) = self.resources.get_mut::<Renderer>() {
+                        renderer.resize(size)
+                    }
                 }
                 _ => {}
             },

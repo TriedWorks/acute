@@ -26,7 +26,7 @@ fn test_render(#[resource] renderer: &mut Renderer) {
             label: Some("TestRenderEncoder"),
         });
     {
-        let render_pass = encoder.begin_render_pass(&wgpu::RenderPassDescriptor {
+        let mut render_pass = encoder.begin_render_pass(&wgpu::RenderPassDescriptor {
             color_attachments: &[wgpu::RenderPassColorAttachmentDescriptor {
                 attachment: &frame.view,
                 resolve_target: None,
@@ -37,6 +37,9 @@ fn test_render(#[resource] renderer: &mut Renderer) {
             }],
             depth_stencil_attachment: None,
         });
+
+        render_pass.set_pipeline(&renderer.pipeline);
+        render_pass.draw(0..3, 0..1);
     }
 
     renderer.queue.submit(Some(encoder.finish()));
