@@ -1,5 +1,5 @@
-use acute_ecs::legion::*;
 use acute_ecs::legion::systems::Resource;
+use acute_ecs::legion::*;
 
 use acute_input::Input;
 use acute_scenes::Scene;
@@ -10,9 +10,8 @@ use acute_window::winit::{
 
 use crate::builder::AppBuilder;
 use crate::State;
-use acute_window::winit::window::Window;
 use acute_render_backend::Renderer;
-
+use acute_window::winit::window::Window;
 
 pub struct App {
     pub resources: Resources,
@@ -49,12 +48,12 @@ impl App {
             WinitEvent::RedrawRequested(_) => {
                 self.render_schedule
                     .execute(&mut self.scene.world, &mut self.resources);
-            },
+            }
             WinitEvent::MainEventsCleared => {
                 if let Some(renderer) = self.resources.get::<Renderer>() {
                     renderer.window.request_redraw();
                 }
-            },
+            }
             _ => {}
         }
 
@@ -81,7 +80,7 @@ impl App {
 
 impl Default for App {
     fn default() -> Self {
-        let scene = Scene::new( None);
+        let scene = Scene::new(None);
         Self {
             resources: Default::default(),
             schedule: Schedule::builder().build(),

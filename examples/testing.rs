@@ -20,12 +20,11 @@ fn main() {
 #[system]
 fn test_render(#[resource] renderer: &mut Renderer) {
     let frame = renderer.sc.get_current_frame().expect("Failed").output;
-    let mut encoder =
-        renderer
-            .device
-            .create_command_encoder(&wgpu::CommandEncoderDescriptor {
-                label: Some("TestRenderEncoder"),
-            });
+    let mut encoder = renderer
+        .device
+        .create_command_encoder(&wgpu::CommandEncoderDescriptor {
+            label: Some("TestRenderEncoder"),
+        });
     {
         let render_pass = encoder.begin_render_pass(&wgpu::RenderPassDescriptor {
             color_attachments: &[wgpu::RenderPassColorAttachmentDescriptor {

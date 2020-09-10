@@ -132,4 +132,3 @@ fn create_test_pipeline(device: &wgpu::Device) -> wgpu::RenderPipeline {
     //     sample_mask: !0,
     //     alpha_to_coverage_enabled: false
 }
-
