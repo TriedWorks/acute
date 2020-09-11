@@ -12,7 +12,7 @@ impl DefaultAddons for acute_app::AppBuilder {
     fn with_defaults(self, window: Window) -> Self {
         self.add_resource(Timer::new())
             .add_resource(Input::new())
-            .with_window(window)
+            .add_resource(window)
             .add_system(update_timer_system())
     }
 

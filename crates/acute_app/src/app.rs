@@ -11,6 +11,7 @@ use acute_window::winit::{
 use crate::builder::AppBuilder;
 use crate::State;
 use acute_render_backend::WgpuRenderer;
+use acute_window::winit::window::Window;
 
 pub struct App {
     pub resources: Resources,
@@ -54,8 +55,8 @@ impl App {
                     .execute(&mut self.scene.world, &mut self.resources);
             }
             WinitEvent::MainEventsCleared => {
-                if let Some(renderer) = self.resources.get::<WgpuRenderer>() {
-                    renderer.resources.window.request_redraw();
+                if let Some(window) = self.resources.get::<Window>() {
+                    window.request_redraw();
                 }
             }
             _ => {}

@@ -1,17 +1,17 @@
 use std::collections::HashMap;
 use acute_window::winit::window::Window;
+use acute_ecs::legion::Resources;
 
 pub struct WgpuResources {
     pub swap_chain: wgpu::SwapChain,
     pub sc_desc: wgpu::SwapChainDescriptor,
-    pub window: Window,
     pub surface: wgpu::Surface,
     pub pipelines: HashMap<String, wgpu::RenderPipeline>
 }
 
 impl WgpuResources {
-    pub fn new(window: Window, surface: wgpu::Surface, device: &wgpu::Device) -> Self {
-        let size = window.inner_size();
+    pub fn new(resources: &Resources, surface: wgpu::Surface, device: &wgpu::Device) -> Self {
+        let size = resources.get::<Window>().unwrap().inner_size();
 
         let sc_desc = wgpu::SwapChainDescriptor {
             usage: wgpu::TextureUsage::OUTPUT_ATTACHMENT,
@@ -27,7 +27,6 @@ impl WgpuResources {
         Self {
             swap_chain,
             sc_desc,
-            window,
             surface,
             pipelines: Default::default()
         }

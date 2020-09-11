@@ -1,24 +1,26 @@
 use acute_window::winit::dpi::PhysicalSize;
 use acute_window::winit::window::Window;
 use crate::resources::WgpuResources;
+use acute_ecs::legion::Resources;
+use std::ops::Deref;
 
 pub struct WgpuRenderer {
     pub instance: wgpu::Instance,
     pub adapter: wgpu::Adapter,
     pub device: wgpu::Device,
     pub queue: wgpu::Queue,
-
-    pub resources: WgpuResources,
+    pub resources: WgpuResources
 }
 
 impl WgpuRenderer {
-    pub async fn new(window: Window) -> Self {
+    pub async fn new(resources: &mut Resources) -> Self {
         let instance = wgpu::Instance::new(wgpu::BackendBit::PRIMARY);
 
-        let (size, surface) = unsafe {
-            let size = window.inner_size();
-            let surface = instance.create_surface(&window);
-            (size, surface)
+        let window = resources.get::<Window>().unwrap();
+
+        let surface = unsafe {
+            let surface = instance.create_surface(window.deref());
+            surface
         };
 
         let adapter = instance
@@ -41,8 +43,8 @@ impl WgpuRenderer {
             )
             .await
             .expect("failed to create device");
-
-        let resources= WgpuResources::new(window, surface, &device);
+        {}
+        let resources= WgpuResources::new(resources, surface, &device);
 
         Self {
             instance,
