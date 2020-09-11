@@ -14,5 +14,4 @@ keywords = ["acute"]
 acute_ecs = { version = "0.1", path = "../acute_ecs" }
 acute_window = { version = "0.1", path = "../acute_window" }
 
-inline-spirv = "0.1.1"
 wgpu = "0.6.0"

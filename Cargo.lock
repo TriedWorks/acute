@@ -67,7 +67,6 @@ version = "0.1.2"
 dependencies = [
  "acute_ecs",
  "acute_window",
- "inline-spirv",
  "wgpu",
 ]
 
@@ -220,15 +219,6 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "4344512281c643ae7638bbabc3af17a11307803ec8f0fcad9fae512a8bf36467"
 dependencies = [
  "bitflags",
-]
-
-[[package]]
-name = "cmake"
-version = "0.1.44"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "0e56268c17a6248366d66d4a47a3381369d068cce8409bb1716ed77ea32163bb"
-dependencies = [
- "cc",
 ]
 
 [[package]]
@@ -745,17 +735,6 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "93a1bb8316a44459a7d14253c4d28dd7395cbd23cc04a68c46e851b8e46d64b1"
 dependencies = [
  "atom",
-]
-
-[[package]]
-name = "inline-spirv"
-version = "0.1.1"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "4fe7ada28e42e2b3383452857c8d8b188c753ae1d7b9867ccd0d430f168c22fe"
-dependencies = [
- "quote 1.0.7",
- "shaderc",
- "syn",
 ]
 
 [[package]]
@@ -1454,26 +1433,6 @@ dependencies = [
  "proc-macro2 1.0.19",
  "quote 1.0.7",
  "syn",
-]
-
-[[package]]
-name = "shaderc"
-version = "0.6.2"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "ed344938df2d7fa3cc6bfb4af0b578f00f9b389d5fe7be0250fa657c442a8281"
-dependencies = [
- "libc",
- "shaderc-sys",
-]
-
-[[package]]
-name = "shaderc-sys"
-version = "0.6.2"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "30075c712b08798cb2b5e54e4434970a4a3a3a3e838b0642590c74605d3cc528"
-dependencies = [
- "cmake",
- "libc",
 ]
 
 [[package]]
