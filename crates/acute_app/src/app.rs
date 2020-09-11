@@ -10,7 +10,7 @@ use acute_window::winit::{
 
 use crate::builder::AppBuilder;
 use crate::State;
-use acute_render_backend::Renderer;
+use acute_render_backend::WgpuRenderer;
 
 pub struct App {
     pub resources: Resources,
@@ -43,7 +43,7 @@ impl App {
                     *control_flow = ControlFlow::Exit;
                 }
                 WindowEvent::Resized(size) => {
-                    if let Some(mut renderer) = self.resources.get_mut::<Renderer>() {
+                    if let Some(mut renderer) = self.resources.get_mut::<WgpuRenderer>() {
                         renderer.resize(size)
                     }
                 }
@@ -54,8 +54,8 @@ impl App {
                     .execute(&mut self.scene.world, &mut self.resources);
             }
             WinitEvent::MainEventsCleared => {
-                if let Some(renderer) = self.resources.get::<Renderer>() {
-                    renderer.window.request_redraw();
+                if let Some(renderer) = self.resources.get::<WgpuRenderer>() {
+                    renderer.resources.window.request_redraw();
                 }
             }
             _ => {}

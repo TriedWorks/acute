@@ -1,6 +1,6 @@
 use crate::app::App;
 use acute_ecs::legion::systems::{Builder, ParallelRunnable, Resource};
-use acute_render_backend::Renderer;
+use acute_render_backend::WgpuRenderer;
 use acute_window::winit::window::Window;
 
 pub struct AppBuilder {
@@ -13,10 +13,11 @@ pub struct AppBuilder {
 impl AppBuilder {
     pub fn build(mut self) -> App {
         let renderer = match self.window {
-            Some(window) => Some(futures::executor::block_on(Renderer::new(window))),
+            Some(window) => Some(futures::executor::block_on(WgpuRenderer::new(window))),
             None => None,
         };
-        if let Some(renderer) = renderer {
+        if let Some(mut renderer) = renderer {
+            renderer.resources.with_testing(&renderer.device);
             self.app.resources.insert(renderer);
         }
 

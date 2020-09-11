@@ -1,4 +1,5 @@
 mod renderer;
+mod resources;
 
-pub use renderer::Renderer;
+pub use renderer::WgpuRenderer;
 pub use wgpu;

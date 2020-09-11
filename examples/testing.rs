@@ -18,8 +18,8 @@ fn main() {
 }
 
 #[system]
-fn test_render(#[resource] renderer: &mut Renderer) {
-    let frame = renderer.sc.get_current_frame().expect("Failed").output;
+fn test_render(#[resource] renderer: &mut WgpuRenderer) {
+    let frame = renderer.resources.swap_chain.get_current_frame().expect("Failed").output;
     let mut encoder = renderer
         .device
         .create_command_encoder(&wgpu::CommandEncoderDescriptor {
@@ -38,7 +38,7 @@ fn test_render(#[resource] renderer: &mut Renderer) {
             depth_stencil_attachment: None,
         });
 
-        render_pass.set_pipeline(&renderer.pipeline);
+        render_pass.set_pipeline(&renderer.resources.pipelines.get("none").unwrap());
         render_pass.draw(0..3, 0..1);
     }
 
