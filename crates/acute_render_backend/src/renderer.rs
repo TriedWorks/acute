@@ -4,7 +4,7 @@ use crate::resources::WgpuResources;
 use acute_ecs::legion::Resources;
 use std::ops::Deref;
 use wgpu::util::DeviceExt;
-use crate::mesh::VERTICES;
+use crate::mesh::{VERTICES, INDICES};
 use crate::buffer::BufferId;
 
 pub struct WgpuRenderer {
@@ -57,7 +57,14 @@ impl WgpuRenderer {
             usage: wgpu::BufferUsage::VERTEX,
         });
 
+        let test_index_buffer = device.create_buffer_init(&wgpu::util::BufferInitDescriptor {
+            label: Some("test_index_buffer"),
+            contents: &bytemuck::cast_slice(&INDICES),
+            usage: wgpu::BufferUsage::INDEX
+        });
+
         resources.buffers.push(test_vertex_buffer);
+        resources.buffers.push(test_index_buffer);
 
         // <- TEST AREA
 

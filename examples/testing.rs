@@ -40,7 +40,8 @@ fn test_render(#[resource] renderer: &mut WgpuRenderer) {
 
         render_pass.set_pipeline(&renderer.resources.pipelines.get("simple_color").unwrap());
         render_pass.set_vertex_buffer(0, renderer.resources.buffers.get(0).unwrap().slice(..));
-        render_pass.draw(0..3, 0..1);
+        render_pass.set_index_buffer(renderer.resources.buffers.get(1).unwrap().slice(..));
+        render_pass.draw_indexed(0..6, 0, 0..1);
     }
 
     renderer.queue.submit(Some(encoder.finish()));
