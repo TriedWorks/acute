@@ -38,7 +38,8 @@ fn test_render(#[resource] renderer: &mut WgpuRenderer) {
             depth_stencil_attachment: None,
         });
 
-        render_pass.set_pipeline(&renderer.resources.pipelines.get("none").unwrap());
+        render_pass.set_pipeline(&renderer.resources.pipelines.get("simple_color").unwrap());
+        render_pass.set_vertex_buffer(0, renderer.resources.buffers.get(0).unwrap().slice(..));
         render_pass.draw(0..3, 0..1);
     }
 

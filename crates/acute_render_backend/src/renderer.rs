@@ -3,6 +3,9 @@ use acute_window::winit::window::Window;
 use crate::resources::WgpuResources;
 use acute_ecs::legion::Resources;
 use std::ops::Deref;
+use wgpu::util::DeviceExt;
+use crate::mesh::VERTICES;
+use crate::buffer::BufferId;
 
 pub struct WgpuRenderer {
     pub instance: wgpu::Instance,
@@ -43,8 +46,20 @@ impl WgpuRenderer {
             )
             .await
             .expect("failed to create device");
-        {}
-        let resources= WgpuResources::new(resources, surface, &device);
+
+        let mut resources= WgpuResources::new(resources, surface, &device);
+
+        // -> TEST AREA
+
+        let test_vertex_buffer= device.create_buffer_init(&wgpu::util::BufferInitDescriptor {
+            label: Some("test_vertex_buffer"),
+            contents: bytemuck::cast_slice(&VERTICES),
+            usage: wgpu::BufferUsage::VERTEX,
+        });
+
+        resources.buffers.push(test_vertex_buffer);
+
+        // <- TEST AREA
 
         Self {
             instance,

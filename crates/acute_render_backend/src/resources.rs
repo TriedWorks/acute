@@ -1,12 +1,16 @@
 use std::collections::HashMap;
 use acute_window::winit::window::Window;
 use acute_ecs::legion::Resources;
+use crate::buffer::BufferId;
+use crate::mesh::Vertex;
 
 pub struct WgpuResources {
     pub swap_chain: wgpu::SwapChain,
     pub sc_desc: wgpu::SwapChainDescriptor,
     pub surface: wgpu::Surface,
-    pub pipelines: HashMap<String, wgpu::RenderPipeline>
+    pub pipelines: HashMap<String, wgpu::RenderPipeline>,
+    // TODO: Vec -> Hashmap<BufferId>
+    pub buffers: Vec<wgpu::Buffer>,
 }
 
 impl WgpuResources {
@@ -28,12 +32,13 @@ impl WgpuResources {
             swap_chain,
             sc_desc,
             surface,
-            pipelines: Default::default()
+            pipelines: Default::default(),
+            buffers: Default::default()
         }
     }
 
     pub fn with_testing(&mut self, device: &wgpu::Device) {
-        self.pipelines.insert("none".to_string(), create_test_pipeline(device, &self.sc_desc));
+        self.pipelines.insert("simple_color".to_string(), create_test_pipeline(device, &self.sc_desc));
     }
 }
 
@@ -42,10 +47,10 @@ fn create_test_pipeline(
     sc_desc: &wgpu::SwapChainDescriptor,
 ) -> wgpu::RenderPipeline {
     let vs_module = device.create_shader_module(wgpu::include_spirv!(
-        "../../../assets/shaders/compiled/none.vert.spv"
+        "../../../assets/shaders/compiled/simple_color.vert.spv"
     ));
     let fs_module = device.create_shader_module(wgpu::include_spirv!(
-        "../../../assets/shaders/compiled/none.frag.spv"
+        "../../../assets/shaders/compiled/simple_color.frag.spv"
     ));
 
     let layout = device.create_pipeline_layout(&wgpu::PipelineLayoutDescriptor {
@@ -83,7 +88,7 @@ fn create_test_pipeline(
         depth_stencil_state: None,
         vertex_state: wgpu::VertexStateDescriptor {
             index_format: wgpu::IndexFormat::Uint32,
-            vertex_buffers: &[],
+            vertex_buffers: &[Vertex::desc()],
         },
         sample_count: 1,
         sample_mask: !0,

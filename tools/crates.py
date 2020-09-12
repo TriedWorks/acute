@@ -13,3 +13,14 @@ crate_names = [
 
 all_crates = ["acute_" + crate_name + "/" for crate_name in crate_names]
 
+# these crates are registered but not used yet
+new_crates = [
+    "audio",
+    "physics",
+    "physics2d"
+    "math",
+    "mesh"
+    "wgpu"
+]
+
+all_new_crates = ["acute_" + crate_name + "/" for crate_name in new_crates]

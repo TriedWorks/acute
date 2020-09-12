@@ -7,7 +7,8 @@ import toml
 reserve_only = True
 
 new_crate_names = [
-    "audio",
+    "mesh",
+    "wgpu"
 ]
 
 print(os.getcwd())
