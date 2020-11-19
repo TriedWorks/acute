@@ -42,7 +42,7 @@ impl Input {
 
                     WindowEvent::CursorMoved { position, .. } => {
                         self.mouse
-                            .update_position((position.x as f32, position.x as f32));
+                            .update_position((position.x as f32, position.y as f32));
                     }
 
                     _ => {}

@@ -1,5 +1,4 @@
 use acute::prelude::*;
-use legion::system;
 
 fn main() {
     let (window, event_loop) = WinitWindow::new(WindowDescriptor::default());

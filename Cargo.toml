@@ -24,7 +24,7 @@ acute_input = { version = "0.1", path = "crates/acute_input" }
 acute_scenes = { version = "0.1", path = "crates/acute_scenes" }
 acute_window = { version = "0.1", path = "crates/acute_window" }
 acute_assets = { version = "0.1", path = "crates/acute_assets" }
-legion = "0.3.0" # required until issue/178 is fixed
+legion = "0.3.1"
 
 [[example]]
 name = "testing"

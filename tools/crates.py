@@ -9,6 +9,7 @@ crate_names = [
     "render",
     "input",
     "app",
+    "assets"
 ]
 
 all_crates = ["acute_" + crate_name + "/" for crate_name in crate_names]
@@ -17,9 +18,21 @@ all_crates = ["acute_" + crate_name + "/" for crate_name in crate_names]
 new_crates = [
     "audio",
     "physics",
-    "physics2d"
+    "physics2d",
+    "physics3d",
+    "nphysics",
+    "particles",
+    "network",
+    "ron",
+    "script",
+    "ui",
+    "imgui",
+    "transform",
+    "ai",
+    "animation",
+    "async",
     "math",
-    "mesh"
+    "mesh",
     "wgpu"
 ]
 
