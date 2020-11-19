@@ -1,5 +1,5 @@
 use acute::prelude::*;
-use acute_assets::{Assets, AssetKind};
+use acute_assets::{AssetKind, Assets};
 
 fn main() {
     let (window, event_loop) = WinitWindow::new(WindowDescriptor::default());
