@@ -11,3 +11,7 @@ keywords = ["acute"]
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [dependencies]
+crossbeam-channel = "0.5.0"
+notify = "5.0.0-pre.4"
+uuid = "0.8.1"
+image = "0.23.12"

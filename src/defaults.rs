@@ -2,6 +2,8 @@
 use acute_core::{update_timer_system, Timer};
 use acute_input::Input;
 use acute_window::winit::window::Window;
+use acute_assets::Assets;
+use acute_window::winit::event::VirtualKeyCode::A;
 
 pub trait DefaultAddons {
     fn with_defaults(self, window: Window) -> Self;
@@ -13,6 +15,7 @@ impl DefaultAddons for acute_app::AppBuilder {
         self.add_resource(Timer::new())
             .add_resource(Input::new())
             .add_resource(window)
+            .add_resource(Assets::default())
             .add_system(update_timer_system())
     }
 

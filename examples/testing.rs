@@ -1,4 +1,5 @@
 use acute::prelude::*;
+use acute_assets::{Assets, AssetKind};
 
 fn main() {
     let (window, event_loop) = WinitWindow::new(WindowDescriptor::default());
@@ -7,6 +8,7 @@ fn main() {
         .with_defaults(window)
         // .with_defaults_headless()
         .add_system(test_input_system())
+        .add_startup_system(test_assets_system())
         // .add_system(test_timer())
         .add_render_system(test_render_system())
         .build();
@@ -18,7 +20,12 @@ fn main() {
 
 #[system]
 fn test_render(#[resource] renderer: &mut WgpuRenderer) {
-    let frame = renderer.resources.swap_chain.get_current_frame().expect("Failed").output;
+    let frame = renderer
+        .resources
+        .swap_chain
+        .get_current_frame()
+        .expect("Failed")
+        .output;
     let mut encoder = renderer
         .device
         .create_command_encoder(&wgpu::CommandEncoderDescriptor {
@@ -44,6 +51,11 @@ fn test_render(#[resource] renderer: &mut WgpuRenderer) {
     }
 
     renderer.queue.submit(Some(encoder.finish()));
+}
+
+#[system]
+fn test_assets(#[resource] assets: &mut Assets) {
+    assets.load("cat.png", AssetKind::Image);
 }
 
 #[system]

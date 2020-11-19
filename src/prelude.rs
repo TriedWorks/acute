@@ -1,8 +1,8 @@
 pub use acute_app::{App, State};
 // pub use acute_assets;
 pub use acute_core::Timer;
-pub use legion::*;
 pub use acute_input::Input;
+pub use legion::*;
 // pub use acute_render;
 pub use acute_render_backend::{wgpu, WgpuRenderer};
 pub use acute_scenes::Scene;
