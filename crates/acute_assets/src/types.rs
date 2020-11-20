@@ -1,13 +1,11 @@
 use image::io::Reader as ImageReader;
 use image::{ImageBuffer, Bgra, EncodableLayout, DynamicImage, GenericImageView};
-use uuid::Uuid;
 
 pub enum AssetKind {
     Image,
     Texture,
     Object,
     Shader(ShaderKind),
-    Spirv
 }
 
 pub enum ShaderKind {
@@ -16,7 +14,8 @@ pub enum ShaderKind {
 }
 
 pub enum Asset {
-    Image(Image)
+    Image(Image),
+    Shader(Shader)
 }
 
 pub struct Image {
@@ -76,4 +75,20 @@ impl Image {
         self.exposed.as_bytes()
     }
 
+}
+
+pub struct Shader {
+    kind: ShaderKind,
+    raw: String,
+
+}
+
+impl Shader {
+    pub fn load(path: &str, kind: ShaderKind) -> Self {
+        let raw = std::fs::read_to_string(path).unwrap();
+        Self {
+            kind,
+            raw,
+        }
+    }
 }

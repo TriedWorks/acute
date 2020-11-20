@@ -55,7 +55,7 @@ fn test_render(#[resource] renderer: &mut WgpuRenderer) {
 
 #[system]
 fn test_assets(#[resource] assets: &mut Assets) {
-    assets.load("cat.png", AssetKind::Image);
+    let img = assets.add("cat.png", AssetKind::Image);
 }
 
 #[system]
