@@ -13,4 +13,4 @@ keywords = ["acute"]
 [dependencies]
 legion = "0.3.0" # required until issue/178 is fixed
 acute_ecs = { version = "0.1", path = "../acute_ecs" }
-rusty_timer = "1.0.3"
+acute_app = { version = "0.1", path = "../acute_app" }

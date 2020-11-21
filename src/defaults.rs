@@ -1,9 +1,16 @@
 //
+use legion::*;
 use acute_assets::Assets;
-use acute_core::{update_timer_system, Timer};
 use acute_input::Input;
 use acute_window::winit::event::VirtualKeyCode::A;
 use acute_window::winit::window::Window;
+use acute_app::Timer;
+
+#[system]
+pub fn update_timer(#[resource] timer: &mut Timer) {
+    timer.update_delta_time();
+    timer.update_fixed_time();
+}
 
 pub trait DefaultAddons {
     fn with_defaults(self, window: Window) -> Self;
