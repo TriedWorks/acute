@@ -12,6 +12,7 @@ use crate::builder::AppBuilder;
 use crate::State;
 use acute_render_backend::WgpuRenderer;
 use acute_window::winit::window::Window;
+use acute_window::winit::event_loop::EventLoop;
 
 pub struct App {
     pub resources: Resources,
@@ -65,21 +66,6 @@ impl App {
         self.schedule
             .execute(&mut self.scene.world, &mut self.resources);
         self.scene.update(&mut self.resources);
-    }
-
-    pub fn run_with_state<T: State>(
-        &mut self,
-        state: &mut T,
-        event: &WinitEvent<()>,
-        control_flow: &mut ControlFlow,
-    ) {
-        state.update(self);
-        state.update_fixed(self);
-        self.run(event, control_flow);
-    }
-
-    pub fn add_resource<T: Resource>(&mut self, resource: T) {
-        self.resources.insert(resource);
     }
 }
 
