@@ -2,10 +2,8 @@ use acute::prelude::*;
 use acute_assets::{AssetKind, Assets};
 
 fn main() {
-    // let event_loop = WinitWindow::new_headless();
-    let app = App::builder()
+    App::builder()
         .with_defaults()
-        // .with_defaults_headless()
         .add_system(test_print_system())
         .build()
         .run();
@@ -70,6 +68,11 @@ fn test_print() {
 }
 
 #[system]
-fn test_timer(#[resource] timer: &Timer) {
-    println!("{:?}", timer.delta_time());
+fn test_timer(#[resource] timer: &Option<Timer>) {
+    if let Some(timer) = timer {
+        println!("{:?}", timer.delta_time());
+    } else {
+        println!("no timer")
+    }
+
 }

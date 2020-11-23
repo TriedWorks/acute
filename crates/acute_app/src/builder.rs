@@ -1,5 +1,7 @@
 use crate::app::App;
 use acute_ecs::legion::systems::{Builder, ParallelRunnable, Resource};
+use crate::Events;
+use winit::event_loop::EventLoop;
 
 pub struct AppBuilder {
     pub app: App,
@@ -12,6 +14,7 @@ impl AppBuilder {
     pub fn build(&mut self) -> &mut Self {
         self.app.schedule = self.system_builder.build();
         self.app.render_schedule = self.render_system_builder.build();
+        self.add_resource(Events::default());
         self.startup_system_builder
             .build()
             .execute(&mut self.app.scene.world, &mut self.app.resources);

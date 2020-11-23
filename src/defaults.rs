@@ -21,6 +21,9 @@ impl DefaultAddons for acute_app::AppBuilder {
     fn with_defaults(&mut self) -> &mut Self {
         let window_plugin = acute_window::WinitWindowPlugin::default();
         window_plugin.add(self);
+        // let render_plugin = acute_render_backend::WGPURenderPlugin::default();
+        // render_plugin.add(self);
+
         self
     }
 

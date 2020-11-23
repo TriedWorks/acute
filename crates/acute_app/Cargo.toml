@@ -13,3 +13,4 @@ acute_ecs = { version = "0.1", path = "../acute_ecs" }
 acute_scenes = { version = "0.1", path = "../acute_scenes" }
 rusty_timer = "1.0.3"
 futures = "0.3.5"
+winit = "0.23.0"
