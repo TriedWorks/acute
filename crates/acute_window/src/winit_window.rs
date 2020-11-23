@@ -1,9 +1,9 @@
 use winit::dpi::LogicalSize;
-use winit::event_loop::{EventLoop, ControlFlow};
+use winit::event_loop::{EventLoop};
 use winit::window::{Fullscreen, Window, WindowBuilder};
 use legion::*;
 use winit::event::{WindowEvent, Event};
-use acute_app::{RenderEvent, Events};
+use acute_app::{RenderEvent, Events, App};
 
 pub struct WindowDescriptor {
     title: String,
@@ -40,3 +40,4 @@ impl WinitWindow {
         window
     }
 }
+

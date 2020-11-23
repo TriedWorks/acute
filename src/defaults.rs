@@ -1,9 +1,5 @@
 //
 use legion::*;
-use acute_assets::Assets;
-use acute_input::Input;
-use acute_window::winit::event::VirtualKeyCode::A;
-use acute_window::winit::window::Window;
 use acute_app::{Timer, Plugin};
 
 #[system]

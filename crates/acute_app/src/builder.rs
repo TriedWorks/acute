@@ -1,7 +1,6 @@
 use crate::app::App;
 use acute_ecs::legion::systems::{Builder, ParallelRunnable, Resource};
 use crate::Events;
-use winit::event_loop::EventLoop;
 
 pub struct AppBuilder {
     pub app: App,
@@ -25,6 +24,11 @@ impl AppBuilder {
     pub fn run(&mut self) {
         let app = std::mem::take(&mut self.app);
         app.run();
+    }
+
+    pub fn set_runner(&mut self, runner: impl Fn(App) + 'static) -> &mut Self {
+        self.app.runner = Box::new(runner);
+        self
     }
 
     pub fn add_resource<T: Resource>(&mut self, resource: T) -> &mut Self {

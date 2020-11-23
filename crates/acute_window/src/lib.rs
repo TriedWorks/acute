@@ -2,11 +2,9 @@ mod winit_window;
 
 pub use winit;
 pub use winit_window::{WindowDescriptor, WinitWindow};
-use acute_app::{Plugin, AppBuilder, RenderEvent};
+use acute_app::{Plugin, AppBuilder, RenderEvent, App};
 use winit::event_loop::EventLoop;
-use std::ops::Deref;
 use legion::*;
-use std::sync::Mutex;
 
 pub struct WinitWindowPlugin { }
 
@@ -18,5 +16,14 @@ impl Default for WinitWindowPlugin {
 
 impl Plugin for WinitWindowPlugin {
     fn add(&self, app: &mut AppBuilder) {
+        app.set_runner(winit_runner);
     }
+}
+
+pub fn winit_runner(mut app: App) {
+    let mut event_loop = EventLoop::new();
+
+    event_loop.run(move |event, _, control_flow| {
+        app.schedule.execute(&mut app.scene.world, &mut app.resources)
+    });
 }
