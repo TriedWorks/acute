@@ -1,7 +1,5 @@
 use crate::app::App;
 use acute_ecs::legion::systems::{Builder, ParallelRunnable, Resource};
-use acute_render_backend::WgpuRenderer;
-use acute_window::winit::window::Window;
 
 pub struct AppBuilder {
     pub app: App,
@@ -11,36 +9,36 @@ pub struct AppBuilder {
 }
 
 impl AppBuilder {
-    pub fn build(mut self) -> App {
+    pub fn build(&mut self) -> &mut Self {
         self.app.schedule = self.system_builder.build();
-        let mut startup = self.startup_system_builder.build();
-        startup.execute(&mut self.app.scene.world, &mut self.app.resources);
-        if self.app.resources.contains::<Window>() {
-            let mut renderer = futures::executor::block_on(WgpuRenderer::new(&mut self.app.resources));
-            renderer.resources.with_testing(&renderer.device);
-            self.app.render_schedule = self.render_system_builder.build();
-            self.app.resources.insert(renderer);
-        }
+        self.app.render_schedule = self.render_system_builder.build();
+        self.startup_system_builder
+            .build()
+            .execute(&mut self.app.scene.world, &mut self.app.resources);
 
-        self.app
+        self
     }
 
-    pub fn add_resource<T: Resource>(mut self, resource: T) -> Self {
+    pub fn run(&mut self) {
+        self.app.run();
+    }
+
+    pub fn add_resource<T: Resource>(&mut self, resource: T) -> &mut Self {
         self.app.resources.insert(resource);
         self
     }
 
-    pub fn add_startup_system<T: ParallelRunnable + 'static>(mut self, system: T) -> Self {
+    pub fn add_startup_system<T: ParallelRunnable + 'static>(&mut self, system: T) -> &mut Self {
         self.startup_system_builder.add_system(system);
         self
     }
 
-    pub fn add_system<T: ParallelRunnable + 'static>(mut self, system: T) -> Self {
+    pub fn add_system<T: ParallelRunnable + 'static>(&mut self, system: T) -> &mut Self {
         self.system_builder.add_system(system);
         self
     }
 
-    pub fn add_render_system<T: ParallelRunnable + 'static>(mut self, system: T) -> Self {
+    pub fn add_render_system<T: ParallelRunnable + 'static>(&mut self, system: T) -> &mut Self {
         self.render_system_builder.add_system(system);
         self
     }

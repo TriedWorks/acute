@@ -13,3 +13,5 @@ keywords = ["acute"]
 [dependencies]
 winit = "0.23.0"
 acute_ecs = { version = "0.1", path = "../acute_ecs" }
+acute_app = { version = "0.1", path = "../acute_app" }
+legion = "0.3.1"

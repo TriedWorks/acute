@@ -1,6 +1,7 @@
 use winit::dpi::LogicalSize;
 use winit::event_loop::EventLoop;
 use winit::window::{Fullscreen, Window, WindowBuilder};
+use legion::*;
 
 pub struct WindowDescriptor {
     title: String,
@@ -26,8 +27,7 @@ impl Default for WindowDescriptor {
 pub struct WinitWindow;
 
 impl WinitWindow {
-    pub fn new(window_desc: WindowDescriptor) -> (Window, EventLoop<()>) {
-        let event_loop = EventLoop::new();
+    pub fn new(window_desc: WindowDescriptor, event_loop: &EventLoop<()>) -> Window {
         let window = WindowBuilder::new()
             .with_title(window_desc.title)
             .with_inner_size(window_desc.size)
@@ -35,8 +35,7 @@ impl WinitWindow {
             .with_resizable(window_desc.resizable)
             .build(&event_loop)
             .unwrap();
-
-        (window, event_loop)
+        window
     }
 
     pub fn new_headless() -> EventLoop<()> {
@@ -44,3 +43,4 @@ impl WinitWindow {
         event_loop
     }
 }
+

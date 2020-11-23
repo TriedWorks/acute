@@ -27,10 +27,7 @@ name = "acute_app"
 version = "0.1.3"
 dependencies = [
  "acute_ecs",
- "acute_input",
- "acute_render_backend",
  "acute_scenes",
- "acute_window",
  "futures",
  "rusty_timer",
 ]
@@ -46,11 +43,6 @@ dependencies = [
 [[package]]
 name = "acute_core"
 version = "0.1.1"
-dependencies = [
- "acute_app",
- "acute_ecs",
- "legion",
-]
 
 [[package]]
 name = "acute_ecs"
@@ -93,7 +85,9 @@ dependencies = [
 name = "acute_window"
 version = "0.1.1"
 dependencies = [
+ "acute_app",
  "acute_ecs",
+ "legion",
  "winit",
 ]
 

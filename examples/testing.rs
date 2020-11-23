@@ -2,20 +2,13 @@ use acute::prelude::*;
 use acute_assets::{AssetKind, Assets};
 
 fn main() {
-    let (window, event_loop) = WinitWindow::new(WindowDescriptor::default());
     // let event_loop = WinitWindow::new_headless();
-    let mut app = App::builder()
-        .with_defaults(window)
+    let app = App::builder()
+        .with_defaults()
         // .with_defaults_headless()
-        .add_system(test_input_system())
-        .add_startup_system(test_assets_system())
-        // .add_system(test_timer())
-        .add_render_system(test_render_system())
-        .build();
-
-    event_loop.run(move |event, _event_loop, mut control_flow| {
-        app.run(&event, &mut control_flow);
-    })
+        .add_system(test_print_system())
+        .build()
+        .run();
 }
 
 #[system]
