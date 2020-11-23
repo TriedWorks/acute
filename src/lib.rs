@@ -13,5 +13,4 @@ pub use acute_render_backend::wgpu;
 
 pub use acute_scenes as scenes;
 pub use acute_window as window;
-
-pub use defaults::DefaultAddons;
+pub use acute_winit as winit;

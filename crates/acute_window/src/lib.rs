@@ -1,29 +1,20 @@
-mod winit_window;
+mod window;
+pub use window::*;
+use acute_app::{Plugin, AppBuilder};
 
-pub use winit;
-pub use winit_window::{WindowDescriptor, WinitWindow};
-use acute_app::{Plugin, AppBuilder, RenderEvent, App};
-use winit::event_loop::EventLoop;
-use legion::*;
+pub struct WindowPlugin;
 
-pub struct WinitWindowPlugin { }
-
-impl Default for WinitWindowPlugin {
+impl Default for WindowPlugin {
     fn default() -> Self {
         Self { }
     }
 }
 
-impl Plugin for WinitWindowPlugin {
+impl Plugin for WindowPlugin {
     fn add(&self, app: &mut AppBuilder) {
-        app.set_runner(winit_runner);
+        let mut windows = Windows::new();
+        windows.add(Window::default());
+        app.add_resource(windows);
     }
 }
 
-pub fn winit_runner(mut app: App) {
-    let mut event_loop = EventLoop::new();
-
-    event_loop.run(move |event, _, control_flow| {
-        app.schedule.execute(&mut app.scene.world, &mut app.resources)
-    });
-}

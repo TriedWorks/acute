@@ -6,10 +6,5 @@ pub use legion::*;
 // pub use acute_render;
 pub use acute_render_backend::{wgpu, WgpuRenderer};
 pub use acute_scenes::Scene;
-pub use acute_window::{
-    winit,
-    winit::event::{MouseButton, VirtualKeyCode},
-    WindowDescriptor, WinitWindow,
-};
 
-pub use crate::DefaultAddons;
+pub use crate::defaults::DefaultPlugins;

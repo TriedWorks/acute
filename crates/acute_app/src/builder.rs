@@ -6,13 +6,11 @@ pub struct AppBuilder {
     pub app: App,
     pub startup_system_builder: Builder,
     pub system_builder: Builder,
-    pub render_system_builder: Builder,
 }
 
 impl AppBuilder {
     pub fn build(&mut self) -> &mut Self {
         self.app.schedule = self.system_builder.build();
-        self.app.render_schedule = self.render_system_builder.build();
         self.add_resource(Events::default());
         self.startup_system_builder
             .build()
@@ -45,11 +43,6 @@ impl AppBuilder {
         self.system_builder.add_system(system);
         self
     }
-
-    pub fn add_render_system<T: ParallelRunnable + 'static>(&mut self, system: T) -> &mut Self {
-        self.render_system_builder.add_system(system);
-        self
-    }
 }
 
 impl Default for AppBuilder {
@@ -58,7 +51,6 @@ impl Default for AppBuilder {
             app: Default::default(),
             startup_system_builder: Default::default(),
             system_builder: Default::default(),
-            render_system_builder: Default::default(),
         }
     }
 }

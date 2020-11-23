@@ -7,18 +7,7 @@ import toml
 reserve_only = True
 
 new_crate_names = [
-    "physics3d",
-    "nphysics",
-    "particles",
-    "network",
-    "ron",
-    "script",
-    "ui",
-    "imgui",
-    "transform",
-    "ai",
-    "animation",
-    "async",
+    "winit"
 ]
 
 print(os.getcwd())

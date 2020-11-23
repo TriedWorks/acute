@@ -17,11 +17,11 @@ impl Default for WGPURenderPlugin {
     }
 }
 
-impl Plugin for WGPURenderPlugin {
-    fn add(&self, app: &mut AppBuilder) {
-        let renderer = futures::executor::block_on(
-            WgpuRenderer::new(&mut app.app.resources)
-        );
-        app.add_resource(renderer);
-    }
-}
+// impl Plugin for WGPURenderPlugin {
+//     fn add(&self, app: &mut AppBuilder) {
+//         let renderer = futures::executor::block_on(
+//             // WgpuRenderer::new(&mut app.app.resources)
+//         );
+//         app.add_resource(renderer);
+//     }
+// }

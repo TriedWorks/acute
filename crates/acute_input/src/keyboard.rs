@@ -1,33 +1,32 @@
-use acute_window::winit::event::VirtualKeyCode;
 use std::collections::HashSet;
 
 pub struct Keyboard {
-    pub just_pressed: HashSet<VirtualKeyCode>,
-    pub pressed: HashSet<VirtualKeyCode>,
-    pub just_released: HashSet<VirtualKeyCode>,
+    pub just_pressed: HashSet<i32>,
+    pub pressed: HashSet<i32>,
+    pub just_released: HashSet<i32>,
 }
 
 impl Keyboard {
-    pub fn just_pressed(&self, key: VirtualKeyCode) -> bool {
+    pub fn just_pressed(&self, key: i32) -> bool {
         self.just_pressed.contains(&key)
     }
 
-    pub fn pressed(&self, key: VirtualKeyCode) -> bool {
+    pub fn pressed(&self, key: i32) -> bool {
         self.pressed.contains(&key)
     }
 
-    pub fn just_released(&self, key: VirtualKeyCode) -> bool {
+    pub fn just_released(&self, key: i32) -> bool {
         self.just_released.contains(&key)
     }
 
-    pub(crate) fn press(&mut self, key: VirtualKeyCode) {
+    pub(crate) fn press(&mut self, key: i32) {
         if !self.pressed(key) {
             self.just_pressed.insert(key);
         }
         self.pressed.insert(key);
     }
 
-    pub(crate) fn release(&mut self, key: VirtualKeyCode) {
+    pub(crate) fn release(&mut self, key: i32) {
         self.pressed.remove(&key);
         self.just_released.insert(key);
     }

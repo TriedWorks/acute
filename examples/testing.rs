@@ -4,7 +4,7 @@ use acute_assets::{AssetKind, Assets};
 fn main() {
     App::builder()
         .with_defaults()
-        .add_system(test_print_system())
+        // .add_system(test_print_system())
         .build()
         .run();
 }
@@ -44,23 +44,23 @@ fn test_render(#[resource] renderer: &mut WgpuRenderer) {
     renderer.queue.submit(Some(encoder.finish()));
 }
 
-#[system]
-fn test_assets(#[resource] assets: &mut Assets) {
-    let img = assets.add("cat.png", AssetKind::Image);
-}
+// #[system]
+// fn test_assets(#[resource] assets: &mut Assets) {
+//     let img = assets.add("cat.png", AssetKind::Image);
+// }
 
-#[system]
-fn test_input(#[resource] input: &Input) {
-    if input.keyboard.just_pressed(VirtualKeyCode::Space) {
-        println!("Pressed Space")
-    }
-    if input.mouse.just_pressed(MouseButton::Left) {
-        println!(
-            "click at {} | {}!",
-            input.mouse.position.0, input.mouse.position.1
-        )
-    }
-}
+// #[system]
+// fn test_input(#[resource] input: &Input) {
+//     if input.keyboard.just_pressed(VirtualKeyCode::Space) {
+//         println!("Pressed Space")
+//     }
+//     if input.mouse.just_pressed(MouseButton::Left) {
+//         println!(
+//             "click at {} | {}!",
+//             input.mouse.position.0, input.mouse.position.1
+//         )
+//     }
+// }
 
 #[system]
 fn test_print() {

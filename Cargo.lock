@@ -19,6 +19,7 @@ dependencies = [
  "acute_render_backend",
  "acute_scenes",
  "acute_window",
+ "acute_winit",
  "legion",
 ]
 
@@ -90,6 +91,16 @@ version = "0.1.1"
 dependencies = [
  "acute_app",
  "acute_ecs",
+ "legion",
+ "uuid",
+]
+
+[[package]]
+name = "acute_winit"
+version = "0.1.0"
+dependencies = [
+ "acute_app",
+ "acute_window",
  "legion",
  "winit",
 ]

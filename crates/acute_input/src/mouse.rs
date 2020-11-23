@@ -1,4 +1,3 @@
-use acute_window::winit::event::MouseButton;
 use std::collections::HashSet;
 
 pub struct Mouse {
@@ -6,21 +5,21 @@ pub struct Mouse {
     pub position_delta: (f32, f32),
     pub scroll: (f32, f32),
     pub scroll_delta: (f32, f32),
-    pub just_pressed: HashSet<MouseButton>,
-    pub pressed: HashSet<MouseButton>,
-    pub just_released: HashSet<MouseButton>,
+    pub just_pressed: HashSet<i32>,
+    pub pressed: HashSet<i32>,
+    pub just_released: HashSet<i32>,
 }
 
 impl Mouse {
-    pub fn just_pressed(&self, button: MouseButton) -> bool {
+    pub fn just_pressed(&self, button: i32) -> bool {
         self.just_pressed.contains(&button)
     }
 
-    pub fn pressed(&self, button: MouseButton) -> bool {
+    pub fn pressed(&self, button: i32) -> bool {
         self.pressed.contains(&button)
     }
 
-    pub fn just_released(&self, button: MouseButton) -> bool {
+    pub fn just_released(&self, button: i32) -> bool {
         self.just_released.contains(&button)
     }
 
@@ -42,7 +41,7 @@ impl Mouse {
         self.scroll.1 += scroll_delta.1;
     }
 
-    pub(crate) fn toggle(&mut self, button: MouseButton) {
+    pub(crate) fn toggle(&mut self, button: i32) {
         if !self.pressed(button) {
             self.just_pressed.insert(button);
             self.pressed.insert(button);

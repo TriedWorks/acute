@@ -9,13 +9,7 @@ crate_names = [
     "render",
     "input",
     "app",
-    "assets"
-]
-
-all_crates = ["acute_" + crate_name + "/" for crate_name in crate_names]
-
-# these crates are registered but not used yet
-new_crates = [
+    "assets",
     "audio",
     "physics",
     "physics2d",
@@ -34,6 +28,13 @@ new_crates = [
     "math",
     "mesh",
     "wgpu"
+]
+
+all_crates = ["acute_" + crate_name + "/" for crate_name in crate_names]
+
+# these crates are registered but not used yet
+new_crates = [
+    "winit"
 ]
 
 all_new_crates = ["acute_" + crate_name + "/" for crate_name in new_crates]

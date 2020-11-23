@@ -1,5 +1,4 @@
 use std::collections::HashMap;
-use acute_window::winit::window::Window;
 use acute_ecs::legion::Resources;
 use crate::buffer::BufferId;
 use crate::mesh::Vertex;
@@ -15,13 +14,13 @@ pub struct WgpuResources {
 
 impl WgpuResources {
     pub fn new(resources: &Resources, surface: wgpu::Surface, device: &wgpu::Device) -> Self {
-        let size = resources.get::<Window>().unwrap().inner_size();
+        let size = (20, 20);
 
         let sc_desc = wgpu::SwapChainDescriptor {
             usage: wgpu::TextureUsage::OUTPUT_ATTACHMENT,
             format: wgpu::TextureFormat::Bgra8UnormSrgb,
-            width: size.width,
-            height: size.height,
+            width: size.0,
+            height: size.1,
             // set this to Fifo to enable "vsync"
             present_mode: wgpu::PresentMode::Mailbox,
         };
