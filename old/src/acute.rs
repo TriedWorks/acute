@@ -81,7 +81,6 @@ impl Acute {
         self.scene_handler
             .update(&mut self.worlds[0], &self.timer.delta_time());
 
-        println!("{:?}", self.timer.time_since_last_fixed());
         if self.timer.should_fixed_update() {
             self.scene_handler
                 .fixed_update(&mut self.worlds[0], &self.timer.delta_time());

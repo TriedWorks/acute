@@ -23,7 +23,8 @@ impl AppBuilder {
     }
 
     pub fn run(&mut self) {
-        self.app.run();
+        let app = std::mem::take(&mut self.app);
+        app.run();
     }
 
     pub fn add_resource<T: Resource>(&mut self, resource: T) -> &mut Self {

@@ -15,13 +15,13 @@ impl PipelineHandler {
         let mut shaders = HashMap::new();
 
         let vs_module = shader::create_shader_module(
-            include_str!("../../assets/shaders/none.vert"),
+            include_str!("../../../assets/shaders/none.vert"),
             ShaderType::Vertex,
             &device,
         );
 
         let fs_module = shader::create_shader_module(
-            include_str!("../../assets/shaders/none.frag"),
+            include_str!("../../../assets/shaders/none.frag"),
             ShaderType::Fragment,
             &device,
         );
