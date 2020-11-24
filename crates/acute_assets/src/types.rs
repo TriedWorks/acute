@@ -1,5 +1,6 @@
 use image::io::Reader as ImageReader;
 use image::{ImageBuffer, Bgra, EncodableLayout, DynamicImage, GenericImageView};
+use downcast_rs::{Downcast, impl_downcast};
 
 pub enum AssetKind {
     Image,
@@ -13,23 +14,27 @@ pub enum ShaderKind {
     Fragment,
 }
 
-pub enum Asset {
-    Image(Image),
-    Shader(Shader)
+pub trait Asset: Downcast {
+    fn as_bytes(&self) -> &[u8];
 }
 
+impl_downcast!(Asset);
+
+#[derive(Clone)]
 pub struct Image {
     /// image is the underlying and editable image
     image: DynamicImage,
     /// acute requires Bgra8 images right now, so 'image' is edited and saved to 'exposed' as Bgra8
     exposed: ImageBuffer<Bgra<u8>, Vec<u8>>,
+    path: String,
 }
 
 impl Image {
     pub fn load(path: &str) -> Self {
         let image = ImageReader::open(path).unwrap().decode().unwrap();
         let exposed = image.to_bgra8();
-        Image { image, exposed }
+        let path = path.to_string();
+        Image { image, exposed, path }
     }
 
     pub fn dimensions(&self) -> (u32, u32) {
@@ -71,10 +76,12 @@ impl Image {
         self
     }
 
-    pub fn as_bytes(&self) -> &[u8] {
+}
+
+impl Asset for Image {
+    fn as_bytes(&self) -> &[u8] {
         self.exposed.as_bytes()
     }
-
 }
 
 pub struct Shader {
@@ -90,5 +97,11 @@ impl Shader {
             kind,
             raw,
         }
+    }
+}
+
+impl Asset for Shader {
+    fn as_bytes(&self) -> &[u8] {
+        self.raw.as_bytes()
     }
 }

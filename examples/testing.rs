@@ -1,20 +1,26 @@
 use acute::prelude::*;
-use acute_assets::{AssetKind, Assets};
-use acute_input::{MouseButton, Key};
+use acute_assets::{AssetKind, Assets, Image};
+use acute_input::{Key, MouseButton};
 
 fn main() {
     App::builder()
         .with_defaults()
         .add_system(test_input_system())
+        .add_startup_system(test_assets_system())
         .build()
         .run();
 }
 
+#[system]
+fn test_assets(#[resource] assets: &mut Assets, #[resource] timer: &Timer) {
+    let img_id = assets.load("cat.png", AssetKind::Image);
+    let img = assets.get::<Image>(&img_id).unwrap();
 
-// #[system]
-// fn test_assets(#[resource] assets: &mut Assets) {
-//     let img = assets.add("cat.png", AssetKind::Image);
-// }
+    if timer.time_since_start().as_secs() % 3 == 0 {
+        println!("id_1: {:?}", img_id);
+        println!("img: {:?}", img.dimensions());
+    }
+}
 
 #[system]
 fn test_input(#[resource] input: &Input) {

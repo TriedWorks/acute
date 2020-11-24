@@ -38,6 +38,8 @@ dependencies = [
 name = "acute_assets"
 version = "0.1.0"
 dependencies = [
+ "acute_app",
+ "downcast-rs",
  "image",
  "uuid",
 ]

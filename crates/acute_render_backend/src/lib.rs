@@ -6,7 +6,7 @@ mod mesh;
 
 pub use renderer::WgpuRenderer;
 pub use wgpu;
-use acute_app::{Plugin, AppBuilder};
+use acute_app::AppBuilder;
 
 
 pub struct WGPURenderPlugin { }

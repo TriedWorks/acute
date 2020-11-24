@@ -1,5 +1,5 @@
-use acute_input::{Key, Input, MouseButton, State};
-use winit::event::{VirtualKeyCode, MouseButton as WinitMouseButton, MouseScrollDelta, ElementState};
+use acute_input::{Key, MouseButton, State};
+use winit::event::{VirtualKeyCode, MouseButton as WinitMouseButton, ElementState};
 
 pub fn convert_key(key: VirtualKeyCode) -> Key {
     match key {
