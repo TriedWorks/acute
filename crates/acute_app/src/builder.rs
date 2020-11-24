@@ -1,6 +1,6 @@
 use crate::app::App;
 use acute_ecs::legion::systems::{Builder, ParallelRunnable, Resource};
-use crate::Events;
+use crate::Plugin;
 
 pub struct AppBuilder {
     pub app: App,
@@ -11,7 +11,6 @@ pub struct AppBuilder {
 impl AppBuilder {
     pub fn build(&mut self) -> &mut Self {
         self.app.schedule = self.system_builder.build();
-        self.add_resource(Events::default());
         self.startup_system_builder
             .build()
             .execute(&mut self.app.scene.world, &mut self.app.resources);
@@ -41,6 +40,11 @@ impl AppBuilder {
 
     pub fn add_system<T: ParallelRunnable + 'static>(&mut self, system: T) -> &mut Self {
         self.system_builder.add_system(system);
+        self
+    }
+
+    pub fn add_plugin<T: Plugin>(&mut self, plugin: T) -> &mut Self {
+        plugin.add(self);
         self
     }
 }
