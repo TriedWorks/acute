@@ -21,6 +21,10 @@ impl Input {
         self.mouse.toggle(button);
     }
 
+    pub fn update_mouse_position(&mut self, position: (f64, f64)) {
+        self.mouse.update_position(position);
+    }
+
     pub fn update_mouse_scroll(&mut self, delta: (f32, f32)) {
         self.mouse.update_scroll(delta);
     }

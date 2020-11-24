@@ -60,6 +60,13 @@ pub fn winit_runner(mut app: App) {
                     }
                 }
 
+                WindowEvent::CursorMoved {position, ..} => {
+                    let position = (position.x, position.y);
+                    if let Some(mut acute_input) = app.resources.get_mut::<Input>() {
+                        acute_input.update_mouse_position(position);
+                    }
+                }
+
                 WindowEvent::MouseWheel {delta, ..} => {
                     match delta {
                         MouseScrollDelta::LineDelta(x, y) => {

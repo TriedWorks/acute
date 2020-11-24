@@ -2,8 +2,8 @@ use std::collections::HashSet;
 use crate::MouseButton;
 
 pub struct Mouse {
-    pub position: (f32, f32),
-    pub position_delta: (f32, f32),
+    pub position: (f64, f64),
+    pub position_delta: (f64, f64),
     pub scroll: (f32, f32),
     pub scroll_delta: (f32, f32),
     pub just_pressed: HashSet<MouseButton>,
@@ -28,7 +28,7 @@ impl Mouse {
         self.scroll = (0.0, 0.0);
     }
 
-    pub(crate) fn update_position(&mut self, new_position: (f32, f32)) {
+    pub(crate) fn update_position(&mut self, new_position: (f64, f64)) {
         self.position_delta = (
             self.position.0 - new_position.0,
             self.position.1 - new_position.1,

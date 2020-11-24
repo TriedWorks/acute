@@ -26,8 +26,8 @@ impl DefaultPlugins for AppBuilder {
     fn with_defaults(&mut self) -> &mut Self {
         let mut timer = Timer::default();
         timer.set_fixed_interval(Duration::from_secs_f32(1.0 / 60.0));
-
         self.add_resource(Timer::default());
+
         WindowPlugin::default().add(self);
         WinitPlugin::default().add(self);
         InputPlugin::default().add(self);
