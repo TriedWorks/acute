@@ -3,6 +3,7 @@ use legion::*;
 use acute_app::{Timer, Plugin, AppBuilder};
 use acute_window::WindowPlugin;
 use acute_winit::WinitPlugin;
+use acute_input::InputPlugin;
 
 #[system]
 pub fn update_timer(#[resource] timer: &mut Timer) {
@@ -19,6 +20,7 @@ impl DefaultPlugins for AppBuilder {
     fn with_defaults(&mut self) -> &mut Self {
         WindowPlugin::default().add(self);
         WinitPlugin::default().add(self);
+        InputPlugin::default().add(self);
 
         self
     }

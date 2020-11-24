@@ -9,5 +9,6 @@ edition = "2018"
 [dependencies]
 acute_window = {version = "0.1", path = "../acute_window" }
 acute_app = { version = "0.1", path = "../acute_app" }
+acute_input = { version = "0.1", path = "../acute_input" }
 legion = "0.3.1"
 winit = "0.23.0"

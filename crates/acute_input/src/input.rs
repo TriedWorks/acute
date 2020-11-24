@@ -1,5 +1,6 @@
 use crate::keyboard::Keyboard;
 use crate::mouse::Mouse;
+use crate::{State, Key, MouseButton};
 
 pub struct Input {
     pub keyboard: Keyboard,
@@ -7,48 +8,21 @@ pub struct Input {
 }
 
 impl Input {
-    pub fn update(&mut self, /*events: &Event<()>*/) {
+    pub fn update_keyboard(&mut self, key: Key, state: State) {
         self.keyboard.clear();
-        self.mouse.clear();
+        match state {
+            State::Pressed => self.keyboard.press(key),
+            State::Released => self.keyboard.release(key),
+        }
+    }
 
-        // match events {
-        //     Event::WindowEvent { event, .. } => {
-        //         match event {
-        //             WindowEvent::KeyboardInput { input, .. } => {
-        //                 if let Some(key) = input.virtual_keycode {
-        //                     match input.state {
-        //                         ElementState::Pressed => self.keyboard.press(key),
-        //
-        //                         ElementState::Released => self.keyboard.release(key),
-        //                     }
-        //                 }
-        //             }
-        //
-        //             WindowEvent::MouseInput { button, .. } => {
-        //                 self.mouse.toggle(*button);
-        //             }
-        //
-        //             WindowEvent::MouseWheel { delta, .. } => {
-        //                 match delta {
-        //                     MouseScrollDelta::LineDelta(x, y) => {
-        //                         self.mouse.update_scroll((*x, *y));
-        //                     }
-        //
-        //                     // TODO: Do something with that?
-        //                     MouseScrollDelta::PixelDelta(_) => {}
-        //                 }
-        //             }
-        //
-        //             WindowEvent::CursorMoved { position, .. } => {
-        //                 self.mouse
-        //                     .update_position((position.x as f32, position.y as f32));
-        //             }
-        //
-        //             _ => {}
-        //         }
-        //     }
-        //     _ => {}
-        // }
+    pub fn update_mouse(&mut self, button: MouseButton) {
+        self.mouse.clear();
+        self.mouse.toggle(button);
+    }
+
+    pub fn update_mouse_scroll(&mut self, delta: (f32, f32)) {
+        self.mouse.update_scroll(delta);
     }
 
     pub fn new() -> Self {

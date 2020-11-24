@@ -12,4 +12,4 @@ keywords = ["acute"]
 
 [dependencies]
 acute_ecs = { version = "0.1", path = "../acute_ecs" }
-acute_window = { version = "0.1", path = "../acute_window" }
+acute_app = { version = "0.1", path = "../acute_app" }

@@ -1,32 +1,33 @@
 use std::collections::HashSet;
+use crate::Key;
 
 pub struct Keyboard {
-    pub just_pressed: HashSet<i32>,
-    pub pressed: HashSet<i32>,
-    pub just_released: HashSet<i32>,
+    pub just_pressed: HashSet<Key>,
+    pub pressed: HashSet<Key>,
+    pub just_released: HashSet<Key>,
 }
 
 impl Keyboard {
-    pub fn just_pressed(&self, key: i32) -> bool {
+    pub fn just_pressed(&self, key: Key) -> bool {
         self.just_pressed.contains(&key)
     }
 
-    pub fn pressed(&self, key: i32) -> bool {
+    pub fn pressed(&self, key: Key) -> bool {
         self.pressed.contains(&key)
     }
 
-    pub fn just_released(&self, key: i32) -> bool {
+    pub fn just_released(&self, key: Key) -> bool {
         self.just_released.contains(&key)
     }
 
-    pub(crate) fn press(&mut self, key: i32) {
+    pub(crate) fn press(&mut self, key: Key) {
         if !self.pressed(key) {
             self.just_pressed.insert(key);
         }
         self.pressed.insert(key);
     }
 
-    pub(crate) fn release(&mut self, key: i32) {
+    pub(crate) fn release(&mut self, key: Key) {
         self.pressed.remove(&key);
         self.just_released.insert(key);
     }
