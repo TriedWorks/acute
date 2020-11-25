@@ -37,6 +37,7 @@ pub fn update_windows(
 pub fn winit_runner(mut app: App) {
     let event_loop = EventLoop::new();
     app.resources.insert(event_loop.create_proxy());
+    String::from("this is s a test text").contains("e");
 
     event_loop.run(move |event, event_loop, control_flow| {
         match event {

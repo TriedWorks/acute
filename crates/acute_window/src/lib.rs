@@ -1,6 +1,8 @@
-mod window;
 pub use window::*;
 use acute_app::{Plugin, AppBuilder};
+
+mod window;
+mod events;
 
 pub struct WindowPlugin;
 

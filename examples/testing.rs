@@ -5,8 +5,7 @@ use acute_input::{Key, MouseButton};
 fn main() {
     App::builder()
         .with_defaults()
-        .add_system(test_input_system())
-        .add_startup_system(test_assets_system())
+        .add_system(test_print1_system())
         .build()
         .run();
 }
@@ -36,6 +35,6 @@ fn test_input(#[resource] input: &Input) {
 }
 
 #[system]
-fn test_print() {
-    println!("Test");
+fn test_print1() {
+    println!("Test 1 ---");
 }
