@@ -11,26 +11,17 @@
 -----
 
 <p align="center">
-  <strong> Modular Data Driven Physics, Render and Data Science Engine </strong> for the rust programming language.
+  <strong> Modular Data Driven Physics, Render and Data Science Engine </strong> for the rust programming language. <br/>
+  <sub><i>this is a personal project of mine, do not expect many updates and active working on feature requests.</i></sub>
 </p>
 
 -----
 
-### Goals:
-
-- **Speed**: *fast* and *parallel* Architecture
-- **Feature Complete**: Offers many built in algorithms, simulations and components (not yet)
-- **Modularity**: use only what you need or replace it with your own implementation
-- **Simple**: Easy to learn and very flexible for advanced users
-- **Data Oriented**: The Architecture is based on Legion ECS
-
------
-
-Big thanks to bevy and other open source (game) engines for providing inspirational ideas and code
+Big thanks to bevy and other open source (game) engines as many aspects of this engine are inspired by them
 
 -----
 
 <p align="center">
   <strong> Warning: </strong> this project is under heavy development and not really usable from a consumer-perspective 
-  right now. Expect many breaking updates as architecture is not decided yet.
+  right now. Expect many breaking updates as architecture and features are not decided yet.
 </p>
