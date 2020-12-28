@@ -26,6 +26,10 @@
 
 -----
 
+Big thanks to bevy and other open source (game) engines for providing inspirational ideas and code
+
+-----
+
 <p align="center">
   <strong> Warning: </strong> this project is under heavy development and not really usable from a consumer-perspective 
   right now. Expect many breaking updates as architecture is not decided yet.
