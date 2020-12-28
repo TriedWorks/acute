@@ -1,10 +1,8 @@
-use acute_ecs::legion::*;
+use legion::*;
 
 use acute_scenes::Scene;
 
 use crate::builder::AppBuilder;
-use crate::State;
-use std::time::Duration;
 
 pub struct App {
     pub resources: Resources,
@@ -17,7 +15,7 @@ impl App {
     pub fn new() -> Self {
         Self::default()
     }
-
+    
     pub fn builder() -> AppBuilder {
         AppBuilder::default()
     }

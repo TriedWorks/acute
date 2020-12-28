@@ -1,7 +1,7 @@
 use crate::app::App;
-use acute_ecs::legion::systems::{Builder, ParallelRunnable, Resource};
+use legion::systems::{Builder, ParallelRunnable, Resource};
 use crate::{Plugin, Events};
-
+use crate::events::event_update_system;
 pub struct AppBuilder {
     pub app: App,
     pub startup_system_builder: Builder,
@@ -33,8 +33,9 @@ impl AppBuilder {
         self
     }
 
-    pub fn add_event<T: Resource>(&mut self) -> &mut Self {
+    pub fn add_event<T: Resource + Send + Sync>(&mut self) -> &mut Self {
         self.add_resource(Events::<T>::default())
+            .add_system(event_update_system::<T>())
     }
 
     pub fn add_startup_system<T: ParallelRunnable + 'static>(&mut self, system: T) -> &mut Self {
