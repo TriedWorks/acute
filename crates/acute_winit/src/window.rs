@@ -1,5 +1,5 @@
 use std::collections::HashMap;
-use acute_window::{WindowId as AcuteWindowId, Window as AcuteWindow};
+use acute_window::{WindowId as AcuteWindowId, Window as AcuteWindow, WindowDescriptor as AcuteWindowDescriptor};
 use winit::event_loop::EventLoopWindowTarget;
 use winit::window::{WindowBuilder, Window};
 use winit::dpi::PhysicalSize;
@@ -22,22 +22,25 @@ impl WinitWindows {
 
     pub fn create_window(
         &mut self,
-        window: &AcuteWindow,
         event_loop: &EventLoopWindowTarget<()>,
-    ) {
+        id: AcuteWindowId,
+        descriptor: &AcuteWindowDescriptor,
+    ) -> AcuteWindow {
         let winit_window_builder = WindowBuilder::new()
-            .with_title(window.title())
+            .with_title(descriptor.title.clone())
             .with_inner_size(PhysicalSize::new(
-                window.width(),
-                window.height()
+                descriptor.width,
+                descriptor.height
             ))
-            .with_resizable(window.resizable());
+            .with_resizable(descriptor.resizable);
 
         let winit_window = winit_window_builder.build(event_loop).unwrap();
 
-        self.window_id_to_winit.insert(window.id(), winit_window.id());
-        self.winit_to_window_id.insert(winit_window.id(), window.id());
+        self.window_id_to_winit.insert(id, winit_window.id());
+        self.winit_to_window_id.insert(winit_window.id(), id);
         self.windows.insert(winit_window.id(), winit_window);
+
+        AcuteWindow::new(id, descriptor)
     }
 
     pub fn get_window(&self, id: AcuteWindowId) -> Option<&Window> {

@@ -2,6 +2,8 @@ use crate::app::App;
 use legion::systems::{Builder, ParallelRunnable, Resource};
 use crate::{Plugin, Events};
 use crate::events::event_update_system;
+use legion::Resources;
+
 pub struct AppBuilder {
     pub app: App,
     pub startup_system_builder: Builder,
@@ -51,6 +53,10 @@ impl AppBuilder {
     pub fn add_plugin<T: Plugin>(&mut self, plugin: T) -> &mut Self {
         plugin.add(self);
         self
+    }
+
+    pub fn resources(&mut self) -> &mut Resources {
+        &mut self.app.resources
     }
 }
 

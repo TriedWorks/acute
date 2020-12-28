@@ -1,5 +1,5 @@
-use acute_app::{Plugin, AppBuilder, App};
-use acute_window::Windows as AcuteWindows;
+use acute_app::{Plugin, AppBuilder, App, Events, EventReader};
+use acute_window::{Windows as AcuteWindows, WindowCreate, Windows, WindowCreated};
 use winit::event_loop::{EventLoop, EventLoopWindowTarget, ControlFlow};
 use legion::*;
 use crate::window::WinitWindows;
@@ -37,7 +37,8 @@ pub fn update_windows(
 pub fn winit_runner(mut app: App) {
     let event_loop = EventLoop::new();
     app.resources.insert(event_loop.create_proxy());
-    String::from("this is s a test text").contains("e");
+
+    let mut window_create_reader = EventReader::<WindowCreate>::default();
 
     event_loop.run(move |event, event_loop, control_flow| {
         match event {
@@ -81,7 +82,10 @@ pub fn winit_runner(mut app: App) {
                 _ => {}
             },
             Event::MainEventsCleared => {
-                handle_window_creation(&mut app.resources, event_loop);
+                handle_window_creation(&mut app.resources,
+                                       event_loop,
+                                       &mut window_create_reader
+                );
                 app.update();
             }
             Event::RedrawRequested(_) => {}
@@ -94,12 +98,23 @@ pub fn winit_runner(mut app: App) {
 pub fn handle_window_creation(
     resources: &mut Resources,
     event_loop: &EventLoopWindowTarget<()>,
+    window_create_reader: &mut EventReader<WindowCreate>
 ) {
     let mut winit_windows = resources.get_mut::<WinitWindows>().unwrap();
-    let acute_windows = resources.get::<AcuteWindows>().unwrap();
-    for acute_window in acute_windows.iter() {
-        if !winit_windows.window_id_to_winit.contains_key(&acute_window.id()) {
-            winit_windows.create_window(acute_window, event_loop);
-        }
+    let mut windows = resources.get_mut::<Windows>().unwrap();
+
+    let create_events = resources.get::<Events<WindowCreate>>().unwrap();
+    let mut window_created_events = resources.get_mut::<Events<WindowCreated>>().unwrap();
+
+    for window_create_event in window_create_reader.iter(&create_events) {
+        let window = winit_windows.create_window(
+            event_loop,
+            window_create_event.id,
+            &window_create_event.descriptor,
+        );
+        windows.add(window);
+        window_created_events.send(WindowCreated {
+            id: window_create_event.id
+        });
     }
 }

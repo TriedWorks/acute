@@ -1,22 +1,40 @@
+use acute_app::{Plugin, AppBuilder, Events};
+
 pub use window::*;
-use acute_app::{Plugin, AppBuilder};
+pub use crate::events::{WindowCreated, WindowCloseRequested, WindowCreate};
+use uuid::Uuid;
 
 mod window;
 mod events;
 
-pub struct WindowPlugin;
+pub struct WindowPlugin {
+    pub add_primary: bool,
+}
 
 impl Default for WindowPlugin {
     fn default() -> Self {
-        Self { }
+        Self { add_primary: true }
     }
 }
 
 impl Plugin for WindowPlugin {
     fn add(&self, app: &mut AppBuilder) {
-        let mut windows = Windows::new();
-        windows.add(Window::default());
-        app.add_resource(windows);
+        app.add_event::<WindowCreate>()
+            .add_event::<WindowCreated>()
+            .add_event::<WindowCloseRequested>()
+            .add_resource( Windows::new());
+
+        if self.add_primary {
+            let descriptor = WindowDescriptor::default();
+
+            let mut create_window_events = app.resources()
+                .get_mut::<Events<WindowCreate>>().unwrap();
+
+            create_window_events.send(WindowCreate {
+                id: WindowId::new(),
+                descriptor
+            })
+        }
     }
 }
 
