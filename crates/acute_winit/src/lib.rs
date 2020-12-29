@@ -8,7 +8,7 @@ use winit::event::WindowEvent;
 use acute_input::Input;
 use crate::convert::{convert_key, convert_state, convert_mouse};
 
-mod window;
+pub mod window;
 mod convert;
 
 pub struct WinitPlugin;
