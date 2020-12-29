@@ -1,5 +1,9 @@
 mod renderer;
+mod render_context;
 mod resources;
+mod command_encoder;
+mod render_pass;
+mod texture;
 mod buffer;
 mod pipelines;
 mod mesh;
