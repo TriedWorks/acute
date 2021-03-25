@@ -1,6 +1,6 @@
+use downcast_rs::{impl_downcast, Downcast};
 use image::io::Reader as ImageReader;
-use image::{ImageBuffer, Bgra, EncodableLayout, DynamicImage, GenericImageView};
-use downcast_rs::{Downcast, impl_downcast};
+use image::{Bgra, DynamicImage, EncodableLayout, GenericImageView, ImageBuffer};
 
 pub enum AssetKind {
     Image,
@@ -34,7 +34,11 @@ impl Image {
         let image = ImageReader::open(path).unwrap().decode().unwrap();
         let exposed = image.to_bgra8();
         let path = path.to_string();
-        Image { image, exposed, path }
+        Image {
+            image,
+            exposed,
+            path,
+        }
     }
 
     pub fn dimensions(&self) -> (u32, u32) {
@@ -75,7 +79,6 @@ impl Image {
         self.exposed = self.image.to_bgra8();
         self
     }
-
 }
 
 impl Asset for Image {
@@ -87,16 +90,12 @@ impl Asset for Image {
 pub struct Shader {
     kind: ShaderKind,
     raw: String,
-
 }
 
 impl Shader {
     pub fn load(path: &str, kind: ShaderKind) -> Self {
         let raw = std::fs::read_to_string(path).unwrap();
-        Self {
-            kind,
-            raw,
-        }
+        Self { kind, raw }
     }
 }
 

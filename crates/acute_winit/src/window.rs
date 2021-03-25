@@ -1,9 +1,11 @@
+use acute_window::{
+    Window as AcuteWindow, WindowDescriptor as AcuteWindowDescriptor, WindowId as AcuteWindowId,
+};
 use std::collections::HashMap;
-use acute_window::{WindowId as AcuteWindowId, Window as AcuteWindow, WindowDescriptor as AcuteWindowDescriptor};
-use winit::event_loop::EventLoopWindowTarget;
-use winit::window::{WindowBuilder, Window};
 use winit::dpi::PhysicalSize;
+use winit::event_loop::EventLoopWindowTarget;
 use winit::window::WindowId;
+use winit::window::{Window, WindowBuilder};
 
 pub struct WinitWindows {
     pub windows: HashMap<WindowId, Window>,
@@ -16,7 +18,7 @@ impl WinitWindows {
         Self {
             windows: Default::default(),
             window_id_to_winit: Default::default(),
-            winit_to_window_id: Default::default()
+            winit_to_window_id: Default::default(),
         }
     }
 
@@ -28,10 +30,7 @@ impl WinitWindows {
     ) -> AcuteWindow {
         let winit_window_builder = WindowBuilder::new()
             .with_title(descriptor.title.clone())
-            .with_inner_size(PhysicalSize::new(
-                descriptor.width,
-                descriptor.height
-            ))
+            .with_inner_size(PhysicalSize::new(descriptor.width, descriptor.height))
             .with_resizable(descriptor.resizable);
 
         let winit_window = winit_window_builder.build(event_loop).unwrap();

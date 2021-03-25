@@ -1,9 +1,8 @@
-use uuid::Uuid;
-use crate::{WindowId, WindowDescriptor};
+use crate::{WindowDescriptor, WindowId};
 
 pub struct WindowCreate {
     pub id: WindowId,
-    pub descriptor: WindowDescriptor
+    pub descriptor: WindowDescriptor,
 }
 
 pub struct WindowCreated {
@@ -11,5 +10,5 @@ pub struct WindowCreated {
 }
 
 pub struct WindowCloseRequested {
-    pub id: WindowId
+    pub id: WindowId,
 }

@@ -14,18 +14,25 @@ exclude = ["old/"]
 name = "acute"
 path = "src/lib.rs"
 
+[workspace]
+members = ["crates/*"]
+# these are excluded for now as I am currently rewriting the WGPU part in crates/acute_wgpu
+exclude = ["crates/acute_render", "crates/acute_render_backend"]
+
 [dependencies]
 acute_core = { version = "0.1", path = "crates/acute_core" }
 acute_app = { version = "0.1", path = "crates/acute_app" }
 acute_ecs = { version = "0.1", path = "crates/acute_ecs" }
-acute_render = { version = "0.1", path = "crates/acute_render" }
-acute_render_backend = { version = "0.1", path = "crates/acute_render_backend" }
+legion = "0.4.0" # 178 / 186
+# these are removed for now as I am currently rewriting the WGPU part in crates/acute_wgpu
+#acute_render = { version = "0.1", path = "crates/acute_render" }
+#acute_render_backend = { version = "0.1", path = "crates/acute_render_backend" }
+acute_wgpu = { version = "0.1", path = "crates/acute_wgpu" }
 acute_input = { version = "0.1", path = "crates/acute_input" }
 acute_scenes = { version = "0.1", path = "crates/acute_scenes" }
 acute_window = { version = "0.1", path = "crates/acute_window" }
 acute_winit = {version = "0.1", path = "crates/acute_winit" }
 acute_assets = { version = "0.1", path = "crates/acute_assets" }
-legion = "0.3.1"
 
 [[example]]
 name = "testing"

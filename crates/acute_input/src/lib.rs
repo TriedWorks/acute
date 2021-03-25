@@ -1,11 +1,11 @@
+mod codes;
 mod input;
 mod keyboard;
 mod mouse;
-mod codes;
 
-pub use input::Input;
+use acute_app::{AppBuilder, Plugin};
 pub use codes::*;
-use acute_app::{Plugin, AppBuilder};
+pub use input::Input;
 
 pub struct InputPlugin;
 

@@ -1,15 +1,15 @@
 pub mod assets;
 pub mod types;
 
+use acute_app::{AppBuilder, Plugin};
 pub use assets::Assets;
 pub use types::*;
-use acute_app::{Plugin, AppBuilder};
 
 pub struct AssetPlugin;
 
 impl Default for AssetPlugin {
     fn default() -> Self {
-        Self { }
+        Self {}
     }
 }
 

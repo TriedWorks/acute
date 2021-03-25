@@ -12,6 +12,8 @@ keywords = ["acute"]
 
 [dependencies]
 acute_app = { version = "0.1", path = "../acute_app" }
+acute_ecs = { version = "0.1", path = "../acute_ecs" }
+legion = "0.4.0" # 178 / 186
 downcast-rs = "1.2.0"
 uuid = "0.8.1"
 image = "0.23.12"

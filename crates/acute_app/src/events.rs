@@ -1,8 +1,9 @@
-use std::marker::PhantomData;
-use legion::*;
-use legion::systems::Resource;
+use acute_ecs::systems::Resource;
+use legion::system;
 use std::fmt;
-// I really like the way events work in Beavy, so Acute Events are close to a 1:1 copy from Beavy.
+use std::marker::PhantomData;
+
+// I really like the way events work in Bevy, so Acute Events are close to a 1:1 copy from Bevy.
 
 pub struct EventId<T> {
     pub id: usize,
@@ -94,7 +95,10 @@ impl<T: Resource> Events<T> {
             marker: PhantomData,
         };
 
-        let event = Event { id: event_id, event };
+        let event = Event {
+            id: event_id,
+            event,
+        };
 
         match self.state {
             State::A => self.buffer_a.push(event),
@@ -141,7 +145,7 @@ impl<T: Resource> Events<T> {
         self.buffer_b.clear();
     }
 
-    pub fn drain(&mut self) -> impl Iterator<Item=T> + '_ {
+    pub fn drain(&mut self) -> impl Iterator<Item = T> + '_ {
         let event_map = |e: Event<T>| e.event;
         match self.state {
             State::A => self
@@ -157,7 +161,7 @@ impl<T: Resource> Events<T> {
         }
     }
 
-    pub fn extend<I: Iterator<Item=T>>(&mut self, events: I) {
+    pub fn extend<I: Iterator<Item = T>>(&mut self, events: I) {
         for event in events {
             self.send(event);
         }
@@ -171,12 +175,10 @@ impl<T: Resource> Events<T> {
     }
 }
 
-
 #[system]
 pub fn event_update<T: Resource>(#[resource] events: &mut Events<T>) {
     events.update();
 }
-
 
 pub struct EventReader<T> {
     last_event_count: usize,
@@ -184,17 +186,21 @@ pub struct EventReader<T> {
 }
 
 impl<T> EventReader<T> {
-    pub fn iter<'a>(&mut self, events: &'a Events<T>) -> impl DoubleEndedIterator<Item=&'a T> {
+    pub fn iter<'a>(&mut self, events: &'a Events<T>) -> impl DoubleEndedIterator<Item = &'a T> {
         self.iter_with_id(events).map(|(event, _id)| event)
     }
 
-    pub fn iter_with_id<'a>(&mut self, events: &'a Events<T>) -> impl DoubleEndedIterator<Item=(&'a T, EventId<T>)> {
-        self.iter_internal(events).map(|(event, id)| {
-            (event, id)
-        })
+    pub fn iter_with_id<'a>(
+        &mut self,
+        events: &'a Events<T>,
+    ) -> impl DoubleEndedIterator<Item = (&'a T, EventId<T>)> {
+        self.iter_internal(events).map(|(event, id)| (event, id))
     }
 
-    fn iter_internal<'a>(&mut self, events: &'a Events<T>) -> impl DoubleEndedIterator<Item=(&'a T, EventId<T>)> {
+    fn iter_internal<'a>(
+        &mut self,
+        events: &'a Events<T>,
+    ) -> impl DoubleEndedIterator<Item = (&'a T, EventId<T>)> {
         // calculate offset
         let a_index = if self.last_event_count > events.a_start_event_count {
             self.last_event_count - events.a_start_event_count
@@ -246,9 +252,10 @@ impl<T> EventReader<T> {
     }
 
     pub fn latest_with_id<'a>(&mut self, events: &'a Events<T>) -> Option<(&'a T, EventId<T>)> {
-        self.iter_internal(events).rev().next().map(|(event, id)| {
-            (event, id)
-        })
+        self.iter_internal(events)
+            .rev()
+            .next()
+            .map(|(event, id)| (event, id))
     }
 
     pub fn find_latest<'a>(
@@ -268,19 +275,17 @@ impl<T> EventReader<T> {
         self.iter_internal(events)
             .rev()
             .find(|(event, _id)| predicate(event))
-            .map(|(event, id)| {
-                (event, id)
-            })
+            .map(|(event, id)| (event, id))
     }
 
     pub fn earliest<'a>(&mut self, events: &'a Events<T>) -> Option<&'a T> {
         self.earliest_with_id(events).map(|(event, _)| event)
     }
-    
+
     pub fn earliest_with_id<'a>(&mut self, events: &'a Events<T>) -> Option<(&'a T, EventId<T>)> {
-        self.iter_internal(events).next().map(|(event, id)| {
-            (event, id)
-        })
+        self.iter_internal(events)
+            .next()
+            .map(|(event, id)| (event, id))
     }
 }
 

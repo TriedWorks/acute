@@ -1,9 +1,9 @@
-use std::collections::HashMap;
-use uuid::Uuid;
 use crate::types::Asset;
-use crate::{AssetKind, Shader};
 use crate::types::Image;
+use crate::{AssetKind, Shader};
+use std::collections::HashMap;
 use std::path::PathBuf;
+use uuid::Uuid;
 
 pub struct Assets {
     asset_folder: PathBuf,
@@ -50,8 +50,8 @@ impl Assets {
         self.assets.get_mut(id).unwrap().downcast_mut::<T>()
     }
 }
-unsafe impl Send for Assets { }
-unsafe impl Sync for Assets { }
+unsafe impl Send for Assets {}
+unsafe impl Sync for Assets {}
 
 impl Default for Assets {
     fn default() -> Self {

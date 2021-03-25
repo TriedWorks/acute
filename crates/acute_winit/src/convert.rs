@@ -1,5 +1,5 @@
 use acute_input::{Key, MouseButton, State};
-use winit::event::{VirtualKeyCode, MouseButton as WinitMouseButton, ElementState};
+use winit::event::{ElementState, MouseButton as WinitMouseButton, VirtualKeyCode};
 
 pub fn convert_key(key: VirtualKeyCode) -> Key {
     match key {
@@ -169,13 +169,12 @@ pub fn convert_key(key: VirtualKeyCode) -> Key {
     }
 }
 
-
 pub fn convert_mouse(button: WinitMouseButton) -> MouseButton {
     match button {
         WinitMouseButton::Left => MouseButton::Left,
         WinitMouseButton::Right => MouseButton::Right,
         WinitMouseButton::Middle => MouseButton::Middle,
-        WinitMouseButton::Other(other) => MouseButton::Other(other)
+        WinitMouseButton::Other(other) => MouseButton::Other(other),
     }
 }
 

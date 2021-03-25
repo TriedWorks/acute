@@ -34,4 +34,8 @@ impl CommandEncoder {
     pub fn set(&mut self, encoder: wgpu::CommandEncoder) {
         self.encoder = Some(encoder)
     }
+
+    pub fn finish(&mut self, queue: &mut wgpu::Queue) {
+        queue.submit(std::iter::once(self.encoder.take().unwrap().finish()))
+    }
 }

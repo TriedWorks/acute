@@ -1,8 +1,7 @@
-use legion::*;
-
 use acute_scenes::Scene;
 
 use crate::builder::AppBuilder;
+use acute_ecs::{Resources, Schedule};
 
 pub struct App {
     pub resources: Resources,
@@ -15,13 +14,14 @@ impl App {
     pub fn new() -> Self {
         Self::default()
     }
-    
+
     pub fn builder() -> AppBuilder {
         AppBuilder::default()
     }
 
     pub fn update(&mut self) {
-        self.schedule.execute(&mut self.scene.world, &mut self.resources);
+        self.schedule
+            .execute(&mut self.scene.world, &mut self.resources);
     }
 
     pub fn run(mut self) {
@@ -30,7 +30,8 @@ impl App {
     }
 
     fn run_once(mut self) {
-        self.schedule.execute(&mut self.scene.world, &mut self.resources);
+        self.schedule
+            .execute(&mut self.scene.world, &mut self.resources);
     }
 }
 
@@ -41,7 +42,7 @@ impl Default for App {
             resources: Default::default(),
             schedule: Schedule::builder().build(),
             scene,
-            runner: Box::new(App::run_once)
+            runner: Box::new(App::run_once),
         }
     }
 }

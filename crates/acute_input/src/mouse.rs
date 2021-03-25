@@ -1,5 +1,5 @@
-use std::collections::HashSet;
 use crate::MouseButton;
+use std::collections::HashSet;
 
 pub struct Mouse {
     pub position: (f64, f64),

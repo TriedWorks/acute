@@ -11,4 +11,4 @@ keywords = ["acute"]
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [dependencies]
-legion = "0.3.1"
+legion = "0.4.0"

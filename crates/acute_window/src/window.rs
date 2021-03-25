@@ -83,27 +83,26 @@ impl Default for WindowDescriptor {
             width: 1280,
             height: 720,
             resizable: true,
-            primary: true
+            primary: true,
         }
     }
 }
-
 
 #[derive(Debug, Clone, Copy)]
 pub enum Mode {
     Windowed,
     Borderless,
-    Fullscreen
+    Fullscreen,
 }
 
 pub struct Windows {
-    pub windows: HashMap<WindowId, Window>
+    pub windows: HashMap<WindowId, Window>,
 }
 
 impl Windows {
     pub fn new() -> Self {
         Self {
-            windows: HashMap::new()
+            windows: HashMap::new(),
         }
     }
 
@@ -122,5 +121,4 @@ impl Windows {
     pub fn iter_mut(&mut self) -> impl Iterator<Item = &mut Window> {
         self.windows.values_mut()
     }
-
 }

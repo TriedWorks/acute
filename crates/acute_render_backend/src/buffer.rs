@@ -8,7 +8,3 @@ impl BufferId {
         Self(Uuid::new_v4())
     }
 }
-
-pub fn new_buffer(device: &wgpu::Device, descriptor: &wgpu::BufferDescriptor) -> wgpu::Buffer {
-    device.create_buffer(descriptor)
-}

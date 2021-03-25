@@ -1,1 +1,1 @@
-pub use legion;
+pub use legion::*;

@@ -1,8 +1,8 @@
 use crate::app::App;
-use legion::systems::{Builder, ParallelRunnable, Resource};
-use crate::{Plugin, Events};
 use crate::events::event_update_system;
-use legion::Resources;
+use crate::{Events, Plugin};
+use acute_ecs::systems::{Builder, ParallelRunnable, Resource};
+use acute_ecs::Resources;
 
 pub struct AppBuilder {
     pub app: App,
@@ -55,7 +55,10 @@ impl AppBuilder {
         self
     }
 
-    pub fn resources(&mut self) -> &mut Resources {
+    pub fn resources(&self) -> &Resources {
+        &self.app.resources
+    }
+    pub fn resources_mut(&mut self) -> &mut Resources {
         &mut self.app.resources
     }
 }

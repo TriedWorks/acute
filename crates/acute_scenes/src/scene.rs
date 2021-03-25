@@ -1,5 +1,5 @@
-use acute_ecs::legion::systems::Builder;
-use acute_ecs::legion::*;
+use acute_ecs::systems::Builder;
+use acute_ecs::{Resources, Schedule, World};
 
 pub struct Scene {
     pub world: World,

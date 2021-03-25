@@ -1,5 +1,5 @@
-use std::collections::HashSet;
 use crate::Key;
+use std::collections::HashSet;
 
 pub struct Keyboard {
     pub just_pressed: HashSet<Key>,

@@ -1,6 +1,6 @@
 use crate::keyboard::Keyboard;
 use crate::mouse::Mouse;
-use crate::{State, Key, MouseButton};
+use crate::{Key, MouseButton, State};
 
 pub struct Input {
     pub keyboard: Keyboard,

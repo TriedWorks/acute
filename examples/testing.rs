@@ -1,11 +1,12 @@
 use acute::prelude::*;
 use acute_assets::{AssetKind, Assets, Image};
+use acute_ecs::system;
 use acute_input::{Key, MouseButton};
 
 fn main() {
     App::builder()
         .with_defaults()
-        .add_system(test_print1_system())
+        .add_system(test_input_system())
         .build()
         .run();
 }
@@ -32,9 +33,4 @@ fn test_input(#[resource] input: &Input) {
             input.mouse.position.0, input.mouse.position.1
         )
     }
-}
-
-#[system]
-fn test_print1() {
-    println!("Test 1 ---");
 }
