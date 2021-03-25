@@ -11,5 +11,6 @@ keywords = ["acute"]
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [dependencies]
-acute_ecs = { version = "0.1", path = "../acute_ecs" }
 acute_app = { version = "0.1", path = "../acute_app" }
+acute_ecs = { version = "0.1", path = "../acute_ecs" }
+legion = "0.4.0"

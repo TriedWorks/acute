@@ -1,7 +1,8 @@
+use acute::input::Keyboard;
 use acute::prelude::*;
 use acute_assets::{AssetKind, Assets, Image};
 use acute_ecs::system;
-use acute_input::{Key, MouseButton};
+use acute_input::{Key, Mouse, MouseButton};
 
 fn main() {
     App::builder()
@@ -23,14 +24,11 @@ fn test_assets(#[resource] assets: &mut Assets, #[resource] timer: &Timer) {
 }
 
 #[system]
-fn test_input(#[resource] input: &Input) {
-    if input.keyboard.just_pressed(Key::Space) {
+fn test_input(#[resource] keyboard: &Keyboard, #[resource] mouse: &Mouse) {
+    if keyboard.just_pressed(Key::Space) {
         println!("Pressed Space")
     }
-    if input.mouse.just_pressed(MouseButton::Left) {
-        println!(
-            "click at {} | {}!",
-            input.mouse.position.0, input.mouse.position.1
-        )
+    if mouse.just_pressed(MouseButton::Left) {
+        println!("click at {} | {}!", mouse.position.0, mouse.position.1)
     }
 }

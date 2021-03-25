@@ -3,7 +3,7 @@ use crate::window::WinitWindows;
 use acute_app::{App, AppBuilder, EventReader, Events, Plugin};
 use acute_ecs::system;
 use acute_ecs::Resources;
-use acute_input::Input;
+use acute_input::events::{KeyboardEvent, MouseButtonEvent, MouseMoveEvent, MouseScrollEvent};
 use acute_window::{WindowCreate, WindowCreated, Windows as AcuteWindows, Windows};
 use winit::event::WindowEvent;
 use winit::event::{Event, MouseScrollDelta};
@@ -50,29 +50,31 @@ pub fn winit_runner(mut app: App) {
             }
             WindowEvent::KeyboardInput { ref input, .. } => {
                 if let Some(key) = input.virtual_keycode {
-                    if let Some(mut acute_input) = app.resources.get_mut::<Input>() {
-                        acute_input.update_keyboard(convert_key(key), convert_state(input.state));
-                    }
+                    let mut events = app.resources.get_mut::<Events<KeyboardEvent>>().unwrap();
+                    events.send(KeyboardEvent {
+                        key: Some(convert_key(key)),
+                        state: convert_state(input.state),
+                    });
                 }
             }
             WindowEvent::MouseInput { button, .. } => {
-                if let Some(mut acute_input) = app.resources.get_mut::<Input>() {
-                    acute_input.update_mouse(convert_mouse(button));
-                }
+                let mut events = app.resources.get_mut::<Events<MouseButtonEvent>>().unwrap();
+                events.send(MouseButtonEvent {
+                    button: Some(convert_mouse(button)),
+                });
             }
 
             WindowEvent::CursorMoved { position, .. } => {
-                let position = (position.x, position.y);
-                if let Some(mut acute_input) = app.resources.get_mut::<Input>() {
-                    acute_input.update_mouse_position(position);
-                }
+                let mut events = app.resources.get_mut::<Events<MouseMoveEvent>>().unwrap();
+                events.send(MouseMoveEvent {
+                    position: (position.x, position.y),
+                });
             }
 
             WindowEvent::MouseWheel { delta, .. } => match delta {
                 MouseScrollDelta::LineDelta(x, y) => {
-                    if let Some(mut acute_input) = app.resources.get_mut::<Input>() {
-                        acute_input.update_mouse_scroll((x, y));
-                    }
+                    let mut events = app.resources.get_mut::<Events<MouseScrollEvent>>().unwrap();
+                    events.send(MouseScrollEvent { scroll: (x, y) });
                 }
                 MouseScrollDelta::PixelDelta(_) => {}
             },
@@ -91,7 +93,7 @@ pub fn winit_runner(mut app: App) {
 pub fn handle_window_creation(
     resources: &mut Resources,
     event_loop: &EventLoopWindowTarget<()>,
-    window_create_reader: &mut EventReader<WindowCreate>,
+    event_reader: &mut EventReader<WindowCreate>,
 ) {
     let mut winit_windows = resources.get_mut::<WinitWindows>().unwrap();
     let mut windows = resources.get_mut::<Windows>().unwrap();
@@ -99,7 +101,7 @@ pub fn handle_window_creation(
     let create_events = resources.get::<Events<WindowCreate>>().unwrap();
     let mut window_created_events = resources.get_mut::<Events<WindowCreated>>().unwrap();
 
-    for window_create_event in window_create_reader.iter(&create_events) {
+    for window_create_event in event_reader.iter(&create_events) {
         let window = winit_windows.create_window(
             event_loop,
             window_create_event.id,

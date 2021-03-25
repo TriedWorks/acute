@@ -1,4 +1,8 @@
+use crate::events::{MouseButtonEvent, MouseMoveEvent, MouseScrollEvent};
 use crate::MouseButton;
+use acute_app::Events;
+use acute_ecs::system;
+use acute_ecs::Resources;
 use std::collections::HashSet;
 
 pub struct Mouse {
@@ -67,5 +71,46 @@ impl Mouse {
             pressed: Default::default(),
             just_released: Default::default(),
         }
+    }
+}
+
+#[system]
+pub fn mouse_button_update(
+    #[resource] mouse: &mut Mouse,
+    #[resource] events: &Events<MouseButtonEvent>,
+) {
+    mouse.clear();
+    let mut event_reader = events.get_reader();
+    for event in event_reader.iter(&events) {
+        if let MouseButtonEvent {
+            button: Some(button),
+            ..
+        } = event
+        {
+            mouse.toggle(*button)
+        }
+    }
+}
+#[system]
+pub fn mouse_scroll_update(
+    #[resource] mouse: &mut Mouse,
+    #[resource] events: &Events<MouseScrollEvent>,
+) {
+    let mut event_reader = events.get_reader();
+    for event in event_reader.iter(&events) {
+        let MouseScrollEvent { scroll } = event;
+        mouse.update_scroll(*scroll)
+    }
+}
+
+#[system]
+pub fn mouse_move_update(
+    #[resource] mouse: &mut Mouse,
+    #[resource] events: &Events<MouseMoveEvent>,
+) {
+    let mut event_reader = events.get_reader();
+    for event in event_reader.iter(&events) {
+        let MouseMoveEvent { position } = event;
+        mouse.update_position(*position)
     }
 }
