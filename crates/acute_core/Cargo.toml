@@ -11,3 +11,6 @@ keywords = ["acute"]
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [dependencies]
+rusty_timer = "1.0.3"
+glucose = "0.2"
+fructose = "0.3"

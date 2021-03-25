@@ -15,6 +15,7 @@ dependencies = [
  "acute_core",
  "acute_ecs",
  "acute_input",
+ "acute_render",
  "acute_scenes",
  "acute_wgpu",
  "acute_window",
@@ -49,6 +50,11 @@ dependencies = [
 [[package]]
 name = "acute_core"
 version = "0.1.1"
+dependencies = [
+ "fructose",
+ "glucose",
+ "rusty_timer",
+]
 
 [[package]]
 name = "acute_ecs"
@@ -64,6 +70,14 @@ dependencies = [
  "acute_app",
  "acute_ecs",
  "legion",
+]
+
+[[package]]
+name = "acute_render"
+version = "0.1.0"
+dependencies = [
+ "acute_app",
+ "acute_ecs",
 ]
 
 [[package]]
@@ -600,6 +614,12 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "00b0228411908ca8685dba7fc2cdd70ec9990a6e753e89b6ac91a84c40fbaf4b"
 
 [[package]]
+name = "fructose"
+version = "0.3.4"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "e8972a2f3f4701ec647bf5b8f161838b4a71ffe52f33ee54cd71cd591e03fa17"
+
+[[package]]
 name = "fuchsia-zircon"
 version = "0.3.3"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -896,6 +916,17 @@ dependencies = [
  "slotmap",
  "wasm-bindgen",
  "web-sys",
+]
+
+[[package]]
+name = "glucose"
+version = "0.2.2"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "a03698480dc6af4c2ae4953c59347d84abfe143ef545cd5780d908e3dc0af5de"
+dependencies = [
+ "fructose",
+ "paste",
+ "serde_test",
 ]
 
 [[package]]
@@ -1501,9 +1532,9 @@ dependencies = [
 
 [[package]]
 name = "paste"
-version = "1.0.0"
+version = "1.0.5"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "f6ddc8e145de01d9180ac7b78b9676f95a9c2447f6a88b2c2a04702211bc5d71"
+checksum = "acbf547ad0c65e31259204bd90935776d1c693cec2f4ff7abb7a1bbbd40dfe58"
 
 [[package]]
 name = "percent-encoding"
@@ -1770,6 +1801,15 @@ dependencies = [
  "proc-macro2",
  "quote",
  "syn",
+]
+
+[[package]]
+name = "serde_test"
+version = "1.0.125"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "b4bb5fef7eaf5a97917567183607ac4224c5b451c15023930f23b937cce879fe"
+dependencies = [
+ "serde",
 ]
 
 [[package]]

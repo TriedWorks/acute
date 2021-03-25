@@ -24,8 +24,8 @@ acute_core = { version = "0.1", path = "crates/acute_core" }
 acute_app = { version = "0.1", path = "crates/acute_app" }
 acute_ecs = { version = "0.1", path = "crates/acute_ecs" }
 legion = "0.4.0" # 178 / 186
+acute_render = { version = "0.1", path = "crates/acute_render" }
 # these are removed for now as I am currently rewriting the WGPU part in crates/acute_wgpu
-#acute_render = { version = "0.1", path = "crates/acute_render" }
 #acute_render_backend = { version = "0.1", path = "crates/acute_render_backend" }
 acute_wgpu = { version = "0.1", path = "crates/acute_wgpu" }
 acute_input = { version = "0.1", path = "crates/acute_input" }
