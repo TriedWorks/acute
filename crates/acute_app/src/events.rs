@@ -128,12 +128,12 @@ impl<T: Resource> Events<T> {
     pub fn update(&mut self) {
         match self.state {
             State::A => {
-                self.buffer_a = Vec::new();
+                self.buffer_b.clear();
                 self.state = State::B;
                 self.b_start_event_count = self.event_count;
             }
             State::B => {
-                self.buffer_b = Vec::new();
+                self.buffer_a.clear();
                 self.state = State::A;
                 self.a_start_event_count = self.event_count;
             }
