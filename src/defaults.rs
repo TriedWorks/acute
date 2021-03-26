@@ -3,6 +3,7 @@ use acute_app::{AppBuilder, Plugin, Timer};
 use acute_assets::AssetPlugin;
 use acute_ecs::system;
 use acute_input::InputPlugin;
+use acute_wgpu::WgpuPlugin;
 use acute_window::WindowPlugin;
 use acute_winit::WinitPlugin;
 use std::time::Duration;
@@ -32,6 +33,7 @@ impl DefaultPlugins for AppBuilder {
         WinitPlugin::default().add(self);
         InputPlugin::default().add(self);
         AssetPlugin::default().add(self);
+        WgpuPlugin::default().add(self);
         self
     }
 

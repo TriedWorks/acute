@@ -1,14 +1,20 @@
 use crate::{WindowDescriptor, WindowId};
 
-pub struct WindowCreate {
+pub struct WindowCreateEvent {
     pub id: WindowId,
     pub descriptor: WindowDescriptor,
 }
 
-pub struct WindowCreated {
+pub struct WindowCreatedEvent {
     pub id: WindowId,
 }
 
-pub struct WindowCloseRequested {
+pub struct WindowCloseRequestedEvent {
     pub id: WindowId,
+}
+
+pub struct WindowResizedEvent {
+    pub id: WindowId,
+    pub width: f32,
+    pub height: f32,
 }

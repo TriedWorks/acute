@@ -4,7 +4,7 @@ use acute_app::{App, AppBuilder, EventReader, Events, Plugin};
 use acute_ecs::system;
 use acute_ecs::Resources;
 use acute_input::events::{KeyboardEvent, MouseButtonEvent, MouseMoveEvent, MouseScrollEvent};
-use acute_window::{WindowCreate, WindowCreated, Windows as AcuteWindows, Windows};
+use acute_window::{WindowCreateEvent, WindowCreatedEvent, Windows as AcuteWindows, Windows};
 use winit::event::WindowEvent;
 use winit::event::{Event, MouseScrollDelta};
 use winit::event_loop::{ControlFlow, EventLoop, EventLoopWindowTarget};
@@ -38,7 +38,7 @@ pub fn winit_runner(mut app: App) {
     let event_loop = EventLoop::new();
     app.resources.insert(event_loop.create_proxy());
 
-    let mut window_create_reader = EventReader::<WindowCreate>::default();
+    let mut window_create_reader = EventReader::<WindowCreateEvent>::default();
 
     event_loop.run(move |event, event_loop, control_flow| match event {
         Event::WindowEvent { event, .. } => match event {
@@ -93,13 +93,13 @@ pub fn winit_runner(mut app: App) {
 pub fn handle_window_creation(
     resources: &mut Resources,
     event_loop: &EventLoopWindowTarget<()>,
-    event_reader: &mut EventReader<WindowCreate>,
+    event_reader: &mut EventReader<WindowCreateEvent>,
 ) {
     let mut winit_windows = resources.get_mut::<WinitWindows>().unwrap();
     let mut windows = resources.get_mut::<Windows>().unwrap();
 
-    let create_events = resources.get::<Events<WindowCreate>>().unwrap();
-    let mut window_created_events = resources.get_mut::<Events<WindowCreated>>().unwrap();
+    let create_events = resources.get::<Events<WindowCreateEvent>>().unwrap();
+    let mut window_created_events = resources.get_mut::<Events<WindowCreatedEvent>>().unwrap();
 
     for window_create_event in event_reader.iter(&create_events) {
         let window = winit_windows.create_window(
@@ -108,7 +108,7 @@ pub fn handle_window_creation(
             &window_create_event.descriptor,
         );
         windows.add(window);
-        window_created_events.send(WindowCreated {
+        window_created_events.send(WindowCreatedEvent {
             id: window_create_event.id,
         });
     }
