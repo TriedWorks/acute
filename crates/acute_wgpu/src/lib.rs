@@ -16,7 +16,7 @@ mod resources;
 pub struct WgpuPlugin {}
 
 impl Plugin for WgpuPlugin {
-    fn add(&self, app: &mut AppBuilder) {
+    fn build(&self, app: &mut AppBuilder) {
         let renderer = block_on(WgpuRenderer::new());
         let context = WgpuResourceContext::new(renderer.device.clone());
 

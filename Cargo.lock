@@ -10,16 +10,7 @@ checksum = "d9fe5e32de01730eb1f6b7f5b51c17e03e2325bf40a74f754f04f130043affff"
 name = "acute"
 version = "0.0.2"
 dependencies = [
- "acute_app",
- "acute_assets",
- "acute_core",
- "acute_ecs",
- "acute_input",
- "acute_render",
- "acute_scenes",
- "acute_wgpu",
- "acute_window",
- "acute_winit",
+ "acute_defaults",
  "legion",
 ]
 
@@ -31,8 +22,6 @@ dependencies = [
  "acute_scenes",
  "futures",
  "legion",
- "rusty_timer",
- "winit",
 ]
 
 [[package]]
@@ -54,6 +43,19 @@ dependencies = [
  "fructose",
  "glucose",
  "rusty_timer",
+]
+
+[[package]]
+name = "acute_defaults"
+version = "0.1.0"
+dependencies = [
+ "acute_app",
+ "acute_assets",
+ "acute_ecs",
+ "acute_input",
+ "acute_wgpu",
+ "acute_window",
+ "acute_winit",
 ]
 
 [[package]]

@@ -23,7 +23,7 @@ impl Default for InputPlugin {
 }
 
 impl Plugin for InputPlugin {
-    fn add(&self, app: &mut AppBuilder) {
+    fn build(&self, app: &mut AppBuilder) {
         app.add_event::<KeyboardEvent>()
             .add_event::<MouseButtonEvent>()
             .add_event::<MouseScrollEvent>()

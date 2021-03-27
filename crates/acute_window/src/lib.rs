@@ -17,7 +17,7 @@ impl Default for WindowPlugin {
 }
 
 impl Plugin for WindowPlugin {
-    fn add(&self, app: &mut AppBuilder) {
+    fn build(&self, app: &mut AppBuilder) {
         app.add_event::<WindowCreateEvent>()
             .add_event::<WindowCreatedEvent>()
             .add_event::<WindowCloseRequestedEvent>()

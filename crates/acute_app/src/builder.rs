@@ -1,6 +1,6 @@
 use crate::app::App;
 use crate::events::event_update_system;
-use crate::{Events, Plugin};
+use crate::{Events, Plugin, PluginBundle, PluginBundleBuilder};
 use acute_ecs::systems::{Builder, ParallelRunnable, Resource};
 use acute_ecs::Resources;
 
@@ -51,13 +51,29 @@ impl AppBuilder {
     }
 
     pub fn add_plugin<T: Plugin>(&mut self, plugin: T) -> &mut Self {
-        plugin.add(self);
+        plugin.build(self);
+        self
+    }
+
+    pub fn add_bundle<T: PluginBundle + Default>(&mut self) -> &mut Self {
+        let mut builder = PluginBundleBuilder::default();
+        let mut bundle = T::default();
+        bundle.build(&mut builder);
+        builder.finish(self);
+        self
+    }
+
+    pub fn add_bundle_custom<T: PluginBundle>(&mut self, mut bundle: T) -> &mut Self {
+        let mut builder = PluginBundleBuilder::default();
+        bundle.build(&mut builder);
+        builder.finish(self);
         self
     }
 
     pub fn resources(&self) -> &Resources {
         &self.app.resources
     }
+
     pub fn resources_mut(&mut self) -> &mut Resources {
         &mut self.app.resources
     }

@@ -20,7 +20,7 @@ impl Default for WinitPlugin {
 }
 
 impl Plugin for WinitPlugin {
-    fn add(&self, app: &mut AppBuilder) {
+    fn build(&self, app: &mut AppBuilder) {
         app.set_runner(winit_runner);
         app.add_resource(WinitWindows::new());
         app.add_system(update_windows_system());
