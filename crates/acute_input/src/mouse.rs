@@ -2,7 +2,6 @@ use crate::events::{MouseButtonEvent, MouseMoveEvent, MouseScrollEvent};
 use crate::MouseButton;
 use acute_app::Events;
 use acute_ecs::system;
-use acute_ecs::Resources;
 use std::collections::HashSet;
 
 pub struct Mouse {

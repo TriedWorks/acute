@@ -68,6 +68,7 @@ impl Window {
     }
 }
 
+#[derive(Debug)]
 pub struct WindowDescriptor {
     pub title: String,
     pub width: u32,

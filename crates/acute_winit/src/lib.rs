@@ -45,9 +45,6 @@ pub fn winit_runner(mut app: App) {
             WindowEvent::CloseRequested => {
                 *control_flow = ControlFlow::Exit;
             }
-            WindowEvent::Resized(_size) => {
-                // TODO: implement this
-            }
             WindowEvent::KeyboardInput { ref input, .. } => {
                 if let Some(key) = input.virtual_keycode {
                     let mut events = app.resources.get_mut::<Events<KeyboardEvent>>().unwrap();
@@ -84,7 +81,6 @@ pub fn winit_runner(mut app: App) {
             handle_window_creation(&mut app.resources, event_loop, &mut window_create_reader);
             app.update();
         }
-        Event::RedrawRequested(_) => {}
         Event::RedrawEventsCleared => {}
         _ => {}
     });

@@ -1,4 +1,5 @@
-use crate::context::WgpuContext;
+use crate::render_graph::WgpuRenderGraph;
+use crate::resource_context::WgpuResourceContext;
 use acute_app::{EventReader, Events};
 use acute_window::{WindowCreatedEvent, WindowResizedEvent, Windows};
 use acute_winit::window::WinitWindows;
@@ -10,6 +11,7 @@ use wgpu::BackendBit;
 pub struct WgpuRenderer {
     pub instance: wgpu::Instance,
     pub device: Arc<wgpu::Device>,
+    pub adapter: wgpu::Adapter,
     pub queue: wgpu::Queue,
     pub window_created_event_reader: EventReader<WindowCreatedEvent>,
     pub window_resized_event_reader: EventReader<WindowResizedEvent>,
@@ -44,6 +46,7 @@ impl WgpuRenderer {
         Self {
             instance,
             device,
+            adapter,
             queue,
             window_created_event_reader: Default::default(),
             window_resized_event_reader: Default::default(),
@@ -54,7 +57,7 @@ impl WgpuRenderer {
 #[system]
 pub fn surface_creation(
     #[resource] renderer: &mut WgpuRenderer,
-    #[resource] context: &mut WgpuContext,
+    #[resource] context: &mut WgpuResourceContext,
     #[resource] windows: &Windows,
     #[resource] winit_windows: &WinitWindows,
     #[resource] events: &Events<WindowCreatedEvent>,
@@ -68,12 +71,24 @@ pub fn surface_creation(
 
         let winit_window = winit_windows.get_window(window.id()).unwrap();
         let surface = unsafe { renderer.instance.create_surface(winit_window.deref()) };
+        let sc_desc = wgpu::SwapChainDescriptor {
+            usage: wgpu::TextureUsage::RENDER_ATTACHMENT,
+            format: renderer.adapter.get_swap_chain_preferred_format(&surface),
+            width: window.width(),
+            height: window.height(),
+            present_mode: wgpu::PresentMode::Mailbox,
+        };
         context.set_surface(window.id(), surface);
+        context.set_swap_chain(window.id(), sc_desc);
     }
 }
 
 #[system]
-pub fn render(#[resource] context: &mut WgpuContext) {
-    let resources = context.resources.read().refs();
-    for (window, surface) in context.resources.surfaces.read().iter() {}
+pub fn graph_render(
+    #[resource] renderer: &mut WgpuRenderer,
+    #[resource] context: &mut WgpuResourceContext,
+    #[resource] windows: &Windows,
+) {
+    let graph = WgpuRenderGraph::new();
+    graph.execute(&mut renderer.queue, context, windows);
 }

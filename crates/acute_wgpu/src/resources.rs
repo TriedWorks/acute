@@ -3,6 +3,7 @@ use parking_lot::{RwLock, RwLockReadGuard};
 use std::collections::HashMap;
 use std::sync::Arc;
 
+#[derive(Default, Clone, Debug)]
 pub struct WgpuResources {
     pub surfaces: Arc<RwLock<HashMap<WindowId, wgpu::Surface>>>,
     pub swap_chains: Arc<RwLock<HashMap<WindowId, wgpu::SwapChain>>>,
