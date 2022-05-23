@@ -1,7 +1,7 @@
 pub mod assets;
 pub mod types;
 
-use acute_app::{AppBuilder, Plugin};
+use acute_app::{App, Plugin};
 pub use assets::Assets;
 pub use types::*;
 
@@ -9,7 +9,7 @@ pub use types::*;
 pub struct AssetPlugin;
 
 impl Plugin for AssetPlugin {
-    fn build(&self, app: &mut AppBuilder) {
+    fn build(&self, app: &mut App) {
         app.add_resource(Assets::default());
     }
 }

@@ -1,14 +1,25 @@
 [package]
 name = "acute_ecs"
 version = "0.1.0"
-authors = ["Sebatsian Strobl <Sebastian@Strobl.net>"]
-edition = "2018"
-description = "ecs sub-crate of acute"
-license = "Apache-2.0"
-repository = "https://github.com/tryworks/acute"
-keywords = ["acute"]
-
-# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+edition = "2021"
+description = "Acute's Engine's entity component system [FORKED FROM acute, AND WILL BE REPLACED/MODIFIED IN THE FUTURE]"
+homepage = "https://acuteengine.org"
+repository = "https://github.com/acuteengine/acute"
+license = "MIT OR Apache-2.0"
+keywords = ["ecs", "game"]
+categories = ["game-engines", "data-structures"]
 
 [dependencies]
-legion = "0.4.0"
+acute_ptr = { path = "../acute_ptr", version = "0.1" }
+acute_tasks = { path = "../acute_tasks", version = "0.1" }
+acute_utils = { path = "../acute_utils", version = "0.1" }
+acute_ecs_macros = { path = "macros", version = "0.1" }
+
+async-channel = "1.4"
+fixedbitset = "0.4"
+fxhash = "0.2"
+downcast-rs = "1.2"
+serde = "1"
+
+[dev-dependencies]
+rand = "0.8"

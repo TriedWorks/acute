@@ -1,5 +1,5 @@
-use acute_app::{AppBuilder, Events, Plugin};
-
+use acute_app::{App, Plugin};
+use acute_ecs::event::Events;
 pub use events::*;
 pub use window::*;
 
@@ -17,19 +17,19 @@ impl Default for WindowPlugin {
 }
 
 impl Plugin for WindowPlugin {
-    fn build(&self, app: &mut AppBuilder) {
+    fn build(&self, app: &mut App) {
         app.add_event::<WindowCreateEvent>()
             .add_event::<WindowCreatedEvent>()
             .add_event::<WindowCloseRequestedEvent>()
-            .add_resource(Windows::new());
+            .init_resource::<Windows>();
 
         if self.add_primary {
-            let descriptor = WindowDescriptor::default();
+            let descriptor = app
+                .get_resource_mut::<WindowDescriptor>()
+                .map(|desc| (*desc).clone())
+                .unwrap_or_default();
 
-            let mut create_window_events = app
-                .resources()
-                .get_mut::<Events<WindowCreateEvent>>()
-                .unwrap();
+            let mut create_window_events = app.resource_mut::<Events<WindowCreateEvent>>();
 
             create_window_events.send(WindowCreateEvent {
                 id: WindowId::new(),

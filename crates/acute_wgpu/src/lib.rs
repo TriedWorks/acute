@@ -1,6 +1,6 @@
 use crate::renderer::WgpuRenderer;
 use crate::resource_context::WgpuResourceContext;
-use acute_app::{AppBuilder, Plugin};
+use acute_app::{App, Plugin};
 use futures::executor::block_on;
 use renderer::graph_render_system;
 use renderer::surface_creation_system;
@@ -16,7 +16,7 @@ mod resources;
 pub struct WgpuPlugin {}
 
 impl Plugin for WgpuPlugin {
-    fn build(&self, app: &mut AppBuilder) {
+    fn build(&self, app: &mut App) {
         let renderer = block_on(WgpuRenderer::new());
         let context = WgpuResourceContext::new(renderer.device.clone());
 

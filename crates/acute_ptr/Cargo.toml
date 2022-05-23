@@ -1,0 +1,8 @@
+[package]
+name = "acute_ptr"
+version = "0.1.0"
+edition = "2021"
+description = "Utilities for working with untyped pointers in a more safe way [FORKED FROM Bevy, WILL BE REPLACED/MODIFIED IN THE FUTURE]"
+license = "MIT OR Apache-2.0"
+
+[dependencies]

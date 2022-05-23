@@ -1,53 +1,72 @@
 use crate::convert::{convert_key, convert_mouse, convert_state};
 use crate::window::WinitWindows;
-use acute_app::{App, AppBuilder, EventReader, Events, Plugin};
-use acute_ecs::system;
-use acute_ecs::Resources;
+use acute_app::{App, CoreStage, Plugin};
+use acute_ecs::event::{Events, ManualEventReader};
+use acute_ecs::system::ResMut;
+use acute_ecs::world::World;
 use acute_input::events::{KeyboardEvent, MouseButtonEvent, MouseMoveEvent, MouseScrollEvent};
 use acute_window::{WindowCreateEvent, WindowCreatedEvent, Windows as AcuteWindows, Windows};
 use winit::event::WindowEvent;
 use winit::event::{Event, MouseScrollDelta};
 use winit::event_loop::{ControlFlow, EventLoop, EventLoopWindowTarget};
+
 mod convert;
 pub mod window;
 
+#[derive(Default)]
 pub struct WinitPlugin;
 
-impl Default for WinitPlugin {
-    fn default() -> Self {
-        Self {}
-    }
-}
-
 impl Plugin for WinitPlugin {
-    fn build(&self, app: &mut AppBuilder) {
-        app.set_runner(winit_runner);
-        app.add_resource(WinitWindows::new());
-        app.add_system(update_windows_system());
+    fn build(&self, app: &mut App) {
+        app.init_non_send_resource::<WinitWindows>()
+            .set_runner(winit_runner)
+            .add_system_to_stage(CoreStage::PostUpdate, update_windows_system);
+
+        let event_loop = EventLoop::new();
+        let mut create_window_reader = WinitCreateWindowReader::default();
+
+        handle_window_creation(&mut app.world, &event_loop, &mut create_window_reader.0);
+        app.insert_resource(create_window_reader)
+            .insert_non_send_resource(event_loop);
     }
 }
 
-#[system]
-pub fn update_windows(
-    #[resource] _acute_windows: &AcuteWindows,
-    #[resource] _winit_windows: &WinitWindows,
+pub fn update_windows_system(
+    mut _acute_windows: ResMut<AcuteWindows>,
+    mut _winit_windows: ResMut<WinitWindows>,
 ) {
 }
 
-pub fn winit_runner(mut app: App) {
-    let event_loop = EventLoop::new();
-    app.resources.insert(event_loop.create_proxy());
+#[derive(Default)]
+struct WinitCreateWindowReader(ManualEventReader<WindowCreateEvent>);
 
-    let mut window_create_reader = EventReader::<WindowCreateEvent>::default();
+pub fn winit_runner(mut app: App) {
+    println!("hello!!");
+    let event_loop = app
+        .world
+        .remove_non_send_resource::<EventLoop<()>>()
+        .unwrap();
+    println!("hello!!!");
+    let mut window_create_reader = app
+        .world
+        .remove_resource::<WinitCreateWindowReader>()
+        .unwrap()
+        .0;
+
+    app.world
+        .insert_non_send_resource(event_loop.create_proxy());
+
+    println!("hello!!!!");
 
     event_loop.run(move |event, event_loop, control_flow| match event {
         Event::WindowEvent { event, .. } => match event {
             WindowEvent::CloseRequested => {
                 *control_flow = ControlFlow::Exit;
             }
+
             WindowEvent::KeyboardInput { ref input, .. } => {
                 if let Some(key) = input.virtual_keycode {
-                    let mut events = app.resources.get_mut::<Events<KeyboardEvent>>().unwrap();
+                    let mut events = app.resource_mut::<Events<KeyboardEvent>>();
                     events.send(KeyboardEvent {
                         key: Some(convert_key(key)),
                         state: convert_state(input.state),
@@ -55,14 +74,14 @@ pub fn winit_runner(mut app: App) {
                 }
             }
             WindowEvent::MouseInput { button, .. } => {
-                let mut events = app.resources.get_mut::<Events<MouseButtonEvent>>().unwrap();
+                let mut events = app.resource_mut::<Events<MouseButtonEvent>>();
                 events.send(MouseButtonEvent {
                     button: Some(convert_mouse(button)),
                 });
             }
 
             WindowEvent::CursorMoved { position, .. } => {
-                let mut events = app.resources.get_mut::<Events<MouseMoveEvent>>().unwrap();
+                let mut events = app.resource_mut::<Events<MouseMoveEvent>>();
                 events.send(MouseMoveEvent {
                     position: (position.x, position.y),
                 });
@@ -70,7 +89,7 @@ pub fn winit_runner(mut app: App) {
 
             WindowEvent::MouseWheel { delta, .. } => match delta {
                 MouseScrollDelta::LineDelta(x, y) => {
-                    let mut events = app.resources.get_mut::<Events<MouseScrollEvent>>().unwrap();
+                    let mut events = app.resource_mut::<Events<MouseScrollEvent>>();
                     events.send(MouseScrollEvent { scroll: (x, y) });
                 }
                 MouseScrollDelta::PixelDelta(_) => {}
@@ -78,7 +97,7 @@ pub fn winit_runner(mut app: App) {
             _ => {}
         },
         Event::MainEventsCleared => {
-            handle_window_creation(&mut app.resources, event_loop, &mut window_create_reader);
+            handle_window_creation(&mut app.world, event_loop, &mut window_create_reader);
             app.update();
         }
         Event::RedrawEventsCleared => {}
@@ -87,15 +106,16 @@ pub fn winit_runner(mut app: App) {
 }
 
 pub fn handle_window_creation(
-    resources: &mut Resources,
+    world: &mut World,
     event_loop: &EventLoopWindowTarget<()>,
-    event_reader: &mut EventReader<WindowCreateEvent>,
+    event_reader: &mut ManualEventReader<WindowCreateEvent>,
 ) {
-    let mut winit_windows = resources.get_mut::<WinitWindows>().unwrap();
-    let mut windows = resources.get_mut::<Windows>().unwrap();
+    let world = world.cell();
+    let mut winit_windows = world.non_send_resource_mut::<WinitWindows>();
+    let mut windows = world.resource_mut::<Windows>();
 
-    let create_events = resources.get::<Events<WindowCreateEvent>>().unwrap();
-    let mut window_created_events = resources.get_mut::<Events<WindowCreatedEvent>>().unwrap();
+    let create_events = world.resource::<Events<WindowCreateEvent>>();
+    let mut window_created_events = world.resource_mut::<Events<WindowCreatedEvent>>();
 
     for window_create_event in event_reader.iter(&create_events) {
         let window = winit_windows.create_window(

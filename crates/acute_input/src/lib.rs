@@ -12,9 +12,19 @@ use crate::keyboard::keyboard_update_system;
 use crate::mouse::{
     mouse_button_update_system, mouse_move_update_system, mouse_scroll_update_system,
 };
-use acute_app::{AppBuilder, Plugin};
+use acute_app::{App, CoreStage, Plugin};
+use acute_ecs::{schedule::ParallelSystemDescriptorCoercion, schedule::SystemLabel};
+
+pub mod prelude {
+    pub use crate::codes::*;
+    pub use crate::keyboard::Keyboard;
+    pub use crate::mouse::Mouse;
+}
 
 pub struct InputPlugin;
+
+#[derive(Debug, PartialEq, Eq, Clone, Hash, SystemLabel)]
+pub struct InputSystem;
 
 impl Default for InputPlugin {
     fn default() -> Self {
@@ -23,16 +33,28 @@ impl Default for InputPlugin {
 }
 
 impl Plugin for InputPlugin {
-    fn build(&self, app: &mut AppBuilder) {
+    fn build(&self, app: &mut App) {
         app.add_event::<KeyboardEvent>()
             .add_event::<MouseButtonEvent>()
             .add_event::<MouseScrollEvent>()
             .add_event::<MouseMoveEvent>()
-            .add_resource(Keyboard::new())
-            .add_resource(Mouse::new())
-            .add_system(keyboard_update_system())
-            .add_system(mouse_button_update_system())
-            .add_system(mouse_scroll_update_system())
-            .add_system(mouse_move_update_system());
+            .init_resource::<Keyboard>()
+            .init_resource::<Mouse>()
+            .add_system_to_stage(
+                CoreStage::PreUpdate,
+                keyboard_update_system.label(InputSystem),
+            )
+            .add_system_to_stage(
+                CoreStage::PreUpdate,
+                mouse_button_update_system.label(InputSystem),
+            )
+            .add_system_to_stage(
+                CoreStage::PreUpdate,
+                mouse_scroll_update_system.label(InputSystem),
+            )
+            .add_system_to_stage(
+                CoreStage::PreUpdate,
+                mouse_move_update_system.label(InputSystem),
+            );
     }
 }

@@ -10,9 +10,9 @@ pub mod winit {
     pub use acute_winit::*;
 }
 
-pub mod wgpu {
-    pub use acute_wgpu::*;
-}
+// pub mod wgpu {
+//     pub use acute_wgpu::*;
+// }
 
 pub mod input {
     pub use acute_input::*;
@@ -32,5 +32,7 @@ pub mod defaults {
 
 pub mod prelude {
     pub use crate::DefaultBundle;
-    pub use acute_app::App;
+    pub use acute_app::prelude::*;
+    pub use acute_ecs::prelude::*;
+    pub use acute_input::prelude::*;
 }

@@ -1,9 +1,10 @@
 use crate::events::{MouseButtonEvent, MouseMoveEvent, MouseScrollEvent};
 use crate::MouseButton;
-use acute_app::Events;
-use acute_ecs::system;
+use acute_ecs::event::EventReader;
+use acute_ecs::system::ResMut;
 use std::collections::HashSet;
 
+#[derive(Debug, Default)]
 pub struct Mouse {
     pub position: (f64, f64),
     pub position_delta: (f64, f64),
@@ -60,7 +61,7 @@ impl Mouse {
         self.just_released.clear();
     }
 
-    pub(crate) fn new() -> Self {
+    pub fn new() -> Self {
         Self {
             position: (0.0, 0.0),
             position_delta: (0.0, 0.0),
@@ -73,14 +74,12 @@ impl Mouse {
     }
 }
 
-#[system]
-pub fn mouse_button_update(
-    #[resource] mouse: &mut Mouse,
-    #[resource] events: &Events<MouseButtonEvent>,
+pub fn mouse_button_update_system(
+    mut mouse: ResMut<Mouse>,
+    mut events: EventReader<MouseButtonEvent>,
 ) {
     mouse.clear();
-    let mut event_reader = events.get_reader();
-    for event in event_reader.iter(&events) {
+    for event in events.iter() {
         if let MouseButtonEvent {
             button: Some(button),
             ..
@@ -90,25 +89,19 @@ pub fn mouse_button_update(
         }
     }
 }
-#[system]
-pub fn mouse_scroll_update(
-    #[resource] mouse: &mut Mouse,
-    #[resource] events: &Events<MouseScrollEvent>,
+
+pub fn mouse_scroll_update_system(
+    mut mouse: ResMut<Mouse>,
+    mut events: EventReader<MouseScrollEvent>,
 ) {
-    let mut event_reader = events.get_reader();
-    for event in event_reader.iter(&events) {
+    for event in events.iter() {
         let MouseScrollEvent { scroll } = event;
         mouse.update_scroll(*scroll)
     }
 }
 
-#[system]
-pub fn mouse_move_update(
-    #[resource] mouse: &mut Mouse,
-    #[resource] events: &Events<MouseMoveEvent>,
-) {
-    let mut event_reader = events.get_reader();
-    for event in event_reader.iter(&events) {
+pub fn mouse_move_update_system(mut mouse: ResMut<Mouse>, mut events: EventReader<MouseMoveEvent>) {
+    for event in events.iter() {
         let MouseMoveEvent { position } = event;
         mouse.update_position(*position)
     }

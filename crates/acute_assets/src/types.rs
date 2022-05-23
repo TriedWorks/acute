@@ -20,7 +20,6 @@ pub trait Asset: Downcast {
 
 impl_downcast!(Asset);
 
-#[derive(Clone)]
 pub struct Image {
     /// image is the underlying and editable image
     image: DynamicImage,

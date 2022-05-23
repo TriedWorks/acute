@@ -1,0 +1,11 @@
+[package]
+name = "acute_macro_utils"
+version = "0.1.0"
+edition = "2021"
+description = "A collection of utils for Acute Engine [FORKED FROM acute, WILL BE REPLACED/MODIFIED IN THE FUTURE]"
+license = "MIT OR Apache-2.0"
+
+[dependencies]
+toml = "0.5.8"
+syn = "1.0"
+quote = "1.0"

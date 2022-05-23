@@ -1,9 +1,9 @@
-use crate::AppBuilder;
+use crate::App;
+use std::any::{Any, TypeId};
 use std::collections::HashMap;
-use std::any::{TypeId, Any};
 
 pub trait Plugin: Any + Send + Sync {
-    fn build(&self, app: &mut AppBuilder);
+    fn build(&self, app: &mut App);
     fn name(&self) -> &str {
         std::any::type_name::<Self>()
     }
@@ -19,33 +19,38 @@ pub struct PluginBundleEntry {
 
 #[derive(Default)]
 pub struct PluginBundleBuilder {
-    plugins: HashMap<TypeId, PluginBundleEntry>
+    plugins: HashMap<TypeId, PluginBundleEntry>,
+    order: Vec<TypeId>,
 }
 
 impl PluginBundleBuilder {
-    pub fn add<T: Plugin + Default>(&mut self) -> &mut Self {
+    pub fn add<T: Plugin>(&mut self, plugin: T) -> &mut Self {
+        self.plugins.insert(
+            TypeId::of::<T>(),
+            PluginBundleEntry {
+                plugin: Box::new(plugin),
+            },
+        );
+        self.order.push(TypeId::of::<T>());
+        self
+    }
+
+    pub fn add_init<T: Plugin + Default>(&mut self) -> &mut Self {
         self.plugins.insert(
             TypeId::of::<T>(),
             PluginBundleEntry {
                 plugin: Box::new(T::default()),
             },
         );
+        self.order.push(TypeId::of::<T>());
         self
     }
 
-    pub fn add_custom<T: Plugin>(&mut self, plugin: T) -> &mut Self {
-        self.plugins.insert(
-            TypeId::of::<T>(),
-            PluginBundleEntry {
-                plugin: Box::new(plugin)
+    pub fn finish(self, app: &mut App) {
+        for plugin_id in &self.order {
+            if let Some(entry) = self.plugins.get(plugin_id) {
+                entry.plugin.build(app);
             }
-        );
-        self
-    }
-
-    pub fn finish(self, app: &mut AppBuilder) {
-        for (_, entry) in self.plugins.iter() {
-            entry.plugin.build(app);
         }
     }
 }

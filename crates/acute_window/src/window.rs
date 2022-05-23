@@ -68,7 +68,7 @@ impl Window {
     }
 }
 
-#[derive(Debug)]
+#[derive(Debug, Clone)]
 pub struct WindowDescriptor {
     pub title: String,
     pub width: u32,
@@ -96,6 +96,7 @@ pub enum Mode {
     Fullscreen,
 }
 
+#[derive(Debug, Default)]
 pub struct Windows {
     pub windows: HashMap<WindowId, Window>,
 }

@@ -1,9 +1,10 @@
 use crate::events::KeyboardEvent;
 use crate::{Key, State};
-use acute_app::Events;
-use acute_ecs::system;
+use acute_ecs::event::EventReader;
+use acute_ecs::system::ResMut;
 use std::collections::HashSet;
 
+#[derive(Debug, Default)]
 pub struct Keyboard {
     pub just_pressed: HashSet<Key>,
     pub pressed: HashSet<Key>,
@@ -40,7 +41,7 @@ impl Keyboard {
         self.just_released.clear();
     }
 
-    pub(crate) fn new() -> Self {
+    pub fn new() -> Self {
         Self {
             just_pressed: Default::default(),
             pressed: Default::default(),
@@ -49,14 +50,12 @@ impl Keyboard {
     }
 }
 
-#[system]
-pub fn keyboard_update(
-    #[resource] keyboard: &mut Keyboard,
-    #[resource] events: &Events<KeyboardEvent>,
+pub fn keyboard_update_system(
+    mut keyboard: ResMut<Keyboard>,
+    mut events: EventReader<KeyboardEvent>,
 ) {
     keyboard.clear();
-    let mut event_reader = events.get_reader();
-    for event in event_reader.iter(&events) {
+    for event in events.iter() {
         if let KeyboardEvent {
             key: Some(key),
             state,

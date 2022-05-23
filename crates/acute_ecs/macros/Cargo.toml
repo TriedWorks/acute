@@ -1,0 +1,16 @@
+[package]
+name = "acute_ecs_macros"
+version = "0.1.0"
+description = "Acute ECS Macros [FORKED FROM Bevy, AND WILL BE REPLACED/MODIFIED IN THE FUTURE]"
+edition = "2021"
+license = "MIT OR Apache-2.0"
+
+[lib]
+proc-macro = true
+
+[dependencies]
+acute_macro_utils = { path = "../../acute_macro_utils", version = "0.1" }
+
+syn = "1.0"
+quote = "1.0"
+proc-macro2 = "1.0"

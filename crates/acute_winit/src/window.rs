@@ -7,6 +7,7 @@ use winit::event_loop::EventLoopWindowTarget;
 use winit::window::WindowId;
 use winit::window::{Window, WindowBuilder};
 
+#[derive(Debug, Default)]
 pub struct WinitWindows {
     pub windows: HashMap<WindowId, Window>,
     pub window_id_to_winit: HashMap<AcuteWindowId, WindowId>,
