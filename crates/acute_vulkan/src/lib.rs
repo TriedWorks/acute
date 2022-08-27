@@ -1,16 +1,6 @@
 extern crate core;
 
-// mod renderer;
-// mod vertex;
-// mod base;
-// mod debug;
-// mod instance;
-// mod utils;
-// mod gpu;
-// mod surface;
-// mod queues;
 pub mod driver;
-// mod settings;
 
 use crate::driver::instance::{Instance, InstanceCreateInfo};
 use acute_app::{App, CoreStage, Plugin};
