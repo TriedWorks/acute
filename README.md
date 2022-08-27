@@ -11,7 +11,7 @@
 -----
 
 <p align="center">
-  <strong> Modular Data Driven Physics, Render and Data Science Engine </strong> for the rust programming language. <br/>
+  <strong> Modular Data Driven Physics, Render and Data Science Engine with specialization for Voxel Graphics </strong> for the rust programming language. <br/>
   <sub><i>this is a personal project of mine, do not expect many updates and active working on feature requests.</i></sub>
 </p>
 
