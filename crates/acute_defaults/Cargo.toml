@@ -7,11 +7,11 @@ edition = "2018"
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [dependencies]
+bevy_ecs = "0.8.0"
 acute_app = { version = "0.1", path = "../acute_app" }
-acute_ecs = { version = "0.1", path = "../acute_ecs" }
+acute_tracing = { version = "0.1", path = "../acute_tracing" }
 acute_window = { version = "0.1", path = "../acute_window" }
 acute_winit = { version = "0.1", path = "../acute_winit" }
-#acute_wgpu = { version = "0.1", path = "../acute_wgpu" }
 acute_vulkan = { version = "0.1", path = "../acute_vulkan" }
 acute_input = { version = "0.1", path = "../acute_input" }
 acute_assets = { version = "0.1", path = "../acute_assets" }

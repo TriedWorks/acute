@@ -1,12 +1,12 @@
-use acute_ecs::event::Events;
-use acute_ecs::prelude::StageLabel;
-use acute_ecs::schedule::{
+use bevy_ecs::event::Events;
+use bevy_ecs::prelude::StageLabel;
+use bevy_ecs::schedule::{
     IntoSystemDescriptor, Schedule, ShouldRun, Stage, State, StateData, SystemSet, SystemStage,
 };
-use acute_ecs::system::Resource;
+use bevy_ecs::system::{IntoExclusiveSystem, Resource};
 
 use crate::{CoreStage, Plugin, PluginBundle, PluginBundleBuilder, StartupSchedule, StartupStage};
-use acute_ecs::world::{FromWorld, Mut, World};
+use bevy_ecs::world::{FromWorld, Mut, World};
 
 pub struct App {
     pub world: World,
@@ -293,7 +293,9 @@ impl App {
 impl Default for App {
     fn default() -> Self {
         let mut app = App::empty();
-        app.add_default_stages();
+        app.add_default_stages()
+            .add_event::<AppEventExit>()
+            .add_system_to_stage(CoreStage::Last, World::clear_trackers.exclusive_system());
         app
     }
 }
@@ -301,3 +303,6 @@ impl Default for App {
 fn run_once(mut app: App) {
     app.update();
 }
+
+#[derive(Debug, Clone, Default)]
+pub struct AppEventExit;

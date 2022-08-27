@@ -1,7 +1,7 @@
 use crate::events::{MouseButtonEvent, MouseMoveEvent, MouseScrollEvent};
 use crate::MouseButton;
-use acute_ecs::event::EventReader;
-use acute_ecs::system::ResMut;
+use bevy_ecs::event::EventReader;
+use bevy_ecs::system::ResMut;
 use std::collections::HashSet;
 
 #[derive(Debug, Default)]

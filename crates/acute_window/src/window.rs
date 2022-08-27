@@ -12,7 +12,7 @@ impl WindowId {
 
 #[derive(Debug, Clone)]
 pub struct Window {
-    id: WindowId,
+    pub(crate) id: WindowId,
     title: String,
     width: u32,
     height: u32,
@@ -94,33 +94,4 @@ pub enum Mode {
     Windowed,
     Borderless,
     Fullscreen,
-}
-
-#[derive(Debug, Default)]
-pub struct Windows {
-    pub windows: HashMap<WindowId, Window>,
-}
-
-impl Windows {
-    pub fn new() -> Self {
-        Self {
-            windows: HashMap::new(),
-        }
-    }
-
-    pub fn get(&self, id: WindowId) -> Option<&Window> {
-        self.windows.get(&id)
-    }
-
-    pub fn add(&mut self, window: Window) {
-        self.windows.insert(window.id.clone(), window);
-    }
-
-    pub fn iter(&self) -> impl Iterator<Item = &Window> {
-        self.windows.values()
-    }
-
-    pub fn iter_mut(&mut self) -> impl Iterator<Item = &mut Window> {
-        self.windows.values_mut()
-    }
 }

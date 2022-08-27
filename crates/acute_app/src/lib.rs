@@ -1,8 +1,7 @@
 mod app;
 mod plugin;
 
-use acute_ecs::schedule::StageLabel;
-pub use app::App;
+pub use app::{App, AppEventExit};
 pub use plugin::*;
 
 pub mod prelude {
@@ -11,6 +10,7 @@ pub mod prelude {
     pub use super::{CoreStage, StartupSchedule, StartupStage};
 }
 
+use bevy_ecs::schedule::StageLabel;
 #[derive(Debug, Hash, PartialEq, Eq, Clone, StageLabel)]
 pub enum CoreStage {
     First,

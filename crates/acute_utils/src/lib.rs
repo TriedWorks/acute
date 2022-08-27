@@ -1,22 +1,4 @@
-pub mod prelude {
-    pub use crate::default;
-}
-
-pub mod futures;
-pub mod label;
-
-mod default;
-mod float_ord;
-
-pub use ahash::AHasher;
-pub use default::default;
-pub use float_ord::*;
-pub use hashbrown;
-pub use instant::{Duration, Instant};
-pub use tracing;
-pub use uuid::Uuid;
-
-use ahash::RandomState;
+use ahash::{AHasher, RandomState};
 use hashbrown::hash_map::RawEntryMut;
 use std::{
     fmt::Debug,
@@ -26,12 +8,9 @@ use std::{
     ops::Deref,
     pin::Pin,
 };
+pub use tracing;
 
-#[cfg(not(target_arch = "wasm32"))]
-pub type BoxedFuture<'a, T> = Pin<Box<dyn Future<Output = T> + Send + 'a>>;
-
-#[cfg(target_arch = "wasm32")]
-pub type BoxedFuture<'a, T> = Pin<Box<dyn Future<Output = T> + 'a>>;
+pub mod label;
 
 pub type Entry<'a, K, V> = hashbrown::hash_map::Entry<'a, K, V, RandomState>;
 
@@ -51,41 +30,14 @@ impl std::hash::BuildHasher for FixedState {
     }
 }
 
-/// A [`HashMap`][hashbrown::HashMap] implementing aHash, a high
-/// speed keyed hashing algorithm intended for use in in-memory hashmaps.
-///
-/// aHash is designed for performance and is NOT cryptographically secure.
 pub type HashMap<K, V> = hashbrown::HashMap<K, V, RandomState>;
 
-/// A stable hash map implementing aHash, a high speed keyed hashing algorithm
-/// intended for use in in-memory hashmaps.
-///
-/// Unlike [`HashMap`] this has an iteration order that only depends on the order
-/// of insertions and deletions and not a random source.
-///
-/// aHash is designed for performance and is NOT cryptographically secure.
 pub type StableHashMap<K, V> = hashbrown::HashMap<K, V, FixedState>;
 
-/// A [`HashSet`][hashbrown::HashSet] implementing aHash, a high
-/// speed keyed hashing algorithm intended for use in in-memory hashmaps.
-///
-/// aHash is designed for performance and is NOT cryptographically secure.
 pub type HashSet<K> = hashbrown::HashSet<K, RandomState>;
 
-/// A stable hash set implementing aHash, a high speed keyed hashing algorithm
-/// intended for use in in-memory hashmaps.
-///
-/// Unlike [`HashSet`] this has an iteration order that only depends on the order
-/// of insertions and deletions and not a random source.
-///
-/// aHash is designed for performance and is NOT cryptographically secure.
 pub type StableHashSet<K> = hashbrown::HashSet<K, FixedState>;
 
-/// A pre-hashed value of a specific type. Pre-hashing enables memoization of hashes that are expensive to compute.
-/// It also enables faster [`PartialEq`] comparisons by short circuiting on hash equality.
-/// See [`PassHash`] and [`PassHasher`] for a "pass through" [`BuildHasher`] and [`Hasher`] implementation
-/// designed to work with [`Hashed`]
-/// See [`PreHashMap`] for a hashmap pre-configured to use [`Hashed`] keys.
 pub struct Hashed<V, H = FixedState> {
     hash: u64,
     value: V,
@@ -93,7 +45,6 @@ pub struct Hashed<V, H = FixedState> {
 }
 
 impl<V: Hash, H: BuildHasher + Default> Hashed<V, H> {
-    /// Pre-hashes the given value using the [`BuildHasher`] configured in the [`Hashed`] type.
     pub fn new(value: V) -> Self {
         let builder = H::default();
         let mut hasher = builder.build_hasher();
@@ -129,8 +80,6 @@ impl<V, H> Deref for Hashed<V, H> {
 }
 
 impl<V: PartialEq, H> PartialEq for Hashed<V, H> {
-    /// A fast impl of [`PartialEq`] that first checks that `other`'s pre-computed hash
-    /// matches this value's pre-computed hash.
     #[inline]
     fn eq(&self, other: &Self) -> bool {
         self.hash == other.hash && self.value.eq(&other.value)

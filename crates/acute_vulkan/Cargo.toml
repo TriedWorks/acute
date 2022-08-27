@@ -6,5 +6,21 @@ edition = "2021"
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [dependencies]
-acute_ecs = { version = "0.1", path = "../acute_ecs" }
+bevy_ecs = "0.8.0"
 acute_app = { version = "0.1", path = "../acute_app" }
+acute_utils = { version = "0.1", path = "../acute_utils" }
+acute_tracing = { version = "0.1", path = "../acute_tracing" }
+acute_window = { version = "0.1", path = "../acute_window" }
+acute_winit = { version = "0.1", path = "../acute_winit" }
+ash = { version = "0.37", default-features = false, features = ["linked", "debug"] }
+ash-window = "0.10.0"
+vk-shader-macros = "0.2.7"
+gpu-allocator = "0.18.0"
+gpu-descriptor = "0.2.2"
+bitflags = "1.3.2"
+bytemuck = { version = "1.9.1", features = ["derive"] }
+parking_lot = "0.12.0"
+crossbeam = "0.8.1"
+
+[target.'cfg(target_os = "macos")'.dependencies]
+ash-molten = "0.12"

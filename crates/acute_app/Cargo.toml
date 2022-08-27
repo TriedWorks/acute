@@ -9,5 +9,5 @@ repository = "https://github.com/tryworks/acute"
 keywords = ["acute"]
 
 [dependencies]
-acute_ecs = { version = "0.1", path = "../acute_ecs" }
+bevy_ecs = "0.8.0"
 futures = "0.3.5"

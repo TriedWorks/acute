@@ -13,7 +13,8 @@ use crate::mouse::{
     mouse_button_update_system, mouse_move_update_system, mouse_scroll_update_system,
 };
 use acute_app::{App, CoreStage, Plugin};
-use acute_ecs::{schedule::ParallelSystemDescriptorCoercion, schedule::SystemLabel};
+use acute_tracing::info;
+use bevy_ecs::{schedule::ParallelSystemDescriptorCoercion, schedule::SystemLabel};
 
 pub mod prelude {
     pub use crate::codes::*;
@@ -56,5 +57,6 @@ impl Plugin for InputPlugin {
                 CoreStage::PreUpdate,
                 mouse_move_update_system.label(InputSystem),
             );
+        info!("Loaded Plugin: Input")
     }
 }

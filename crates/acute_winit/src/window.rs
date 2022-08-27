@@ -48,4 +48,13 @@ impl WinitWindows {
             .get(&id)
             .and_then(|id| self.windows.get(id))
     }
+
+    pub fn get_window_id(&self, id: WindowId) -> Option<AcuteWindowId> {
+        self.winit_to_window_id.get(&id).cloned()
+    }
+
+    pub fn remove(&mut self, id: AcuteWindowId) -> Option<Window> {
+        let acute_id = self.window_id_to_winit.remove(&id)?;
+        self.windows.remove(&acute_id)
+    }
 }

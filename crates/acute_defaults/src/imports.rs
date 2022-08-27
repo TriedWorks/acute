@@ -14,6 +14,10 @@ pub mod winit {
 //     pub use acute_wgpu::*;
 // }
 
+pub mod vulkan {
+    pub use acute_vulkan::*;
+}
+
 pub mod input {
     pub use acute_input::*;
 }
@@ -23,7 +27,7 @@ pub mod assets {
 }
 
 pub mod ecs {
-    pub use acute_ecs::*;
+    pub use bevy_ecs::*;
 }
 
 pub mod defaults {
@@ -31,8 +35,13 @@ pub mod defaults {
 }
 
 pub mod prelude {
-    pub use crate::DefaultBundle;
+    pub use crate::DefaultPlugins;
     pub use acute_app::prelude::*;
-    pub use acute_ecs::prelude::*;
     pub use acute_input::prelude::*;
+    pub use acute_vulkan::prelude::*;
+    pub use bevy_ecs::prelude::*;
+
+    pub fn default<T: Default>() -> T {
+        std::default::Default::default()
+    }
 }

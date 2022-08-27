@@ -12,5 +12,5 @@ keywords = ["acute"]
 
 [dependencies]
 acute_app = { version = "0.1", path = "../acute_app" }
-acute_ecs = { version = "0.1", path = "../acute_ecs" }
+bevy_ecs = "0.8.0"
 acute_window = { version = "0.1", path = "../acute_window" }

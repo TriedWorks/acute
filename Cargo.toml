@@ -16,7 +16,7 @@ path = "src/lib.rs"
 
 [workspace]
 members = ["crates/*"]
-exclude = ["crates/acute_render_backend"]
+exclude = ["crates/acute_wgpu"]
 
 [dependencies]
 acute_defaults = { version = "0.1", path = "crates/acute_defaults" }
